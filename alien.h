@@ -12,15 +12,28 @@ class Bullet_Maintainer;
 class Alien_Maintainer;
 
 struct Alien_image {
-//    enum alienImageType {BUG_IMG, ARROW_IMG, THICCBOI_IMG, EXPLOSION1,
-//                         EXPLOSION2, EXPLOSION3};
     ALLEGRO_BITMAP* alienBitmap;
     Object_type type;
     Alien_image(ALLEGRO_BITMAP* bitmap, Object_type t):
         alienBitmap(bitmap), type(t){};
-//    ~Alien_image(){
-//        al_destroy_bitmap(alienBitmap);
-//    }
+};
+
+struct Explosion{
+    const int numOfExplosionFrames = 4;
+    ALLEGRO_BITMAP** explosion_array;
+    int counter = numOfExplosionFrames;
+    int pos_x, pos_y;
+
+    Explosion(ALLEGRO_BITMAP** bm_array,int x, int y): explosion_array(bm_array),
+                                                        pos_x(x), pos_y(y){}
+    void draw(){
+        al_draw_bitmap(explosion_array[numOfExplosionFrames-counter], pos_x, pos_y, 0);
+        --counter;
+    }
+
+    bool exploded(){
+        return (!counter);
+    }
 };
 
 class Alien : public ShootableObject {
@@ -53,10 +66,10 @@ public:
     }
 
 protected:
-    Alien(ALLEGRO_BITMAP* bitmap, int w, int h):  bug_img(bitmap){
+    Alien(ALLEGRO_BITMAP* bitmap):  bug_img(bitmap){
         type = ALIEN;
-        width = w;
-        height = h;
+        width = al_get_bitmap_width(bitmap);
+        height = al_get_bitmap_height(bitmap);
         pos_x = between(0, DISPLAY_W * SCALE);
         pos_y = between(-30,0);
     }
@@ -74,7 +87,7 @@ protected:
 
 class Bug_alien : public Alien {
     friend class Alien_Factory;
-    Bug_alien(ALLEGRO_BITMAP* bitmap, int w, int h): Alien(bitmap, w, h){
+    Bug_alien(ALLEGRO_BITMAP* bitmap): Alien(bitmap){
         speed = std::pair<int,int>(1,1); //speed 1 pixel per frame
         fireWait = 6;
         endurance = 3;
@@ -83,7 +96,7 @@ class Bug_alien : public Alien {
 
 class Arrow_alien: public Alien {
     friend class Alien_Factory;
-    Arrow_alien(ALLEGRO_BITMAP* bitmap, int w, int h) : Alien(bitmap, w, h){
+    Arrow_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
         speed = std::pair<int,int>(2,1); //speed 2 pixel per frame
         fireWait = 8;
         endurance = 2;
@@ -92,7 +105,7 @@ class Arrow_alien: public Alien {
 
 class Thiccboi_alien: public Alien {
     friend class Alien_Factory;
-    Thiccboi_alien(ALLEGRO_BITMAP* bitmap, int w, int h) : Alien(bitmap, w, h){
+    Thiccboi_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
         speed = std::pair<int,int>(1,2); //speed 0.5 pixel per frame
         pos_x = between(0, DISPLAY_W * SCALE);
         pos_y = between(-50,0);
@@ -106,59 +119,43 @@ class Thiccboi_alien: public Alien {
 class Alien_Factory{
 public:
     Alien* createAlien(std::vector<Alien_image>& vec_AlienImage, Object_type type){
-        Alien* returnAlien;
+        ALLEGRO_BITMAP* alienBitmap;
+        alienBitmap = chooseAlien(vec_AlienImage, type);
+        must_init(alienBitmap, "choose alien");
         switch (type){
         case THICCBOI:
-//make a function to locate image based on type
-            break;
+            return new Thiccboi_alien(alienBitmap);
 
         case ARROW:
-            //need to change to configurable
-            AlienImage_x = 19;
-            AlienImage_y = 10;
-            AlienImage_w = 13;
-            AlienImage_h = 10;
-            alienImg = sprite_grab(sprite, AlienImage_x,
-                                                   AlienImage_y,
-                                                   AlienImage_w,
-                                                   AlienImage_h);
-            returnAlien = new Arrow_alien(alienImg, AlienImage_w, AlienImage_h);
-            break;
+            return new Arrow_alien(alienBitmap);
 
         case BUG:
-            //make these hard code number some constant or configurable
-            AlienImage_x = 19;
-            AlienImage_y = 0;
-            AlienImage_w = 14;
-            AlienImage_h = 9;
-            alienImg = sprite_grab(sprite, AlienImage_x,
-                                                   AlienImage_y,
-                                                   AlienImage_w,
-                                                   AlienImage_h);
-            returnAlien = new Bug_alien(alienImg, AlienImage_w, AlienImage_h);
-            break;
+            return new Bug_alien(alienBitmap);
         }
-
-        return returnAlien;
+        //not above types? just return a bug?
+        return new Bug_alien(alienBitmap);
     }
 
 private:
-//    ALLEGRO_BITMAP* chooseAlien (std::vector<Alien_image>& vec_AlienImage,
-//                                  Object_type type){
-//        auto iter = vec_AlienImage.begin();
-//        while (iter != vec_AlienImage.end()){
-
-//            ++iter;
-//        }
-//    }
-    ALLEGRO_BITMAP* sprite;
-    //may need to find a way to make these image pos read from config file
+    ALLEGRO_BITMAP* chooseAlien (std::vector<Alien_image>& vec_AlienImage,
+                                  Object_type type){
+        auto iter = vec_AlienImage.begin();
+        while (iter != vec_AlienImage.end()){
+            if (iter->type == type)
+                return iter->alienBitmap;
+            ++iter;
+        }
+        //shouldn't come here
+        std::cout << "found no required image for alien" << std::endl;
+        return nullptr;
+    }
 };
 
 class Alien_Maintainer{
     friend void shotAndHit();
 public:
-    Alien_Maintainer(Alien_Factory* factory) : alienFactory(factory){
+    Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* spritesheet) :
+                        alienFactory(factory), sprite(spritesheet){
         ALLEGRO_BITMAP* bitmapPtr;
         int x,y,w,h;
         //BUG:
@@ -170,13 +167,19 @@ public:
         bitmapPtr = sprite_grab(sprite, x,y,w,h);
         alienImages.push_back(Alien_image(bitmapPtr, Object_type::ARROW));
         //THICCBOI:
-        x = 19, y = 0, w = 14, h = 9;
+        x = 0, y = 21, w = 45, h = 27;
         bitmapPtr = sprite_grab(sprite, x,y,w,h);
         alienImages.push_back(Alien_image(bitmapPtr, Object_type::THICCBOI));
+        //explostion frames effect, extracts from sprites
+        explosion_array[0] = sprite_grab(sprite, 33,10,9,9);
+        explosion_array[1] = sprite_grab(sprite, 43,9,11,11);
+        explosion_array[2] = sprite_grab(sprite, 46,21,17,18);
+        explosion_array[3] = sprite_grab(sprite, 46,40,17,17);
+
     }
     void add(Object_type type){
         alienList.push_back(std::shared_ptr<Alien>
-                            (alienFactory->createAlien(type)));
+                            (alienFactory->createAlien(alienImages, type)));
     }
 
     //add a random Alien
@@ -185,7 +188,7 @@ public:
         Object_type alienType = alienArray[rand() % (sizeof(alienArray) /
                                                      sizeof(Object_type))];
         alienList.push_back(std::shared_ptr<Alien>
-                            (alienFactory->createAlien(alienType)));
+                            (alienFactory->createAlien(alienImages, alienType)));
     }
 
     void maintain(){
@@ -196,11 +199,18 @@ public:
             auto ptr = *local_iter;
             ptr->update();
 //            ptr->checkBulletHit(bulletMaintainer);
-            if (ptr->getLocation().second > DISPLAY_H * SCALE || (!ptr->alive()))
-            {
+            if (ptr->getLocation().second > DISPLAY_H * SCALE )
                 alienList.erase(local_iter);
-                std::cout << "erased an alien"    << std::endl;
+            if (!ptr->alive())
+            {
+                explosion_list.push_back(Explosion(explosion_array,
+                                        ptr->getLocation().first +
+                                        ptr->getDimension().first/2,
+                                         ptr->getLocation().second +
+                                         ptr->getDimension().second/2));
+                alienList.erase(local_iter);
             }
+
         }
     }
 
@@ -211,6 +221,15 @@ public:
             iter++;
             auto ptr = *local_iter;
             ptr->draw();
+        }
+        auto explodeIter = explosion_list.begin();
+        while (explodeIter != explosion_list.end())
+        {
+            auto local_iter = explodeIter;
+            explodeIter++;
+            if (local_iter->exploded())
+                explosion_list.erase(local_iter);
+            else local_iter->draw();
         }
     }
 
@@ -225,13 +244,20 @@ public:
     ~Alien_Maintainer(){
         //clean all image except sprite, which is common to ship, bullet and /
         //aliens
+        auto vec_iter = alienImages.begin();
+        while (vec_iter++ != alienImages.end())
+            al_destroy_bitmap(vec_iter->alienBitmap);
+        for (int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
+             ++i)
+            al_destroy_bitmap(explosion_array[i]);
     }
 
 private:
     Alien_Factory* alienFactory;
     ALLEGRO_BITMAP* sprite;
-    ALLEGRO_BITMAP* explosion[3];
+    ALLEGRO_BITMAP* explosion_array[4];
     std::vector<Alien_image> alienImages;
+    std::list<Explosion> explosion_list;
     std::list<std::shared_ptr<Alien>> alienList;
 };
 

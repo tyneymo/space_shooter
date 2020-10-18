@@ -11,9 +11,26 @@ class Bullet_factory;
 class Alien;
 class Ship;
 
+struct BulletSpark{
+    const int numOfSparkFrames = 3;
+    ALLEGRO_BITMAP** spark_array;
+    int counter = numOfSparkFrames;
+    int pos_x, pos_y;
+
+    BulletSpark(ALLEGRO_BITMAP** bm_array,int x, int y): spark_array(bm_array),
+                                                        pos_x(x), pos_y(y){}
+    void draw(){
+        al_draw_bitmap(spark_array[numOfSparkFrames-counter], pos_x, pos_y, 0);
+        --counter;
+    }
+
+    bool sparked(){
+        return (!counter);
+    }
+};
+
 class Bullet{
 public:
-//    friend class Bullet_factory;
     ~Bullet(){
         al_destroy_bitmap(bullet_img);
     }
@@ -122,7 +139,13 @@ public:
     friend class Alien;
     friend class Ship;
     typedef std::list<std::shared_ptr<Bullet>>::iterator iterator;
-    Bullet_Maintainer(Bullet_factory* factory): bulletFactory(factory){}
+    Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* spritesheet):
+                        bulletFactory(factory), sprite(spritesheet){
+        //initialize images in spark_array:
+        spark_array[0] = sprite_grab(sprite, 34,0,10,8);
+        spark_array[1] = sprite_grab(sprite, 45,0,7,8);
+        spark_array[2] = sprite_grab(sprite, 54,0,9,8);
+    }
 
     void add(ShootableObject* shooter){
             std::shared_ptr<Bullet> bulletPtr(bulletFactory->createBullet(shooter));
@@ -138,9 +161,14 @@ public:
             auto ptr = *local_iter;
             ptr->update();
             if (ptr->getLocation().second < 0 ||
-                ptr->getLocation().second > DISPLAY_H * SCALE ||
-                !(ptr->ifActive()))
+                ptr->getLocation().second > DISPLAY_H * SCALE)
                 bullet_list.erase(local_iter);
+            if (!ptr->ifActive()){
+                spark_list.push_back(BulletSpark(spark_array,
+                                                  std::get<0>((*ptr).getBulletInfo()),
+                                                  std::get<1>((*ptr).getBulletInfo())));
+                bullet_list.erase(local_iter);
+            }
         }
     }
 
@@ -153,19 +181,29 @@ public:
     }
 
     void draw(){
-        auto iter = bullet_list.begin();
-        while (iter != bullet_list.end()){
-            auto local_iter = iter;
-            iter++;
+        auto bullet_iter = bullet_list.begin();
+        while (bullet_iter != bullet_list.end()){
+            auto local_iter = bullet_iter;
+            bullet_iter++;
             auto ptr = *local_iter;
             if (ptr->ifActive())
                 ptr->draw();
+        }
+        auto spark_iter = spark_list.begin();
+        while (spark_iter != spark_list.end()){
+            auto local_iter = spark_iter;
+            spark_iter++;
+            if (!local_iter->sparked())
+                local_iter->draw();
         }
     }
 
 private:
     std::list<std::shared_ptr<Bullet>> bullet_list;
     Bullet_factory* bulletFactory;
+    ALLEGRO_BITMAP* spark_array[3];
+    ALLEGRO_BITMAP* sprite;
+    std::list<BulletSpark> spark_list;
 };
 
 #endif

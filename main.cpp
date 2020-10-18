@@ -88,9 +88,9 @@ int main()
     Keyboard keyboard;
 
     Bullet_factory bulletFactory(spritesheet);
-    Bullet_Maintainer bulletMaintainer (&bulletFactory);
-    Alien_Factory alienFactory(spritesheet);
-    Alien_Maintainer alienMaintainer(&alienFactory);
+    Bullet_Maintainer bulletMaintainer (&bulletFactory, spritesheet);
+    Alien_Factory alienFactory;
+    Alien_Maintainer alienMaintainer(&alienFactory, spritesheet);
     long frameCounter = 0;
 //    alienMaintainer.add(BUG);
 //    alienMaintainer.add(BUG);
