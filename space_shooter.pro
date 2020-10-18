@@ -7,6 +7,8 @@ SOURCES += \
         main.cpp
 
 HEADERS += \
+    alien.h \
+    bullet.h \
     ship.h \
     utilities.h
 
@@ -15,3 +17,6 @@ DISTFILES += \
     explode2.flac \
     shot.flac \
     spritesheet.png
+
+LIBS += -I/usr/include/x86_64-linux-gnu -lallegro_image -lallegro
+

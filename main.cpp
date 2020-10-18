@@ -1,8 +1,43 @@
 #include <iostream>
-#include <ship.h>
-#include <utilities.h>
+#include <memory>
+#include "ship.h"
+#include "utilities.h"
+#include "bullet.h"
+#include "alien.h"
 
-using namespace std;
+bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
+    int bullet_x = std::get<0>(bullet->getBulletInfo());
+    int bullet_y = std::get<1>(bullet->getBulletInfo());
+    int bullet_w = std::get<2>(bullet->getBulletInfo());
+    int bullet_h = std::get<3>(bullet->getBulletInfo());
+    std::cout << "bullet width = " << bullet_w << std::endl;
+    return collide(obj->getLocation().first, obj->getLocation().second,
+                   obj->getDimension().first, obj->getDimension().second,
+                   bullet_x, bullet_y, bullet_w, bullet_h);
+}
+
+void shotAndHit(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletMtn){
+    auto alienIter = alienMtn->begin();
+    auto alienListEnd = alienMtn->end();
+    while (alienIter != alienListEnd){
+        auto bulletIter = bulletMtn->begin();
+        auto bulletListEnd = bulletMtn->end();
+
+        while (bulletIter != bulletListEnd){
+            //*alienIter is a shared pointer to Alien
+            //**alienIter is an Alien
+            if (bulletObjCollide(&(**alienIter), &(**bulletIter)))
+            {
+                (*alienIter)->endurance--;
+                (*bulletIter)->setActivationState(false);
+                break;
+            }
+
+            ++bulletIter;
+        }
+        ++alienIter;
+    }
+}
 
 int main()
 {
@@ -10,9 +45,11 @@ int main()
     must_init(al_install_keyboard(), "keyboard");
     must_init(al_init_image_addon(), "allegro image addon");
 
+    //note: need destroy timer
     ALLEGRO_TIMER* timer = al_create_timer(1.0/30.0);
     must_init(timer, "timer");
 
+    //note: need destroy queue
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     must_init(queue, "event queue");
 
@@ -21,48 +58,95 @@ int main()
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
 
-    ALLEGRO_DISPLAY* disp = al_create_display(320 * 3, 240 * 3);
+    //note: need destroy queue
+    ALLEGRO_DISPLAY* disp = al_create_display(DISPLAY_W * SCALE,
+                                              DISPLAY_H * SCALE);
     must_init(disp, "display init");
 
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_display_event_source(disp));
 
-    ALLEGRO_EVENT event;
-
-    al_start_timer(timer);
-
     ALLEGRO_BITMAP* spritesheet = al_load_bitmap("spritesheet.png");
+    must_init(spritesheet, "init sprite");
     Ship_factory aShipFactory(spritesheet);
 
-    Ship* ship_one = aShipFactory.createShip(320, 240);
+    std::shared_ptr<Ship> ship_one(aShipFactory.createShip(2*DISPLAY_W /3 * SCALE,
+                                                           4*DISPLAY_H /5 * SCALE));
+    std::shared_ptr<Ship> ship_two(aShipFactory.createShip(DISPLAY_W /3 * SCALE,
+                                                           4*DISPLAY_H /5 * SCALE));
+
+    ship_two->set_control(ALLEGRO_KEY_W, ALLEGRO_KEY_S, 
+                          ALLEGRO_KEY_A, ALLEGRO_KEY_D, ALLEGRO_KEY_SPACE);
+
 
     bool redraw = true;
     bool done = false;
 
+    ALLEGRO_EVENT event;
+    al_start_timer(timer);
+    Keyboard keyboard;
+
+    Bullet_factory bulletFactory(spritesheet);
+    Bullet_Maintainer bulletMaintainer (&bulletFactory);
+    Alien_Factory alienFactory(spritesheet);
+    Alien_Maintainer alienMaintainer(&alienFactory);
+    long frameCounter = 0;
+//    alienMaintainer.add(BUG);
+//    alienMaintainer.add(BUG);
+//    alienMaintainer.add(BUG);
+//    alienMaintainer.add(BUG);
     while(1){
         al_wait_for_event(queue, &event);
 
         switch(event.type){
             case ALLEGRO_EVENT_TIMER:
-                ship_one->draw();
+                //update position and fire ready state
+                ++frameCounter;
+                ship_one->update(&keyboard);
+                ship_two->update(&keyboard);
+                if (ship_one->readyToFire())
+                    bulletMaintainer.add(&(*ship_one));
+                if (ship_two->readyToFire())
+                    bulletMaintainer.add(&(*ship_two));
+                if (!(frameCounter % 50))
+                    alienMaintainer.add();
+                shotAndHit(&alienMaintainer, &bulletMaintainer);
+                alienMaintainer.maintain();
+                bulletMaintainer.maintain();
                 redraw = true;
                 break;
 
             case ALLEGRO_EVENT_KEY_DOWN:
+                if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+                    done = true;
+                break;
+
             case ALLEGRO_EVENT_DISPLAY_CLOSE:
                 done = true;
                 break;
         }
 
+        keyboard.update(&event);
+
         if (done) break;
 
         if (redraw && al_is_event_queue_empty(queue))
         {
+            al_clear_to_color(al_map_rgb(0,0,0));
+            ship_one->draw();
+            ship_two->draw();
+            bulletMaintainer.draw();
+            alienMaintainer.draw();
             al_flip_display();
             redraw = false;
         }
 
     }
+
+    al_destroy_timer(timer);
+    al_destroy_event_queue(queue);
+    al_destroy_display(disp);
+    al_destroy_bitmap(spritesheet);
     return 0;
 }
