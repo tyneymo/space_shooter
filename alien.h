@@ -46,10 +46,10 @@ public:
     }
 
     void update(){
+        //update position
         if (speed.second == 1)
         {
             pos_y += speed.first;
-            return;
         }
         //speed is a fraction:
         if (speedCounter != speed.second)
@@ -58,7 +58,7 @@ public:
                  pos_y += 1;
                  speedCounter = 1;
         }
-
+        //update firing state
         if (fireCountdown > 0)
             --fireCountdown;
         else
@@ -97,6 +97,7 @@ class Bug_alien : public Alien {
         fireWait = 6;
         endurance = 3;
         fireCountdown = fireWait;
+        type = BUG;
     }
 };
 
@@ -107,6 +108,7 @@ class Arrow_alien: public Alien {
         fireWait = 8;
         endurance = 2;
         fireCountdown = fireWait;
+        type = ARROW;
     }
 };
 
@@ -117,10 +119,9 @@ class Thiccboi_alien: public Alien {
         fireWait = 10;
         endurance = 6;
         fireCountdown = fireWait;
+        type = THICCBOI;
     }
 };
-
-
 
 class Alien_Factory{
 public:

@@ -6,6 +6,10 @@
 #include "alien.h"
 
 bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
+    if (bullet->shooterType() == ALIEN && (obj->getType() == BUG
+                                           || obj->getType() == ARROW
+                                           || obj->getType() == THICCBOI))
+        return false;
     int bullet_x = std::get<0>(bullet->getBulletInfo());
     int bullet_y = std::get<1>(bullet->getBulletInfo());
     int bullet_w = std::get<2>(bullet->getBulletInfo());

@@ -9,6 +9,7 @@
 #include <memory>
 #include "utilities.h"
 class Bullet_factory;
+class Bullet_Maintainer;
 class Alien;
 class Ship;
 
@@ -38,6 +39,7 @@ struct BulletSpark{
 };
 
 class Bullet{
+    friend class Bullet_Maintainer;
 public:
 
     bool ifActive(){
@@ -85,7 +87,7 @@ protected:
             }
     ALLEGRO_BITMAP* bullet_img;
     int pos_x, pos_y, width, height;
-    int speed_x=0, speed_y=0;
+    int speed_x, speed_y;
     int strength = 1;
     bool active = true;
     Object_type bulletSource;
@@ -96,7 +98,7 @@ public:
     Alien_bullet (ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Bullet(bitmap,shooter){
         Bullet::speed_x = 0;
-        Bullet::speed_y = -4;
+        Bullet::speed_y = -2;
         bulletSource = SHIP;
     }
 };
@@ -229,9 +231,16 @@ public:
     }
 
     void add(ShootableObject* shooter){
-            std::shared_ptr<Bullet> bulletPtr(bulletFactory->createBullet(bulletImages,shooter));
-            bullet_list.push_back(bulletPtr);
-            std::cout << "added a bullet" << std::endl;
+            auto ptr = bulletFactory->createBullet(bulletImages,shooter);
+            if (ptr){
+                if (ptr->speed_x == 0 && ptr->speed_y == 0)
+                    return;
+                std::shared_ptr<Bullet> bulletPtr(ptr);
+                bullet_list.push_back(bulletPtr);
+                std::cout << "added a bullet" << std::endl;
+            }
+            else
+                std::cout << "couldn't create bullet" << std::endl;
     }
 
     void maintain(){
@@ -277,6 +286,10 @@ public:
             if (!local_iter->sparked())
                 local_iter->draw();
         }
+    }
+
+    ~Bullet_Maintainer(){
+        //clean images here
     }
 
 private:
