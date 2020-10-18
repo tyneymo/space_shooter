@@ -112,7 +112,7 @@ int main()
                 if (!(frameCounter % 50))
                     alienMaintainer.add();
                 shotAndHit(&alienMaintainer, &bulletMaintainer);
-                alienMaintainer.maintain();
+                alienMaintainer.maintain(&bulletMaintainer);
                 bulletMaintainer.maintain();
                 redraw = true;
                 break;

@@ -5,11 +5,19 @@
 #include <cstdlib>
 #include <iostream>
 #include <list>
+#include <vector>
 #include <memory>
 #include "utilities.h"
 class Bullet_factory;
 class Alien;
 class Ship;
+
+struct Bullet_image {
+    ALLEGRO_BITMAP* bulletBitmap;
+    Object_type type;
+    Bullet_image(ALLEGRO_BITMAP* bitmap, Object_type t):
+        bulletBitmap(bitmap), type(t){};
+};
 
 struct BulletSpark{
     const int numOfSparkFrames = 3;
@@ -31,9 +39,6 @@ struct BulletSpark{
 
 class Bullet{
 public:
-    ~Bullet(){
-        al_destroy_bitmap(bullet_img);
-    }
 
     bool ifActive(){
         return active;
@@ -86,6 +91,16 @@ protected:
     Object_type bulletSource;
 };
 
+class Alien_bullet: public Bullet{
+public:
+    Alien_bullet (ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
+        : Bullet(bitmap,shooter){
+        Bullet::speed_x = 0;
+        Bullet::speed_y = -4;
+        bulletSource = SHIP;
+    }
+};
+
 class Ship_bullet: public Bullet{
 public:
     Ship_bullet (ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
@@ -96,40 +111,80 @@ public:
     }
 };
 
+class Bug_bullet: public Bullet{
+public:
+    Bug_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
+        : Bullet(bitmap, shooter){
+        speed_x = between(-2, 2);
+        speed_y = between(-2, 2);
+        bulletSource = ALIEN;
+        std::cout << "created a bug bullet" << std::endl;
+    }
+
+};
+
+class Arrow_bullet: public Bullet{
+public:
+    Arrow_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
+        : Bullet(bitmap, shooter){
+        speed_x = between(-2, 2);
+        speed_y = between(-2, 2);
+        bulletSource = ALIEN;
+    }
+};
+
+class Thiccboi_bulelt: public Bullet{
+public:
+    Thiccboi_bulelt(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
+        : Bullet(bitmap, shooter){
+        speed_x = 0;
+        speed_y = 2;
+        bulletSource = ALIEN;
+    }
+};
+
 class Bullet_factory{
 
 public:
-    const char* bullet_type[3] = {"shipshot1", "shipshot2", "alien"};
     Bullet_factory(ALLEGRO_BITMAP* bitmap): sheet(bitmap){}
 
-    Bullet* createBullet(ShootableObject* shooter){
-        ALLEGRO_BITMAP* bulletImg;
-        int bulletImg_x, bulletImg_y, bulletImg_w, bulletImg_h;
+    Bullet* createBullet(std::vector<Bullet_image> vBullet,
+                         ShootableObject* shooter){
+        ALLEGRO_BITMAP* bulletImg = chooseBullet(vBullet, shooter);
         switch (shooter->getType()){
         case SHIP:
-            bulletImg_x = 13;
-            bulletImg_y = 0;
-            bulletImg_w = 2;
-            bulletImg_h = 9;
-            bulletImg = sprite_grab(sheet, bulletImg_x, bulletImg_y,
-                                    bulletImg_w, bulletImg_h);
+            return new Ship_bullet(bulletImg, shooter);
             break;
-//        case SHIP_BULLET2:
-//            bulletImg_x = 16;
-//            bulletImg_y = 0;
-//            bulletImg_w = 2;
-//            bulletImg_h = 9;
-//            bulletImg = sprite_grab(sheet, bulletImg_x, bulletImg_y,
-//                                    bulletImg_w, bulletImg_h);
-//            break;
 
-        case ALIEN:
+        case BUG:
+            return new Bug_bullet(bulletImg, shooter);
+            break;
+
+        case ARROW:
+            return new Arrow_bullet(bulletImg, shooter);
+            break;
+
+        case THICCBOI:
+            return new Thiccboi_bulelt(bulletImg, shooter);
             break;
         }
-        return new Ship_bullet(bulletImg, shooter);
+        //nothing above?
+        return nullptr;
     }
 
 private:
+    ALLEGRO_BITMAP* chooseBullet (std::vector<Bullet_image>& vBullet,
+                                  ShootableObject* shooter){
+        auto iter = vBullet.begin();
+        while (iter != vBullet.end()){
+            if (iter->type == shooter->getType())
+                return iter->bulletBitmap;
+            ++iter;
+        }
+        //shouldn't come here
+        std::cout << "found no required image for bullet" << std::endl;
+        return nullptr;
+    }
     ALLEGRO_BITMAP* sheet;
 };
 
@@ -138,9 +193,35 @@ class Bullet_Maintainer{
 public:
     friend class Alien;
     friend class Ship;
+    friend class Alien_Maintainer;
     typedef std::list<std::shared_ptr<Bullet>>::iterator iterator;
+
     Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* spritesheet):
                         bulletFactory(factory), sprite(spritesheet){
+        ALLEGRO_BITMAP* bmp;
+        int x, y, w, h;
+        //SHIP:
+        x = 13, y = 0, w = 2, h = 9;
+        bmp = sprite_grab(spritesheet, x, y, w, h);
+        bulletImages.push_back(Bullet_image(bmp, SHIP));
+        //ALIEN:
+        x = 13, y = 10, w = 4, h = 4;
+        bmp = sprite_grab(spritesheet, x, y, w, h);
+        bulletImages.push_back(Bullet_image(bmp, ALIEN));
+        //BUG:
+        x = 13, y = 10, w = 4, h = 4;
+        bmp = sprite_grab(spritesheet, x, y, w, h);
+        bulletImages.push_back(Bullet_image(bmp, BUG));
+        //ARROW:
+        x = 13, y = 10, w = 4, h = 4;
+        bmp = sprite_grab(spritesheet, x, y, w, h);
+        bulletImages.push_back(Bullet_image(bmp, ARROW));
+        //THICCBOI:
+        x = 13, y = 10, w = 4, h = 4;
+        bmp = sprite_grab(spritesheet, x, y, w, h);
+        bulletImages.push_back(Bullet_image(bmp, THICCBOI));
+
+
         //initialize images in spark_array:
         spark_array[0] = sprite_grab(sprite, 34,0,10,8);
         spark_array[1] = sprite_grab(sprite, 45,0,7,8);
@@ -148,7 +229,7 @@ public:
     }
 
     void add(ShootableObject* shooter){
-            std::shared_ptr<Bullet> bulletPtr(bulletFactory->createBullet(shooter));
+            std::shared_ptr<Bullet> bulletPtr(bulletFactory->createBullet(bulletImages,shooter));
             bullet_list.push_back(bulletPtr);
             std::cout << "added a bullet" << std::endl;
     }
@@ -203,6 +284,7 @@ private:
     Bullet_factory* bulletFactory;
     ALLEGRO_BITMAP* spark_array[3];
     ALLEGRO_BITMAP* sprite;
+    std::vector<Bullet_image> bulletImages;
     std::list<BulletSpark> spark_list;
 };
 

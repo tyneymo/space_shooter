@@ -58,6 +58,11 @@ public:
                  pos_y += 1;
                  speedCounter = 1;
         }
+
+        if (fireCountdown > 0)
+            --fireCountdown;
+        else
+            fireNow = true;
         return;
     }
 
@@ -91,6 +96,7 @@ class Bug_alien : public Alien {
         speed = std::pair<int,int>(1,1); //speed 1 pixel per frame
         fireWait = 6;
         endurance = 3;
+        fireCountdown = fireWait;
     }
 };
 
@@ -100,6 +106,7 @@ class Arrow_alien: public Alien {
         speed = std::pair<int,int>(2,1); //speed 2 pixel per frame
         fireWait = 8;
         endurance = 2;
+        fireCountdown = fireWait;
     }
 };
 
@@ -107,10 +114,9 @@ class Thiccboi_alien: public Alien {
     friend class Alien_Factory;
     Thiccboi_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
         speed = std::pair<int,int>(1,2); //speed 0.5 pixel per frame
-        pos_x = between(0, DISPLAY_W * SCALE);
-        pos_y = between(-50,0);
         fireWait = 10;
         endurance = 6;
+        fireCountdown = fireWait;
     }
 };
 
@@ -191,7 +197,7 @@ public:
                             (alienFactory->createAlien(alienImages, alienType)));
     }
 
-    void maintain(){
+    void maintain(Bullet_Maintainer* bulletMaintainer){
         auto iter = alienList.begin();
         while (iter != alienList.end()){
             auto local_iter = iter;
@@ -210,7 +216,8 @@ public:
                                          ptr->getDimension().second/2));
                 alienList.erase(local_iter);
             }
-
+            if (ptr->readyToFire())
+                bulletMaintainer->add(&(*ptr));
         }
     }
 
