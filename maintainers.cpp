@@ -50,9 +50,9 @@ void Bullet_Maintainer::maintain(ShootableObject *ship,
         auto ptr = *local_iter;
         ptr->update();
         if (ptr->getLocation().second < 0 ||
-            ptr->getLocation().second > DISPLAY_H * SCALE ||
-            ptr->getLocation().first < 0 ||
-            ptr->getLocation().first > DISPLAY_W * SCALE)
+                            ptr->getLocation().second > DISPLAY_H * SCALE ||
+                            ptr->getLocation().first < 0 ||
+                            ptr->getLocation().first > DISPLAY_W * SCALE)
             bullet_list.erase(local_iter);
         if (!ptr->ifActive()){
             spark_list.push_back(BulletSpark(spark_array,
@@ -82,6 +82,36 @@ void Bullet_Maintainer::maintain(ShootableObject *ship,
     shotAndHit(alienMaintainer, this);
 }
 
+void Bullet_Maintainer::draw(){
+        auto bullet_iter = bullet_list.begin();
+        while (bullet_iter != bullet_list.end()){
+            auto local_iter = bullet_iter;
+            bullet_iter++;
+            auto ptr = *local_iter;
+            if (ptr->ifActive())
+                ptr->draw();
+        }
+        auto spark_iter = spark_list.begin();
+        while (spark_iter != spark_list.end()){
+            auto local_iter = spark_iter;
+            spark_iter++;
+            if (!local_iter->sparked())
+                local_iter->draw();
+        }
+}
+
+void Bullet_Maintainer::add(ShootableObject *shooter){
+    auto ptr = bulletFactory->createBullet(bulletImages,shooter);
+    if (ptr){
+        if (ptr->speed_x == 0 && ptr->speed_y == 0)
+            return;
+        std::shared_ptr<Bullet> bulletPtr(ptr);
+        bullet_list.push_back(bulletPtr);
+    }
+    else
+        std::cout << "couldn't create bullet" << std::endl;
+}
+
 void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer){
     auto iter = alienList.begin();
     while (iter != alienList.end()){
@@ -89,9 +119,10 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer){
         iter++;
         auto ptr = *local_iter;
         ptr->update();
-//            ptr->checkBulletHit(bulletMaintainer);
         if (ptr->getLocation().second > DISPLAY_H * SCALE )
             alienList.erase(local_iter);
+        if (ptr->readyToFire())
+            bulletMaintainer->add(&(*ptr));
         if (!ptr->alive())
         {
             explosion_list.push_back(Explosion(explosion_array,
@@ -99,9 +130,8 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer){
                                     ptr->getDimension().first/2,
                                      ptr->getLocation().second +
                                      ptr->getDimension().second/2));
+            ptr->explodeSound();
             alienList.erase(local_iter);
         }
-        if (ptr->readyToFire())
-            bulletMaintainer->add(&(*ptr));
     }
 }

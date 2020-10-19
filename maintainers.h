@@ -132,17 +132,7 @@ public:
         spark_array[2] = sprite_grab(sprite, 54,0,9,8);
     }
 
-    void add(ShootableObject* shooter){
-            auto ptr = bulletFactory->createBullet(bulletImages,shooter);
-            if (ptr){
-                if (ptr->speed_x == 0 && ptr->speed_y == 0)
-                    return;
-                std::shared_ptr<Bullet> bulletPtr(ptr);
-                bullet_list.push_back(bulletPtr);
-            }
-            else
-                std::cout << "couldn't create bullet" << std::endl;
-    }
+    void add(ShootableObject* shooter);
 
     void maintain(ShootableObject* ship, Alien_Maintainer* alienMaintainer);
 
@@ -154,23 +144,7 @@ public:
         return bullet_list.end();
     }
 
-    void draw(){
-        auto bullet_iter = bullet_list.begin();
-        while (bullet_iter != bullet_list.end()){
-            auto local_iter = bullet_iter;
-            bullet_iter++;
-            auto ptr = *local_iter;
-            if (ptr->ifActive())
-                ptr->draw();
-        }
-        auto spark_iter = spark_list.begin();
-        while (spark_iter != spark_list.end()){
-            auto local_iter = spark_iter;
-            spark_iter++;
-            if (!local_iter->sparked())
-                local_iter->draw();
-        }
-    }
+    void draw();
 
     int getBulletNumber(){
         return bullet_list.size();

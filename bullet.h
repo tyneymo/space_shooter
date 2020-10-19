@@ -62,8 +62,15 @@ public:
         }
 
     void draw(){
-        if (active)
+        if (active){
+            if (bulletSource != SHIP){
+                int flashing = (flashEffect++ / 2) % 2;
+                ALLEGRO_COLOR tint = flashing? al_map_rgb_f(1,1,1) :
+                                               al_map_rgb_f(0.2,0.2,0.2);
+                al_draw_tinted_bitmap(bullet_img, tint, pos_x, pos_y, 0);
+            }
             al_draw_bitmap(bullet_img, pos_x, pos_y, 0);
+        }
     }
 
     std::tuple<int,int,int,int> getBulletInfo(){
@@ -90,6 +97,7 @@ protected:
     int speed_x, speed_y;
     bool active = true;
     Object_type bulletSource;
+    int flashEffect = 0;
 };
 
 //class Alien_bullet: public Bullet{

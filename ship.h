@@ -16,6 +16,7 @@ public:
 
     ~Ship(){
         al_destroy_bitmap(ship_img);
+        //destroy audio samples
     }
 
     void draw(){
@@ -39,7 +40,7 @@ public:
         }
     }
 
-    void update (Keyboard* keyboard, Bullet_Maintainer* bulletMaintainer){
+    void update (Keyboard* keyboard){
         if (!life)
             return;
         if (respawning)
@@ -75,6 +76,8 @@ public:
         gotHit = true;
         --life;
         respawning = true;
+        //play a sound of explosion when get shoot
+        al_play_sample(sample_explode[1],0.8,0,1.4, ALLEGRO_PLAYMODE_ONCE,NULL);
     }
 
     int getLives(){
@@ -119,8 +122,16 @@ private:
 
     void shoot_command(){
         if (fireCountdown <= 0)
+        {
             fireNow = true;
+            shootSound();
+        }
     }
+
+    void shootSound(){
+        al_play_sample(shot_sample,0.8,0,1.1, ALLEGRO_PLAYMODE_ONCE,NULL);
+    }
+
 
     ALLEGRO_BITMAP* ship_img;
 

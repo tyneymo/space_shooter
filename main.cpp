@@ -13,6 +13,10 @@ int main()
     must_init(al_init(), "allegro init");
     must_init(al_install_keyboard(), "keyboard");
     must_init(al_init_image_addon(), "allegro image addon");
+    must_init(al_install_audio(), "allegro audio");
+    must_init(al_init_acodec_addon(), "allegro audio codec");
+    must_init(al_reserve_samples(16), "reserve samples");
+
 
     //note: need destroy timer
     ALLEGRO_TIMER* timer = al_create_timer(1.0/30.0);
@@ -69,8 +73,8 @@ int main()
             case ALLEGRO_EVENT_TIMER:
                 //update position and fire ready state
                 ++frameCounter;
-                ship_one->update(&keyboard, &bulletMaintainer);
-                ship_two->update(&keyboard, &bulletMaintainer);
+                ship_one->update(&keyboard);
+                ship_two->update(&keyboard);
                 if (ship_one->readyToFire())
                     bulletMaintainer.add(&(*ship_one));
                 if (ship_two->readyToFire())

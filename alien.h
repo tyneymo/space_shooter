@@ -52,7 +52,10 @@ public:
             fireNow = false;
             //give some chances to missfire
             if ((rand() % 3))
+            {
+                shootSound();
                 return true;
+            }
         }
         return false;
     }
@@ -89,6 +92,13 @@ public:
         return endurance;
     }
 
+    void explodeSound(){
+        if (type == THICCBOI)
+            al_play_sample(sample_explode[1],0.75,0,1, ALLEGRO_PLAYMODE_ONCE,NULL);
+        else
+            al_play_sample(sample_explode[0],0.75,0,1.4, ALLEGRO_PLAYMODE_ONCE,NULL);
+    }
+
 protected:
     Alien(ALLEGRO_BITMAP* bitmap):  bug_img(bitmap){
         type = ALIEN;
@@ -98,7 +108,9 @@ protected:
         pos_y = between(-30,0);
     }
 
-
+    void shootSound(){
+        al_play_sample(shot_sample,0.6,0,0.7, ALLEGRO_PLAYMODE_ONCE,NULL);
+    }
 
     ALLEGRO_BITMAP* bug_img;
     ALLEGRO_BITMAP* explosion[3];
