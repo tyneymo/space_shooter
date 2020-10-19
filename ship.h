@@ -27,21 +27,30 @@ public:
             return;
         }
         //got hit
-        gotHit = false;
         ++blink_counter;
-        if (blink_counter > 0)
+        if (!(blink_counter % 3))
         {
-            if (!(blink_counter % 3))
-                al_draw_bitmap(ship_img, pos_x, pos_y, 0);
+            al_draw_bitmap(ship_img, pos_x, pos_y, 0);
         }
         if (blink_counter == blinking)
+        {
             blink_counter = 1;
-
+            gotHit = false;
+        }
     }
 
     void update (Keyboard* keyboard, Bullet_Maintainer* bulletMaintainer){
         if (!life)
             return;
+        if (respawning)
+        {
+            if (--respawnTimer == 0)
+            {
+                respawning = false;
+                respawnTimer = 60;
+            }
+            return;
+        }
         if (fireCountdown > 0)
             --fireCountdown;
         else fireCountdown = 0;
@@ -65,11 +74,15 @@ public:
     void gotShoot(){
         gotHit = true;
         --life;
-        std::cout << "life left = " << life << std::endl;
+        respawning = true;
     }
 
     int getLives(){
         return life;
+    }
+
+    bool ifRespawning(){
+        return respawning;
     }
 
 private:
@@ -116,8 +129,10 @@ private:
     int new_up, new_down, new_left, new_right, new_shoot;
     int life = 5;
     bool gotHit = false;
-    int blinking = 12;
+    int blinking = 60;
     int blink_counter = 0;
+    bool respawning = false;
+    int respawnTimer = 60; //2 seconds
 };
 
 class Ship_factory{

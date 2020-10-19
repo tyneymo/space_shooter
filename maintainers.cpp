@@ -74,7 +74,8 @@ void Bullet_Maintainer::maintain(ShootableObject *ship,
                                                   std::get<0>((*ptr).getBulletInfo()),
                                                   std::get<1>((*ptr).getBulletInfo())));
                 bullet_list.erase(local_iter);
-                static_cast<Ship*>(ship)->gotShoot();
+                if (!static_cast<Ship*>(ship)->ifRespawning())
+                    static_cast<Ship*>(ship)->gotShoot();
             }
     }
     shotAndHit(alienMaintainer, this);
