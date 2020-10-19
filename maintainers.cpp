@@ -30,6 +30,7 @@ void shotAndHit(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletMtn){
             if (bulletObjCollide(&(**alienIter), &(**bulletIter)))
             {
                 (*alienIter)->endurance--;
+                (*alienIter)->gotHit = true;
                 (*bulletIter)->setActivationState(false);
                 break;
             }

@@ -52,6 +52,7 @@ protected:
     int fireCountdown=0;
     int fireWait;
     bool fireNow = false;
+    bool gotHit = false;
 };
 
 

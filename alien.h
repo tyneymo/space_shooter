@@ -38,11 +38,12 @@ struct Explosion{
 
 class Alien : public ShootableObject {
     friend class Alien_Factory;
-    friend void shotAndHit(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletMtn);
+    friend void shotAndHit(Alien_Maintainer*, Bullet_Maintainer*);
 public:
     void draw(){
-        if (alive())
+        if (alive() && (!gotHit))
             al_draw_bitmap(bug_img, pos_x, pos_y, 0);
+        gotHit = false;
     }
 
     bool readyToFire(){
