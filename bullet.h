@@ -1,13 +1,7 @@
 #ifndef BULLET_H
 #define BULLET_H
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_image.h>
-#include <cstdlib>
-#include <iostream>
-#include <list>
-#include <vector>
-#include <memory>
 #include "utilities.h"
+#include <vector>
 class Bullet_factory;
 class Bullet_Maintainer;
 class Alien;
@@ -68,17 +62,7 @@ public:
         return std::make_pair(width, height);
     }
 
-    void draw(){
-        if (active){
-            if (bulletSource != SHIP){
-                int flashing = (flashEffect++ / 2) % 2;
-                ALLEGRO_COLOR tint = flashing? al_map_rgb_f(1,1,1) :
-                                               al_map_rgb_f(0.2,0.2,0.2);
-                al_draw_tinted_bitmap(bullet_img, tint, pos_x, pos_y, 0);
-            }
-            al_draw_bitmap(bullet_img, pos_x, pos_y, 0);
-        }
-    }
+    void draw();
 
     Object_type shooterType(){
         return bulletSource;
@@ -152,32 +136,7 @@ public:
     Bullet_factory(){}
 
     Bullet* createBullet(std::vector<Bullet_image>& vBullet,
-                         ShootableObject* shooter){
-        ALLEGRO_BITMAP* bulletImg = chooseBullet(vBullet, shooter);
-        must_init(bulletImg, "bulletimage in create function");
-        switch (shooter->getType()){
-        case SHIP:
-            return new Ship_bullet(bulletImg, shooter);
-            break;
-
-        case BUG:
-            return new Bug_bullet(bulletImg, shooter);
-            break;
-
-        case ARROW:
-            return new Arrow_bullet(bulletImg, shooter);
-            break;
-
-        case ALIEN:
-
-        case THICCBOI:
-            return new Thiccboi_bulelt(bulletImg, shooter);
-            break;
-        }
-        //nothing above?
-        std::cout << "shooter type not availabe" << std::endl;
-        return nullptr;
-    }
+                         ShootableObject* shooter);
 
 private:
     ALLEGRO_BITMAP* chooseBullet (std::vector<Bullet_image>& vBullet,

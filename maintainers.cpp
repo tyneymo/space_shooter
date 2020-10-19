@@ -157,3 +157,22 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer){
         }
     }
 }
+
+void Alien_Maintainer::draw(){
+    auto iter = alienList.begin();
+    while (iter != alienList.end()){
+        auto local_iter = iter;
+        iter++;
+        auto ptr = *local_iter;
+        ptr->draw();
+    }
+    auto explodeIter = explosion_list.begin();
+    while (explodeIter != explosion_list.end())
+    {
+        auto local_iter = explodeIter;
+        explodeIter++;
+        if (local_iter->exploded())
+            explosion_list.erase(local_iter);
+        else local_iter->draw();
+    }
+}

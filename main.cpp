@@ -73,7 +73,7 @@ int main()
 
         switch(event.type){
             case ALLEGRO_EVENT_TIMER:
-                //update position and fire ready state
+                //update position and fire_ready state
                 ++frameCounter;
                 ship_one->update(&keyboard);
                 ship_two->update(&keyboard);
@@ -81,7 +81,7 @@ int main()
                     bulletMaintainer.add(&(*ship_one));
                 if (ship_two->readyToFire())
                     bulletMaintainer.add(&(*ship_two));
-                if (!(frameCounter % 50))
+                if (!(frameCounter % 40))
                     alienMaintainer.add();
                 alienMaintainer.maintain(&bulletMaintainer);
                 bulletMaintainer.maintain(&(*ship_one), &alienMaintainer);

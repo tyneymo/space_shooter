@@ -4,6 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+        alien.cpp \
+        bullet.cpp \
         main.cpp \
         maintainers.cpp \
         utilities.cpp

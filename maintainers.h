@@ -2,6 +2,10 @@
 #define UTIL2_H
 #include "alien.h"
 #include "bullet.h"
+#include <list>
+#include <memory>
+
+class Alien_Factory;
 
 class Alien_Maintainer{
     friend void shotAndHit();
@@ -45,24 +49,7 @@ public:
 
     void maintain(Bullet_Maintainer* bulletMaintainer);
 
-    void draw(){
-        auto iter = alienList.begin();
-        while (iter != alienList.end()){
-            auto local_iter = iter;
-            iter++;
-            auto ptr = *local_iter;
-            ptr->draw();
-        }
-        auto explodeIter = explosion_list.begin();
-        while (explodeIter != explosion_list.end())
-        {
-            auto local_iter = explodeIter;
-            explodeIter++;
-            if (local_iter->exploded())
-                explosion_list.erase(local_iter);
-            else local_iter->draw();
-        }
-    }
+    void draw();
 
     std::list<std::shared_ptr<Alien>>::iterator begin(){
         return alienList.begin();
@@ -113,8 +100,6 @@ public:
         bmp = sprite_grab(spritesheet, x, y, w, h);
         bulletImages.push_back(Bullet_image(bmp, ALIEN));
         //BUG:
-        x = 13, y = 10, w = 4, h = 4;
-        bmp = sprite_grab(spritesheet, x, y, w, h);
         bulletImages.push_back(Bullet_image(bmp, BUG));
         //ARROW:
         bulletImages.push_back(Bullet_image(bmp, ARROW));
@@ -147,7 +132,6 @@ public:
     }
 
     ~Bullet_Maintainer(){
-        //clean images here, except sprite
         for (unsigned int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
             al_destroy_bitmap(spark_array[i]);
     }
