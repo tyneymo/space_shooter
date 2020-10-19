@@ -10,6 +10,8 @@ bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
                                            || obj->getType() == ARROW
                                            || obj->getType() == THICCBOI))
         return false;
+    if (bullet->shooterType() == SHIP && obj->getType() == SHIP)
+        return false;
     int bullet_x = std::get<0>(bullet->getBulletInfo());
     int bullet_y = std::get<1>(bullet->getBulletInfo());
     int bullet_w = std::get<2>(bullet->getBulletInfo());
@@ -107,8 +109,8 @@ int main()
             case ALLEGRO_EVENT_TIMER:
                 //update position and fire ready state
                 ++frameCounter;
-                ship_one->update(&keyboard);
-                ship_two->update(&keyboard);
+                ship_one->update(&keyboard, &bulletMaintainer);
+                ship_two->update(&keyboard, &bulletMaintainer);
                 if (ship_one->readyToFire())
                     bulletMaintainer.add(&(*ship_one));
                 if (ship_two->readyToFire())

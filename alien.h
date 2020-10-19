@@ -45,6 +45,17 @@ public:
             al_draw_bitmap(bug_img, pos_x, pos_y, 0);
     }
 
+    bool readyToFire(){
+        if (fireNow)
+        {
+            fireNow = false;
+            //give some chances to missfire
+            if ((rand() % 3))
+                return true;
+        }
+        return false;
+    }
+
     void update(){
         //update position
         if (speed.second == 1)
@@ -62,7 +73,14 @@ public:
         if (fireCountdown > 0)
             --fireCountdown;
         else
-            fireNow = true;
+        {
+            ++interval_counter;
+            fireCountdown = fireWait;
+            if (!(interval_counter % shoot_interval))
+            {
+                fireNow = true;
+            }
+        }
         return;
     }
 
@@ -88,38 +106,43 @@ protected:
     std::pair<int,int> speed;
     int speedCounter=0; //got a bug when not giving speedCounter a initial value
     int endurance;
+    int shoot_interval; //give alien a unsteady shoting behave
+    int interval_counter = 1;
 };
 
 class Bug_alien : public Alien {
     friend class Alien_Factory;
     Bug_alien(ALLEGRO_BITMAP* bitmap): Alien(bitmap){
-        speed = std::pair<int,int>(1,1); //speed 1 pixel per frame
+        speed = std::pair<int,int>(1,2); //speed 1/2 pixel per frame
         fireWait = 6;
         endurance = 3;
         fireCountdown = fireWait;
         type = BUG;
+        shoot_interval = 3;
     }
 };
 
 class Arrow_alien: public Alien {
     friend class Alien_Factory;
     Arrow_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
-        speed = std::pair<int,int>(2,1); //speed 2 pixel per frame
+        speed = std::pair<int,int>(1,1); //speed 1 pixel per frame
         fireWait = 8;
         endurance = 2;
         fireCountdown = fireWait;
         type = ARROW;
+        shoot_interval = 2;
     }
 };
 
 class Thiccboi_alien: public Alien {
     friend class Alien_Factory;
     Thiccboi_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
-        speed = std::pair<int,int>(1,2); //speed 0.5 pixel per frame
+        speed = std::pair<int,int>(1,3); //speed 1/3 pixel per frame
         fireWait = 10;
         endurance = 6;
         fireCountdown = fireWait;
         type = THICCBOI;
+        shoot_interval = 4;
     }
 };
 

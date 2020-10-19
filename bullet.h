@@ -118,7 +118,7 @@ public:
     Bug_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Bullet(bitmap, shooter){
         speed_x = between(-2, 2);
-        speed_y = between(-2, 2);
+        speed_y = between(-1, 3);
         bulletSource = ALIEN;
         std::cout << "created a bug bullet" << std::endl;
     }
@@ -130,7 +130,7 @@ public:
     Arrow_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Bullet(bitmap, shooter){
         speed_x = between(-2, 2);
-        speed_y = between(-2, 2);
+        speed_y = between(-1, 3);
         bulletSource = ALIEN;
     }
 };
@@ -150,7 +150,7 @@ class Bullet_factory{
 public:
     Bullet_factory(ALLEGRO_BITMAP* bitmap): sheet(bitmap){}
 
-    Bullet* createBullet(std::vector<Bullet_image> vBullet,
+    Bullet* createBullet(std::vector<Bullet_image>& vBullet,
                          ShootableObject* shooter){
         ALLEGRO_BITMAP* bulletImg = chooseBullet(vBullet, shooter);
         switch (shooter->getType()){
@@ -289,7 +289,16 @@ public:
     }
 
     ~Bullet_Maintainer(){
-        //clean images here
+        //clean images here, except sprite
+        auto vIter = bulletImages.begin();
+        while (vIter != bulletImages.end())
+            //không hiểu sao dòng dưới này lại khiến cho allegro lib báo lỗi
+        {
+//            al_destroy_bitmap(vIter->bulletBitmap);
+            vIter++;
+        }
+        for (int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
+            al_destroy_bitmap(spark_array[i]);
     }
 
 private:

@@ -4,8 +4,10 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
 #include "utilities.h"
+#include "bullet.h"
 
 class Ship_factory;
+bool bulletObjCollide(ShootableObject* obj, Bullet* bullet);
 class Ship : public ShootableObject{
     friend class Ship_factory;
 
@@ -17,10 +19,25 @@ public:
     }
 
     void draw(){
-        al_draw_bitmap(ship_img, pos_x, pos_y, 0);
+        if (!gotHit)
+        {
+            al_draw_bitmap(ship_img, pos_x, pos_y, 0);
+            return;
+        }
+        //got hit
+        gotHit = false;
+        ++blink_counter;
+        if (blink_counter > 0)
+        {
+            if (blink_counter % 2)
+                al_draw_bitmap(ship_img, pos_x, pos_y, 0);
+        }
+        if (blink_counter == blinking)
+            blink_counter = 0;
+
     }
 
-    void update (Keyboard* keyboard){
+    void update (Keyboard* keyboard, Bullet_Maintainer* bulletMaintainer){
         if (fireCountdown > 0)
             --fireCountdown;
         else fireCountdown = 0;
@@ -29,6 +46,17 @@ public:
                         ALLEGRO_KEY_LEFT, ALLEGRO_KEY_RIGHT, ALLEGRO_KEY_M);
         else update_util(keyboard, new_up, new_down, new_left, new_right,
                          new_shoot);
+        //check if any bullet hit the ship
+        auto bulletIter = bulletMaintainer->begin();
+        auto bulletEndIter = bulletMaintainer->end();
+        while (bulletIter++ != bulletEndIter){
+            if (bulletObjCollide(this, &(**bulletIter)))
+            {
+                --life;
+                gotHit = true;
+                std::cout << "check collide" << std::endl;
+            }
+        }
     }
 
 
@@ -84,7 +112,10 @@ private:
     int speed = 3;
     bool default_control = true;
     int new_up, new_down, new_left, new_right, new_shoot;
-
+    int life = 5;
+    bool gotHit = false;
+    int blinking = 6;
+    int blink_counter = 0;
 };
 
 class Ship_factory{

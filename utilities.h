@@ -47,7 +47,7 @@ public:
     }
 
     //always fire when ask this function.
-    bool readyToFire(){
+    virtual bool readyToFire(){
         if (fireNow){
             fireNow = false;
             fireCountdown = fireWait;
