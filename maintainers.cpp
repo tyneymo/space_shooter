@@ -8,16 +8,16 @@ bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
         return false;
     if (bullet->shooterType() == SHIP && obj->getType() == SHIP)
         return false;
-    int bullet_x = std::get<0>(bullet->getBulletInfo());
-    int bullet_y = std::get<1>(bullet->getBulletInfo());
-    int bullet_w = std::get<2>(bullet->getBulletInfo());
-    int bullet_h = std::get<3>(bullet->getBulletInfo());
+    int bullet_x = bullet->getLocation().first;
+    int bullet_y = bullet->getLocation().second;
+    int bullet_w = bullet->getDimension().first;
+    int bullet_h = bullet->getDimension().second;
     return collide(obj->getLocation().first, obj->getLocation().second,
                    obj->getDimension().first, obj->getDimension().second,
                    bullet_x, bullet_y, bullet_w, bullet_h);
 }
 
-void shotAndHit(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletMtn){
+void aliensBulletsCollide(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletMtn){
     auto alienIter = alienMtn->begin();
     auto alienListEnd = alienMtn->end();
     while (alienIter != alienListEnd){
@@ -29,8 +29,7 @@ void shotAndHit(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletMtn){
             //**alienIter is an Alien
             if (bulletObjCollide(&(**alienIter), &(**bulletIter)))
             {
-                (*alienIter)->endurance--;
-                (*alienIter)->gotHit = true;
+                (*alienIter)->bulletHit();
                 (*bulletIter)->setActivationState(false);
                 break;
             }
@@ -43,43 +42,65 @@ void shotAndHit(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletMtn){
 
 void Bullet_Maintainer::maintain(ShootableObject *ship,
                                  Alien_Maintainer *alienMaintainer){
-    auto iter = bullet_list.begin();
-    while (iter != bullet_list.end()){
-        auto local_iter = iter;
-        iter++;
-        auto ptr = *local_iter;
-        ptr->update();
-        if (ptr->getLocation().second < 0 ||
-                            ptr->getLocation().second > DISPLAY_H * SCALE ||
-                            ptr->getLocation().first < 0 ||
-                            ptr->getLocation().first > DISPLAY_W * SCALE)
+    aliensBulletsCollide(alienMaintainer, this); //update if bullets hit aliens,
+                                        //set active state of bullet according.
+    auto bulletIter = bullet_list.begin();
+    while (bulletIter != bullet_list.end()){
+        bool erased = false;
+        auto local_iter = bulletIter;
+        bulletIter++;
+        auto bulletPtr = *local_iter;
+        bulletPtr->update();
+        //check out of bound
+        if (bulletPtr->getLocation().second < 0 ||
+                            bulletPtr->getLocation().second > DISPLAY_H ||
+                            bulletPtr->getLocation().first < 0 ||
+                            bulletPtr->getLocation().first > DISPLAY_W)
+        {
             bullet_list.erase(local_iter);
-        if (!ptr->ifActive()){
-            spark_list.push_back(BulletSpark(spark_array,
-                                              std::get<0>((*ptr).getBulletInfo()),
-                                              std::get<1>((*ptr).getBulletInfo())));
-            bullet_list.erase(local_iter);
+            erased = true;
         }
-        if (ship->getType() == SHIP && ptr->shooterType() != SHIP
+        //check bullet not actives because hit alien
+        if (!bulletPtr->ifActive()){
+            spark_list.push_back(BulletSpark(spark_array,
+                                  bulletPtr->getLocation().first,
+                                  bulletPtr->getLocation().second));
+            if (!erased)
+            {
+                bullet_list.erase(local_iter);
+                erased = true;
+            }
+        }
+        //check if this bullet collide with a ship. Awful "if" statement.
+        if (ship->getType() == SHIP && bulletPtr->shooterType() != SHIP
                 && static_cast<Ship*>(ship)->getLives() > 0)
             if (collide(ship->getLocation().first,
                     ship->getLocation().second,
                     ship->getDimension().first,
                     ship->getDimension().second,
-                    std::get<0>(ptr->getBulletInfo()),
-                      std::get<1>(ptr->getBulletInfo()),
-                      std::get<2>(ptr->getBulletInfo()),
-                      std::get<3>(ptr->getBulletInfo())))
+                    bulletPtr->getLocation().first,
+                    bulletPtr->getLocation().second,
+                    bulletPtr->getDimension().first,
+                    bulletPtr->getDimension().second))
             {
                 spark_list.push_back(BulletSpark(spark_array,
-                                                  std::get<0>((*ptr).getBulletInfo()),
-                                                  std::get<1>((*ptr).getBulletInfo())));
-                bullet_list.erase(local_iter);
+                                      bulletPtr->getLocation().first,
+                                      bulletPtr->getLocation().second));
+                if (!erased)
+                {
+                    bullet_list.erase(local_iter);
+                    erased = true;
+                }
+                //tell the ship it got a hit if it is not in respawning time
                 if (!static_cast<Ship*>(ship)->ifRespawning())
                     static_cast<Ship*>(ship)->gotShoot();
             }
+        if (erased)
+        {
+            ++bulletDestroyed;
+            std::cout << "destroyed " << bulletDestroyed << " bullets" << std::endl;
+        }
     }
-    shotAndHit(alienMaintainer, this);
 }
 
 void Bullet_Maintainer::draw(){
@@ -105,32 +126,33 @@ void Bullet_Maintainer::add(ShootableObject *shooter){
     if (ptr){
         if (ptr->speed_x == 0 && ptr->speed_y == 0)
             return;
-        std::shared_ptr<Bullet> bulletPtr(ptr);
-        bullet_list.push_back(bulletPtr);
+        bullet_list.push_back(std::shared_ptr<Bullet>(ptr));
+        ++bulletCreated;
+        std::cout << "created " << bulletCreated << " bullets" << std::endl;
     }
     else
         std::cout << "couldn't create bullet" << std::endl;
 }
 
 void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer){
-    auto iter = alienList.begin();
-    while (iter != alienList.end()){
-        auto local_iter = iter;
-        iter++;
-        auto ptr = *local_iter;
-        ptr->update();
-        if (ptr->getLocation().second > DISPLAY_H * SCALE )
+    auto alienIter = alienList.begin();
+    while (alienIter != alienList.end()){
+        auto local_iter = alienIter;
+        alienIter++;
+        auto alienPtr = *local_iter;
+        alienPtr->update();
+        if (alienPtr->getLocation().second > DISPLAY_H )
             alienList.erase(local_iter);
-        if (ptr->readyToFire())
-            bulletMaintainer->add(&(*ptr));
-        if (!ptr->alive())
+        if (alienPtr->readyToFire())
+            bulletMaintainer->add(&(*alienPtr));
+        if (!alienPtr->alive())
         {
             explosion_list.push_back(Explosion(explosion_array,
-                                    ptr->getLocation().first +
-                                    ptr->getDimension().first/2,
-                                     ptr->getLocation().second +
-                                     ptr->getDimension().second/2));
-            ptr->explodeSound();
+                                    alienPtr->getLocation().first +
+                                    alienPtr->getDimension().first/2,
+                                     alienPtr->getLocation().second +
+                                     alienPtr->getDimension().second/2));
+            alienPtr->explodeSound();
             alienList.erase(local_iter);
         }
     }

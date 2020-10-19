@@ -96,6 +96,7 @@ private:
         height = h;
         fireWait = 5;
         type = SHIP;
+        must_init(ship_img, "ship initialization");
     }
 
     void update_util(Keyboard* keyboard, int up, int down,
@@ -110,12 +111,12 @@ private:
             pos_x += speed;
         if (pos_x < 0)
             pos_x = 0;
-        if (pos_x > DISPLAY_W * SCALE)
-            pos_x = DISPLAY_W * SCALE;
+        if (pos_x > DISPLAY_W  - width)
+            pos_x = DISPLAY_W  - width;
         if (pos_y < 0)
             pos_y = 0;
-        if (pos_y > DISPLAY_H * SCALE)
-            pos_y = DISPLAY_H * SCALE;
+        if (pos_y > DISPLAY_H  - height)
+            pos_y = DISPLAY_H  - height;
         if (keyboard->key[shoot])
             shoot_command();
     }

@@ -34,7 +34,9 @@ int main()
     //note: need destroy queue
     ALLEGRO_DISPLAY* disp = al_create_display(DISPLAY_W * SCALE,
                                               DISPLAY_H * SCALE);
+    ALLEGRO_BITMAP* buffer = al_create_bitmap(DISPLAY_W, DISPLAY_H);
     must_init(disp, "display init");
+    must_init(buffer, "display buffer");
 
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_keyboard_event_source());
@@ -44,10 +46,10 @@ int main()
     must_init(spritesheet, "init sprite");
     Ship_factory aShipFactory(spritesheet);
 
-    std::shared_ptr<Ship> ship_one(aShipFactory.createShip(2*DISPLAY_W /3 * SCALE,
-                                                           4*DISPLAY_H /5 * SCALE));
-    std::shared_ptr<Ship> ship_two(aShipFactory.createShip(DISPLAY_W /3 * SCALE,
-                                                           4*DISPLAY_H /5 * SCALE));
+    std::shared_ptr<Ship> ship_one(aShipFactory.createShip(2*DISPLAY_W /3 ,
+                                                           4*DISPLAY_H /5));
+    std::shared_ptr<Ship> ship_two(aShipFactory.createShip(DISPLAY_W /3,
+                                                           4*DISPLAY_H /5));
 
     ship_two->set_control(ALLEGRO_KEY_W, ALLEGRO_KEY_S, 
                           ALLEGRO_KEY_A, ALLEGRO_KEY_D, ALLEGRO_KEY_SPACE);
@@ -60,7 +62,7 @@ int main()
     al_start_timer(timer);
     Keyboard keyboard;
 
-    Bullet_factory bulletFactory(spritesheet);
+    Bullet_factory bulletFactory;
     Bullet_Maintainer bulletMaintainer (&bulletFactory, spritesheet);
     Alien_Factory alienFactory;
     Alien_Maintainer alienMaintainer(&alienFactory, spritesheet);
@@ -103,11 +105,16 @@ int main()
 
         if (redraw && al_is_event_queue_empty(queue))
         {
+            al_set_target_bitmap(buffer);
             al_clear_to_color(al_map_rgb(0,0,0));
             ship_one->draw();
             ship_two->draw();
             bulletMaintainer.draw();
             alienMaintainer.draw();
+            al_set_target_backbuffer(disp);
+            al_clear_to_color(al_map_rgb(0,0,0));
+            al_draw_scaled_bitmap(buffer, 0, 0, DISPLAY_W, DISPLAY_H,
+                                  0, 0, DISPLAY_W * SCALE, DISPLAY_H * SCALE, 0);
             al_flip_display();
             redraw = false;
         }

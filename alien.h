@@ -38,7 +38,6 @@ struct Explosion{
 
 class Alien : public ShootableObject {
     friend class Alien_Factory;
-    friend void shotAndHit(Alien_Maintainer*, Bullet_Maintainer*);
 public:
     void draw(){
         if (alive() && (!gotHit))
@@ -99,13 +98,18 @@ public:
             al_play_sample(sample_explode[0],0.75,0,1.4, ALLEGRO_PLAYMODE_ONCE,NULL);
     }
 
+    void bulletHit(){
+        --endurance;
+        gotHit = true;
+    }
+
 protected:
     Alien(ALLEGRO_BITMAP* bitmap):  bug_img(bitmap){
         type = ALIEN;
         width = al_get_bitmap_width(bitmap);
         height = al_get_bitmap_height(bitmap);
-        pos_x = between(0, DISPLAY_W * SCALE);
-        pos_y = between(-30,0);
+        pos_x = between(0, DISPLAY_W - width);
+        pos_y = -height;
     }
 
     void shootSound(){
@@ -166,12 +170,16 @@ public:
         alienBitmap = chooseAlien(vec_AlienImage, type);
         must_init(alienBitmap, "choose alien");
         switch (type){
+        case SHIP: //shouldn't
+            return nullptr;
+
         case THICCBOI:
             return new Thiccboi_alien(alienBitmap);
 
         case ARROW:
             return new Arrow_alien(alienBitmap);
 
+        case ALIEN:
         case BUG:
             return new Bug_alien(alienBitmap);
         }

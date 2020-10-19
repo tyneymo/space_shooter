@@ -78,7 +78,7 @@ public:
         auto vec_iter = alienImages.begin();
         while (vec_iter++ != alienImages.end())
             al_destroy_bitmap(vec_iter->alienBitmap);
-        for (int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
+        for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
              ++i)
             al_destroy_bitmap(explosion_array[i]);
     }
@@ -117,12 +117,8 @@ public:
         bmp = sprite_grab(spritesheet, x, y, w, h);
         bulletImages.push_back(Bullet_image(bmp, BUG));
         //ARROW:
-        x = 13, y = 10, w = 4, h = 4;
-        bmp = sprite_grab(spritesheet, x, y, w, h);
         bulletImages.push_back(Bullet_image(bmp, ARROW));
         //THICCBOI:
-        x = 13, y = 10, w = 4, h = 4;
-        bmp = sprite_grab(spritesheet, x, y, w, h);
         bulletImages.push_back(Bullet_image(bmp, THICCBOI));
 
 
@@ -152,14 +148,7 @@ public:
 
     ~Bullet_Maintainer(){
         //clean images here, except sprite
-        auto vIter = bulletImages.begin();
-        while (vIter != bulletImages.end())
-            //không hiểu sao dòng dưới này lại khiến cho allegro lib báo lỗi
-        {
-//            al_destroy_bitmap(vIter->bulletBitmap);
-            vIter++;
-        }
-        for (int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
+        for (unsigned int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
             al_destroy_bitmap(spark_array[i]);
     }
 
@@ -170,6 +159,8 @@ private:
     ALLEGRO_BITMAP* sprite;
     std::vector<Bullet_image> bulletImages;
     std::list<BulletSpark> spark_list;
+    int bulletCreated = 0;
+    int bulletDestroyed = 0;
 };
 
 

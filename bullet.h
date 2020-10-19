@@ -19,6 +19,9 @@ struct Bullet_image {
     Object_type type;
     Bullet_image(ALLEGRO_BITMAP* bitmap, Object_type t):
         bulletBitmap(bitmap), type(t){};
+    ~Bullet_image(){
+//        al_destroy_bitmap(bulletBitmap);
+    }
 };
 
 struct BulletSpark{
@@ -58,8 +61,12 @@ public:
     }
 
     std::pair<int,int> getLocation(){
-            return std::pair<int,int> (pos_x, pos_y);
-        }
+            return std::make_pair(pos_x, pos_y);
+    }
+
+    std::pair<int,int> getDimension(){
+        return std::make_pair(width, height);
+    }
 
     void draw(){
         if (active){
@@ -73,10 +80,6 @@ public:
         }
     }
 
-    std::tuple<int,int,int,int> getBulletInfo(){
-        return std::make_tuple(pos_x,pos_y,width,height);
-    }
-
     Object_type shooterType(){
         return bulletSource;
     }
@@ -88,9 +91,11 @@ protected:
     Bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
             : bullet_img(bitmap),
               pos_x(shooter->getLocation().first + shooter->getDimension().first/2),
-              pos_y(shooter->getLocation().second + shooter->getDimension().second),
+              pos_y(shooter->getLocation().second + shooter->getDimension().second/2),
               width(al_get_bitmap_width(bitmap)),
-              height(al_get_bitmap_height(bitmap)){}
+              height(al_get_bitmap_height(bitmap)){
+        must_init(bullet_img, "bulletimage");
+    }
 
     ALLEGRO_BITMAP* bullet_img;
     int pos_x, pos_y, width, height;
@@ -99,16 +104,6 @@ protected:
     Object_type bulletSource;
     int flashEffect = 0;
 };
-
-//class Alien_bullet: public Bullet{
-//public:
-//    Alien_bullet (ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
-//        : Bullet(bitmap,shooter){
-//        Bullet::speed_x = 0;
-//        Bullet::speed_y = -2;
-//        bulletSource = ALIEN;
-//    }
-//};
 
 class Ship_bullet: public Bullet{
 public:
@@ -154,11 +149,12 @@ public:
 class Bullet_factory{
 
 public:
-    Bullet_factory(ALLEGRO_BITMAP* bitmap): sheet(bitmap){}
+    Bullet_factory(){}
 
     Bullet* createBullet(std::vector<Bullet_image>& vBullet,
                          ShootableObject* shooter){
         ALLEGRO_BITMAP* bulletImg = chooseBullet(vBullet, shooter);
+        must_init(bulletImg, "bulletimage in create function");
         switch (shooter->getType()){
         case SHIP:
             return new Ship_bullet(bulletImg, shooter);
@@ -172,11 +168,14 @@ public:
             return new Arrow_bullet(bulletImg, shooter);
             break;
 
+        case ALIEN:
+
         case THICCBOI:
             return new Thiccboi_bulelt(bulletImg, shooter);
             break;
         }
         //nothing above?
+        std::cout << "shooter type not availabe" << std::endl;
         return nullptr;
     }
 
@@ -193,7 +192,6 @@ private:
         std::cout << "found no required image for bullet" << std::endl;
         return nullptr;
     }
-    ALLEGRO_BITMAP* sheet;
 };
 
 
