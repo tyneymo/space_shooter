@@ -5,7 +5,7 @@
 #include "utilities.h"
 #include "bullet.h"
 #include "alien.h"
-
+#include "maintainers.h"
 
 
 int main()
@@ -77,10 +77,9 @@ int main()
                     bulletMaintainer.add(&(*ship_two));
                 if (!(frameCounter % 50))
                     alienMaintainer.add();
-                shotAndHit(&alienMaintainer, &bulletMaintainer);
                 alienMaintainer.maintain(&bulletMaintainer);
-                bulletMaintainer.maintain(&(*ship_one));
-                bulletMaintainer.maintain(&(*ship_two));
+                bulletMaintainer.maintain(&(*ship_one), &alienMaintainer);
+                bulletMaintainer.maintain(&(*ship_two), &alienMaintainer);
                 redraw = true;
                 break;
 
@@ -105,8 +104,6 @@ int main()
             ship_two->draw();
             bulletMaintainer.draw();
             alienMaintainer.draw();
-            al_draw_filled_rectangle(320, 240, 320+30, 240+30,
-                                     al_map_rgb_f(0.5,0.50,0.5));
             al_flip_display();
             redraw = false;
         }

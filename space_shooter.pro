@@ -5,7 +5,8 @@ CONFIG -= qt
 
 SOURCES += \
         main.cpp \
-        maintainers.cpp
+        maintainers.cpp \
+        utilities.cpp
 
 HEADERS += \
     alien.h \

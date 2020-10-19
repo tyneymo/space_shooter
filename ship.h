@@ -19,6 +19,8 @@ public:
     }
 
     void draw(){
+        if (!life)
+            return; //need add more stuff
         if (!gotHit)
         {
             al_draw_bitmap(ship_img, pos_x, pos_y, 0);
@@ -29,15 +31,17 @@ public:
         ++blink_counter;
         if (blink_counter > 0)
         {
-            if (blink_counter % 2)
+            if (!(blink_counter % 3))
                 al_draw_bitmap(ship_img, pos_x, pos_y, 0);
         }
         if (blink_counter == blinking)
-            blink_counter = 0;
+            blink_counter = 1;
 
     }
 
     void update (Keyboard* keyboard, Bullet_Maintainer* bulletMaintainer){
+        if (!life)
+            return;
         if (fireCountdown > 0)
             --fireCountdown;
         else fireCountdown = 0;
@@ -46,25 +50,6 @@ public:
                         ALLEGRO_KEY_LEFT, ALLEGRO_KEY_RIGHT, ALLEGRO_KEY_M);
         else update_util(keyboard, new_up, new_down, new_left, new_right,
                          new_shoot);
-        //check if any bullet hit the ship
-        auto bulletIter = bulletMaintainer->bullet_list.begin();
-        while (bulletIter++ != bulletMaintainer->bullet_list.end()){
-//            if (bulletObjCollide(this, &(**bulletIter)))
-            {
-//                --life;
-//                gotHit = true;
-//                std::cout << "check if ship got a hit" << std::endl;
-                if (keyboard->key[ALLEGRO_KEY_H])
-                {
-                    bulletObjCollide(this, &(**bulletMaintainer->begin()));
-                    std::cout << "bullets on screen: " <<
-                                 bulletMaintainer->getBulletNumber() << std::endl;
-                }
-            }
-        }
-        //test
-        if (keyboard->key[ALLEGRO_KEY_H])
-            bulletObjCollide(this, &(**bulletMaintainer->begin()));
     }
 
 
@@ -75,6 +60,16 @@ public:
         new_left = left;
         new_right = right;
         new_shoot = shoot;
+    }
+
+    void gotShoot(){
+        gotHit = true;
+        --life;
+        std::cout << "life left = " << life << std::endl;
+    }
+
+    int getLives(){
+        return life;
     }
 
 private:
@@ -121,7 +116,7 @@ private:
     int new_up, new_down, new_left, new_right, new_shoot;
     int life = 5;
     bool gotHit = false;
-    int blinking = 6;
+    int blinking = 12;
     int blink_counter = 0;
 };
 

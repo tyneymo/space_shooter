@@ -1,4 +1,5 @@
 #include "maintainers.h"
+#include "ship.h"
 
 bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
     if (bullet->shooterType() == ALIEN && (obj->getType() == BUG
@@ -58,7 +59,8 @@ void Bullet_Maintainer::maintain(ShootableObject *ship,
                                               std::get<1>((*ptr).getBulletInfo())));
             bullet_list.erase(local_iter);
         }
-        if (ship->getType() == SHIP)
+        if (ship->getType() == SHIP && ptr->shooterType() != SHIP
+                && static_cast<Ship*>(ship)->getLives() > 0)
             if (collide(ship->getLocation().first,
                     ship->getLocation().second,
                     ship->getDimension().first,
@@ -72,6 +74,7 @@ void Bullet_Maintainer::maintain(ShootableObject *ship,
                                                   std::get<0>((*ptr).getBulletInfo()),
                                                   std::get<1>((*ptr).getBulletInfo())));
                 bullet_list.erase(local_iter);
+                static_cast<Ship*>(ship)->gotShoot();
             }
     }
     shotAndHit(alienMaintainer, this);
