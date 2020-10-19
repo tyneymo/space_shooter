@@ -12,6 +12,7 @@ class Bullet_factory;
 class Bullet_Maintainer;
 class Alien;
 class Ship;
+class Alien_Maintainer;
 
 struct Bullet_image {
     ALLEGRO_BITMAP* bulletBitmap;
@@ -80,28 +81,26 @@ protected:
     Bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
             : bullet_img(bitmap),
               pos_x(shooter->getLocation().first + shooter->getDimension().first/2),
-              pos_y(shooter->getLocation().second),
-              width(shooter->getDimension().first),
-              height(shooter->getDimension().second){
-                active = true;
-            }
+              pos_y(shooter->getLocation().second + shooter->getDimension().second),
+              width(al_get_bitmap_width(bitmap)),
+              height(al_get_bitmap_height(bitmap)){}
+
     ALLEGRO_BITMAP* bullet_img;
     int pos_x, pos_y, width, height;
     int speed_x, speed_y;
-    int strength = 1;
     bool active = true;
     Object_type bulletSource;
 };
 
-class Alien_bullet: public Bullet{
-public:
-    Alien_bullet (ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
-        : Bullet(bitmap,shooter){
-        Bullet::speed_x = 0;
-        Bullet::speed_y = -2;
-        bulletSource = SHIP;
-    }
-};
+//class Alien_bullet: public Bullet{
+//public:
+//    Alien_bullet (ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
+//        : Bullet(bitmap,shooter){
+//        Bullet::speed_x = 0;
+//        Bullet::speed_y = -2;
+//        bulletSource = ALIEN;
+//    }
+//};
 
 class Ship_bullet: public Bullet{
 public:
@@ -120,7 +119,6 @@ public:
         speed_x = between(-2, 2);
         speed_y = between(-1, 3);
         bulletSource = ALIEN;
-        std::cout << "created a bug bullet" << std::endl;
     }
 
 };
@@ -190,124 +188,6 @@ private:
     ALLEGRO_BITMAP* sheet;
 };
 
-class Bullet_Maintainer{
-    friend void shotAndHit();
-public:
-    friend class Alien;
-    friend class Ship;
-    friend class Alien_Maintainer;
-    typedef std::list<std::shared_ptr<Bullet>>::iterator iterator;
 
-    Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* spritesheet):
-                        bulletFactory(factory), sprite(spritesheet){
-        ALLEGRO_BITMAP* bmp;
-        int x, y, w, h;
-        //SHIP:
-        x = 13, y = 0, w = 2, h = 9;
-        bmp = sprite_grab(spritesheet, x, y, w, h);
-        bulletImages.push_back(Bullet_image(bmp, SHIP));
-        //ALIEN:
-        x = 13, y = 10, w = 4, h = 4;
-        bmp = sprite_grab(spritesheet, x, y, w, h);
-        bulletImages.push_back(Bullet_image(bmp, ALIEN));
-        //BUG:
-        x = 13, y = 10, w = 4, h = 4;
-        bmp = sprite_grab(spritesheet, x, y, w, h);
-        bulletImages.push_back(Bullet_image(bmp, BUG));
-        //ARROW:
-        x = 13, y = 10, w = 4, h = 4;
-        bmp = sprite_grab(spritesheet, x, y, w, h);
-        bulletImages.push_back(Bullet_image(bmp, ARROW));
-        //THICCBOI:
-        x = 13, y = 10, w = 4, h = 4;
-        bmp = sprite_grab(spritesheet, x, y, w, h);
-        bulletImages.push_back(Bullet_image(bmp, THICCBOI));
-
-
-        //initialize images in spark_array:
-        spark_array[0] = sprite_grab(sprite, 34,0,10,8);
-        spark_array[1] = sprite_grab(sprite, 45,0,7,8);
-        spark_array[2] = sprite_grab(sprite, 54,0,9,8);
-    }
-
-    void add(ShootableObject* shooter){
-            auto ptr = bulletFactory->createBullet(bulletImages,shooter);
-            if (ptr){
-                if (ptr->speed_x == 0 && ptr->speed_y == 0)
-                    return;
-                std::shared_ptr<Bullet> bulletPtr(ptr);
-                bullet_list.push_back(bulletPtr);
-                std::cout << "added a bullet" << std::endl;
-            }
-            else
-                std::cout << "couldn't create bullet" << std::endl;
-    }
-
-    void maintain(){
-        auto iter = bullet_list.begin();
-        while (iter != bullet_list.end()){
-            auto local_iter = iter;
-            iter++;
-            auto ptr = *local_iter;
-            ptr->update();
-            if (ptr->getLocation().second < 0 ||
-                ptr->getLocation().second > DISPLAY_H * SCALE)
-                bullet_list.erase(local_iter);
-            if (!ptr->ifActive()){
-                spark_list.push_back(BulletSpark(spark_array,
-                                                  std::get<0>((*ptr).getBulletInfo()),
-                                                  std::get<1>((*ptr).getBulletInfo())));
-                bullet_list.erase(local_iter);
-            }
-        }
-    }
-
-    iterator begin(){
-        return bullet_list.begin();
-    }
-
-    iterator end(){
-        return bullet_list.end();
-    }
-
-    void draw(){
-        auto bullet_iter = bullet_list.begin();
-        while (bullet_iter != bullet_list.end()){
-            auto local_iter = bullet_iter;
-            bullet_iter++;
-            auto ptr = *local_iter;
-            if (ptr->ifActive())
-                ptr->draw();
-        }
-        auto spark_iter = spark_list.begin();
-        while (spark_iter != spark_list.end()){
-            auto local_iter = spark_iter;
-            spark_iter++;
-            if (!local_iter->sparked())
-                local_iter->draw();
-        }
-    }
-
-    ~Bullet_Maintainer(){
-        //clean images here, except sprite
-        auto vIter = bulletImages.begin();
-        while (vIter != bulletImages.end())
-            //không hiểu sao dòng dưới này lại khiến cho allegro lib báo lỗi
-        {
-//            al_destroy_bitmap(vIter->bulletBitmap);
-            vIter++;
-        }
-        for (int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
-            al_destroy_bitmap(spark_array[i]);
-    }
-
-private:
-    std::list<std::shared_ptr<Bullet>> bullet_list;
-    Bullet_factory* bulletFactory;
-    ALLEGRO_BITMAP* spark_array[3];
-    ALLEGRO_BITMAP* sprite;
-    std::vector<Bullet_image> bulletImages;
-    std::list<BulletSpark> spark_list;
-};
 
 #endif

@@ -1,49 +1,12 @@
 #include <iostream>
 #include <memory>
+#include <allegro5/allegro_primitives.h>
 #include "ship.h"
 #include "utilities.h"
 #include "bullet.h"
 #include "alien.h"
 
-bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
-    if (bullet->shooterType() == ALIEN && (obj->getType() == BUG
-                                           || obj->getType() == ARROW
-                                           || obj->getType() == THICCBOI))
-        return false;
-    if (bullet->shooterType() == SHIP && obj->getType() == SHIP)
-        return false;
-    int bullet_x = std::get<0>(bullet->getBulletInfo());
-    int bullet_y = std::get<1>(bullet->getBulletInfo());
-    int bullet_w = std::get<2>(bullet->getBulletInfo());
-    int bullet_h = std::get<3>(bullet->getBulletInfo());
-    std::cout << "bullet width = " << bullet_w << std::endl;
-    return collide(obj->getLocation().first, obj->getLocation().second,
-                   obj->getDimension().first, obj->getDimension().second,
-                   bullet_x, bullet_y, bullet_w, bullet_h);
-}
 
-void shotAndHit(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletMtn){
-    auto alienIter = alienMtn->begin();
-    auto alienListEnd = alienMtn->end();
-    while (alienIter != alienListEnd){
-        auto bulletIter = bulletMtn->begin();
-        auto bulletListEnd = bulletMtn->end();
-
-        while (bulletIter != bulletListEnd){
-            //*alienIter is a shared pointer to Alien
-            //**alienIter is an Alien
-            if (bulletObjCollide(&(**alienIter), &(**bulletIter)))
-            {
-                (*alienIter)->endurance--;
-                (*bulletIter)->setActivationState(false);
-                break;
-            }
-
-            ++bulletIter;
-        }
-        ++alienIter;
-    }
-}
 
 int main()
 {
@@ -98,10 +61,7 @@ int main()
     Alien_Factory alienFactory;
     Alien_Maintainer alienMaintainer(&alienFactory, spritesheet);
     long frameCounter = 0;
-//    alienMaintainer.add(BUG);
-//    alienMaintainer.add(BUG);
-//    alienMaintainer.add(BUG);
-//    alienMaintainer.add(BUG);
+    must_init(al_init_primitives_addon(), "primitive addon");
     while(1){
         al_wait_for_event(queue, &event);
 
@@ -119,7 +79,8 @@ int main()
                     alienMaintainer.add();
                 shotAndHit(&alienMaintainer, &bulletMaintainer);
                 alienMaintainer.maintain(&bulletMaintainer);
-                bulletMaintainer.maintain();
+                bulletMaintainer.maintain(&(*ship_one));
+                bulletMaintainer.maintain(&(*ship_two));
                 redraw = true;
                 break;
 
@@ -144,6 +105,8 @@ int main()
             ship_two->draw();
             bulletMaintainer.draw();
             alienMaintainer.draw();
+            al_draw_filled_rectangle(320, 240, 320+30, 240+30,
+                                     al_map_rgb_f(0.5,0.50,0.5));
             al_flip_display();
             redraw = false;
         }

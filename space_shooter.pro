@@ -4,11 +4,13 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+        maintainers.cpp
 
 HEADERS += \
     alien.h \
     bullet.h \
+    maintainers.h \
     ship.h \
     utilities.h
 
@@ -18,5 +20,5 @@ DISTFILES += \
     shot.flac \
     spritesheet.png
 
-LIBS += -I/usr/include/x86_64-linux-gnu -lallegro_image -lallegro
+LIBS += -I/usr/include/x86_64-linux-gnu -lallegro_image -lallegro_primitives -lallegro
 

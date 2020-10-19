@@ -47,16 +47,24 @@ public:
         else update_util(keyboard, new_up, new_down, new_left, new_right,
                          new_shoot);
         //check if any bullet hit the ship
-        auto bulletIter = bulletMaintainer->begin();
-        auto bulletEndIter = bulletMaintainer->end();
-        while (bulletIter++ != bulletEndIter){
-            if (bulletObjCollide(this, &(**bulletIter)))
+        auto bulletIter = bulletMaintainer->bullet_list.begin();
+        while (bulletIter++ != bulletMaintainer->bullet_list.end()){
+//            if (bulletObjCollide(this, &(**bulletIter)))
             {
-                --life;
-                gotHit = true;
-                std::cout << "check collide" << std::endl;
+//                --life;
+//                gotHit = true;
+//                std::cout << "check if ship got a hit" << std::endl;
+                if (keyboard->key[ALLEGRO_KEY_H])
+                {
+                    bulletObjCollide(this, &(**bulletMaintainer->begin()));
+                    std::cout << "bullets on screen: " <<
+                                 bulletMaintainer->getBulletNumber() << std::endl;
+                }
             }
         }
+        //test
+        if (keyboard->key[ALLEGRO_KEY_H])
+            bulletObjCollide(this, &(**bulletMaintainer->begin()));
     }
 
 
@@ -99,7 +107,6 @@ private:
             pos_y = DISPLAY_H * SCALE;
         if (keyboard->key[shoot])
             shoot_command();
-
     }
 
     void shoot_command(){
