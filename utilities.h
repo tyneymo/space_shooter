@@ -12,7 +12,7 @@ class ShootableObject;
 enum Bullet_type {SHIP_BULLET1, SHIP_BULLET2, ALIEN_BULLET};
 enum Object_type {SHIP, ALIEN, BUG, ARROW,THICCBOI};
 const int DISPLAY_W = 320;
-const int DISPLAY_H = 220;
+const int DISPLAY_H = 240;
 const int SCALE = 3;
 
 int between(int low, int high);

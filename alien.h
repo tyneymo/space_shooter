@@ -126,7 +126,7 @@ class Thiccboi_alien: public Alien {
     Thiccboi_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
         speed = std::pair<int,int>(1,3); //speed 1/3 pixel per frame
         fireWait = 10;
-        endurance = 6;
+        endurance = 9;
         fireCountdown = fireWait;
         type = THICCBOI;
         shoot_interval = 4;

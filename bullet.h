@@ -62,7 +62,7 @@ public:
         return std::make_pair(width, height);
     }
 
-    void draw();
+    virtual void draw();
 
     Object_type shooterType(){
         return bulletSource;
@@ -94,7 +94,7 @@ public:
     Ship_bullet (ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Bullet(bitmap,shooter){
         Bullet::speed_x = 0;
-        Bullet::speed_y = -4;
+        Bullet::speed_y = -3;
         bulletSource = SHIP;
     }
 };
@@ -124,10 +124,13 @@ class Thiccboi_bulelt: public Bullet{
 public:
     Thiccboi_bulelt(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Bullet(bitmap, shooter){
+        pos_x -= al_get_bitmap_width(bitmap)/2;
         speed_x = 0;
         speed_y = 2;
         bulletSource = ALIEN;
     }
+
+//    void draw();
 };
 
 class Bullet_factory{

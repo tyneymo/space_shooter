@@ -8,6 +8,7 @@ SOURCES += \
         bullet.cpp \
         main.cpp \
         maintainers.cpp \
+        ship.cpp \
         utilities.cpp
 
 HEADERS += \
