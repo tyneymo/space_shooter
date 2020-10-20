@@ -106,7 +106,7 @@ class Bug_alien : public Alien {
     friend class Alien_Factory;
     Bug_alien(ALLEGRO_BITMAP* bitmap): Alien(bitmap){
         speed = std::pair<int,int>(1,2); //speed 1/2 pixel per frame
-        fireWait = 6;
+        fireWait = 8;
         endurance = 3;
         fireCountdown = fireWait;
         type = BUG;
@@ -119,7 +119,7 @@ class Arrow_alien: public Alien {
     friend class Alien_Factory;
     Arrow_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
         speed = std::pair<int,int>(1,1); //speed 1 pixel per frame
-        fireWait = 8;
+        fireWait = 10;
         endurance = 2;
         fireCountdown = fireWait;
         type = ARROW;
@@ -132,7 +132,7 @@ class Thiccboi_alien: public Alien {
     friend class Alien_Factory;
     Thiccboi_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
         speed = std::pair<int,int>(1,3); //speed 1/3 pixel per frame
-        fireWait = 10;
+        fireWait = 12;
         endurance = 9;
         fireCountdown = fireWait;
         type = THICCBOI;

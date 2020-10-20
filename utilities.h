@@ -26,7 +26,8 @@ bool collide(int obj1_x, int obj1_y, int obj1_w, int obj1_h,
                int obj2_x, int obj2_y, int obj2_w, int obj2_h);
 class Score;
 class Ship;
-void drawPlayerInformation(ALLEGRO_FONT* font,Score* score, Ship* ship1, Ship* ship2);
+void drawPlayerInformation(ALLEGRO_BITMAP*,ALLEGRO_FONT* font,Score* score,
+                           Ship* ship1, Ship* ship2);
 
 class Score{
     long score = 0;

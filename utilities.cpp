@@ -31,10 +31,22 @@ ALLEGRO_BITMAP* sprite_grab(ALLEGRO_BITMAP* bigmap,int x, int y, int w, int h){
     return sprite;
 }
 
-void drawPlayerInformation(ALLEGRO_FONT* font,Score* score, Ship* ship1, Ship* ship2){
+void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font,Score* score,
+                           Ship* ship1, Ship* ship2){
     al_draw_textf(font, al_map_rgb_f(1,1,1), 3, 3, 0,
-                  "%ld", score->getScore());
-    if (!(ship1->getLives() || ship2->getLives()))
+                  "%ld", score->getScore()); //draw score at x=3 y=3
+    int ship1LivesLeft = ship1->getLives();
+    int ship2LivesLeft = ship2->getLives();
+    if (!(ship1LivesLeft || ship2LivesLeft))
+    {
         al_draw_text(font, al_map_rgb_f(1,1,1),DISPLAY_W/2, DISPLAY_H/2,
                      ALLEGRO_ALIGN_CENTER, "G A M E  O V E R");
+        return;
+    }
+    for (int i = 0; i < ship2LivesLeft; ++i){
+        al_draw_bitmap(lifeImg, 3 + 6*i, 12, 0 );
+    }
+    for (int i = 0; i < ship1LivesLeft; ++i){
+        al_draw_bitmap(lifeImg, DISPLAY_W - (9 + 6*i), 12, 0 );
+    }
 }

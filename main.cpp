@@ -44,6 +44,8 @@ int main()
     must_init(spritesheet, "init sprite");
     Ship_factory aShipFactory(spritesheet);
 
+    ALLEGRO_BITMAP* lifeBmp = sprite_grab(spritesheet, 0, 14, 6, 6);
+
     std::shared_ptr<Ship> ship_one(aShipFactory.createShip(2*DISPLAY_W /3 ,
                                                            4*DISPLAY_H /5));
     std::shared_ptr<Ship> ship_two(aShipFactory.createShip(DISPLAY_W /3,
@@ -107,7 +109,7 @@ int main()
             al_clear_to_color(al_map_rgb(0,0,0));
             ship_one->draw();
             ship_two->draw();
-            drawPlayerInformation(font, &score, &(*ship_one), &(*ship_two));
+            drawPlayerInformation(lifeBmp,font, &score, &(*ship_one), &(*ship_two));
             bulletMaintainer.draw();
             alienMaintainer.draw();
             al_set_target_backbuffer(disp);
@@ -125,5 +127,6 @@ int main()
     al_destroy_display(disp);
     al_destroy_bitmap(buffer);
     al_destroy_bitmap(spritesheet);
+    al_destroy_font(font);
     return 0;
 }
