@@ -35,7 +35,7 @@ void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font,Score* sc
                            Ship* ship1, Ship* ship2){
     al_draw_textf(font, al_map_rgb_f(1,1,1), 3, 3, 0,
                   "%ld", score[1].getScore()); //draw score at x=3 y=3
-    al_draw_textf(font, al_map_rgb_f(1,1,1), DISPLAY_W - 9, 3, ALLEGRO_ALIGN_RIGHT,
+    al_draw_textf(font, al_map_rgb_f(1,1,1), DISPLAY_W - 6, 3, ALLEGRO_ALIGN_RIGHT,
                   "%ld", score[0].getScore());
     int ship1LivesLeft = ship1->getLives();
     int ship2LivesLeft = ship2->getLives();
@@ -46,9 +46,10 @@ void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font,Score* sc
         return;
     }
     for (int i = 0; i < ship2LivesLeft; ++i){
-        al_draw_bitmap(lifeImg, 3 + 6*i, 12, 0 );
+        al_draw_bitmap(lifeImg, 3 + al_get_bitmap_width(lifeImg)*i, 12, 0 );
     }
     for (int i = 0; i < ship1LivesLeft; ++i){
-        al_draw_bitmap(lifeImg, DISPLAY_W - (9 + 6*i), 12, 0 );
+        al_draw_bitmap(lifeImg, DISPLAY_W - (9 + al_get_bitmap_width(lifeImg)*i),
+                       12, 0 );
     }
 }

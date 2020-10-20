@@ -155,7 +155,7 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer,
                                      alienPtr->getLocation().second +
                                      alienPtr->getDimension().second/2));
             alienPtr->explodeSound();
-            //assume that there is two player.
+            //assume that there is two players.
             if (alienPtr->lastShipShotMe() == SHIP1)
                 score[0].addScore(alienPtr->getScoreValue());
             if (alienPtr->lastShipShotMe() == SHIP2)

@@ -54,7 +54,7 @@ int main()
                                                            SHIP2));
 
     ship_two->set_control(ALLEGRO_KEY_W, ALLEGRO_KEY_S, 
-                          ALLEGRO_KEY_A, ALLEGRO_KEY_D, ALLEGRO_KEY_SPACE);
+                          ALLEGRO_KEY_A, ALLEGRO_KEY_D, ALLEGRO_KEY_F);
 
 
     bool redraw = true;
