@@ -63,11 +63,17 @@ public:
         //clean all image except sprite, which is common to ship, bullet and /
         //aliens
         auto vec_iter = alienImages.begin();
-        while (vec_iter++ != alienImages.end())
-            al_destroy_bitmap(vec_iter->alienBitmap);
-        for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
-             ++i)
-            al_destroy_bitmap(explosion_array[i]);
+                auto save = vec_iter->alienBitmap;
+                al_destroy_bitmap(vec_iter->alienBitmap);
+                while (++vec_iter != alienImages.end())
+                {
+                    if (vec_iter->alienBitmap != save)
+                        al_destroy_bitmap(vec_iter->alienBitmap);
+                    save = vec_iter->alienBitmap;
+                }
+                for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
+                     ++i)
+                    al_destroy_bitmap(explosion_array[i]);
     }
 
 private:
@@ -132,8 +138,17 @@ public:
     }
 
     ~Bullet_Maintainer(){
-        for (unsigned int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
-            al_destroy_bitmap(spark_array[i]);
+        auto vec_iter = bulletImages.begin();
+                auto save = vec_iter->bulletBitmap;
+                al_destroy_bitmap(vec_iter->bulletBitmap);
+                while (++vec_iter != bulletImages.end())
+                {
+                    if (vec_iter->bulletBitmap != save)
+                        al_destroy_bitmap(vec_iter->bulletBitmap);
+                    save = vec_iter->bulletBitmap;
+                }
+                for (unsigned int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
+                    al_destroy_bitmap(spark_array[i]);
     }
 
 private:
