@@ -27,7 +27,7 @@ public:
         gotHit = true;
         --life;
         respawning = true;
-        //play a sound of explosion when get shoot
+        //play a sound of explosion when get shot
         al_play_sample(sample_explode[1],0.8,0,1.4, ALLEGRO_PLAYMODE_ONCE,NULL);
     }
 

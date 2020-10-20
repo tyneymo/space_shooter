@@ -98,7 +98,6 @@ void Bullet_Maintainer::maintain(ShootableObject *ship,
         if (erased)
         {
             ++bulletDestroyed;
-            std::cout << "destroyed " << bulletDestroyed << " bullets" << std::endl;
         }
     }
 }
@@ -122,13 +121,12 @@ void Bullet_Maintainer::draw(){
 }
 
 void Bullet_Maintainer::add(ShootableObject *shooter){
-    auto ptr = bulletFactory->createBullet(bulletImages,shooter);
-    if (ptr){
-        if (ptr->speed_x == 0 && ptr->speed_y == 0)
+    auto bulletPtr = bulletFactory->createBullet(bulletImages,shooter);
+    if (bulletPtr){
+        if (bulletPtr->speed_x == 0 && bulletPtr->speed_y == 0) //no moving bullet not allow
             return;
-        bullet_list.push_back(std::shared_ptr<Bullet>(ptr));
+        bullet_list.push_back(std::shared_ptr<Bullet>(bulletPtr));
         ++bulletCreated;
-        std::cout << "created " << bulletCreated << " bullets" << std::endl;
     }
     else
         std::cout << "couldn't create bullet" << std::endl;

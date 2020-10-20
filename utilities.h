@@ -5,6 +5,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_font.h>
 
 class ShootableObject;
 //bool bulletObjCollide(ShootableObject* obj, Bullet* bullet);
@@ -23,7 +24,7 @@ void must_init(bool test, const char* description);
 
 bool collide(int obj1_x, int obj1_y, int obj1_w, int obj1_h,
                int obj2_x, int obj2_y, int obj2_w, int obj2_h);
-
+void drawGameOver();
 
 class ShootableObject{
 public:

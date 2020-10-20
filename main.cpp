@@ -1,10 +1,5 @@
-#include <iostream>
-#include <memory>
-#include <allegro5/allegro_primitives.h>
 #include "ship.h"
 #include "utilities.h"
-#include "bullet.h"
-#include "alien.h"
 #include "maintainers.h"
 
 
@@ -37,6 +32,8 @@ int main()
     ALLEGRO_BITMAP* buffer = al_create_bitmap(DISPLAY_W, DISPLAY_H);
     must_init(disp, "display init");
     must_init(buffer, "display buffer");
+    ALLEGRO_FONT* font = al_create_builtin_font();
+    must_init(font, "font init");
 
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_keyboard_event_source());
@@ -67,7 +64,6 @@ int main()
     Alien_Factory alienFactory;
     Alien_Maintainer alienMaintainer(&alienFactory, spritesheet);
     long frameCounter = 0;
-    must_init(al_init_primitives_addon(), "primitive addon");
     while(1){
         al_wait_for_event(queue, &event);
 
@@ -124,6 +120,7 @@ int main()
     al_destroy_timer(timer);
     al_destroy_event_queue(queue);
     al_destroy_display(disp);
+    al_destroy_bitmap(buffer);
     al_destroy_bitmap(spritesheet);
     return 0;
 }
