@@ -10,6 +10,7 @@ All Image and Sounds kept as original from Allegro tutorial. Game setting is a l
 - g++ *.cpp -o space_shooter $(pkg-config allegro-5 allegro_font-5 allegro_image-5 allegro_audio-5 allegro_acodec-5 --libs --cflags)
 - ./space_shooter
 
+Or use .pro file to open Qt project and build from there. 
 
 3. Control: 
 - Player 1 use 'A', 'W', 'S', 'D' for navigation and 'SPACE' for shooting.
