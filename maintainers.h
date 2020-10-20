@@ -62,12 +62,20 @@ public:
     ~Alien_Maintainer(){
         //clean all image except sprite, which is common to ship, bullet and /
         //aliens
+        std::cout << "start destroy alien maintainer" << std::endl;
         auto vec_iter = alienImages.begin();
-        while (vec_iter++ != alienImages.end())
-            al_destroy_bitmap(vec_iter->alienBitmap);
+        auto save = vec_iter->alienBitmap;
+        al_destroy_bitmap(vec_iter->alienBitmap);
+        while (++vec_iter != alienImages.end())
+        {
+            if (vec_iter->alienBitmap != save)
+                al_destroy_bitmap(vec_iter->alienBitmap);
+            save = vec_iter->alienBitmap;
+        }
         for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
              ++i)
             al_destroy_bitmap(explosion_array[i]);
+        std::cout << "finished destroy alien maintainer" << std::endl;
     }
 
 private:
@@ -99,13 +107,6 @@ public:
         x = 13, y = 10, w = 4, h = 4;
         bmp = sprite_grab(spritesheet, x, y, w, h);
         bulletImages.push_back(Bullet_image(bmp, ALIEN));
-//        //BUG:
-//        bulletImages.push_back(Bullet_image(bmp, BUG));
-//        //ARROW:
-//        bulletImages.push_back(Bullet_image(bmp, ARROW));
-//        //THICCBOI:
-//        bulletImages.push_back(Bullet_image(bmp, THICCBOI));
-
 
         //initialize images in spark_array:
         spark_array[0] = sprite_grab(sprite, 34,0,10,8);
@@ -132,8 +133,19 @@ public:
     }
 
     ~Bullet_Maintainer(){
+        std::cout << "start destroy bullet maintainer" << std::endl;
+        auto vec_iter = bulletImages.begin();
+        auto save = vec_iter->bulletBitmap;
+        al_destroy_bitmap(vec_iter->bulletBitmap);
+        while (++vec_iter != bulletImages.end())
+        {
+            if (vec_iter->bulletBitmap != save)
+                al_destroy_bitmap(vec_iter->bulletBitmap);
+            save = vec_iter->bulletBitmap;
+        }
         for (unsigned int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
             al_destroy_bitmap(spark_array[i]);
+        std::cout << "finished destroy bullet maintainer" << std::endl;
     }
 
 private:

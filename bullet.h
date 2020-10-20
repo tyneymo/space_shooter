@@ -162,8 +162,6 @@ public:
 class Bullet_factory{
 
 public:
-    Bullet_factory(){}
-
     Bullet* createBullet(std::vector<Bullet_image>& vBullet,
                          ShootableObject* shooter);
 
