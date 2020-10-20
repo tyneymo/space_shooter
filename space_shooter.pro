@@ -19,6 +19,7 @@ HEADERS += \
     utilities.h
 
 DISTFILES += \
+    README.md \
     explode1.flac \
     explode2.flac \
     shot.flac \

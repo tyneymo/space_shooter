@@ -127,6 +127,7 @@ int main()
     al_destroy_display(disp);
     al_destroy_bitmap(buffer);
     al_destroy_bitmap(spritesheet);
+    al_destroy_bitmap(lifeBmp);
     al_destroy_font(font);
     return 0;
 }
