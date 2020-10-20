@@ -96,7 +96,33 @@ public:
         Bullet::speed_x = 0;
         Bullet::speed_y = -3;
         bulletSource = SHIP;
+        updateSubtype(shooter);
     }
+
+    Ship_subtype getSubtype(){
+        return subtype;
+    }
+
+private:
+    void updateSubtype(ShootableObject* shooter);
+
+    Ship_subtype subtype;
+};
+
+class Alien_bullet: public Bullet{
+    Alien_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
+        : Bullet(bitmap, shooter){
+        updateSubtype(shooter);
+    }
+
+    Alien_subtype getSubtype(){
+        return subtype;
+    }
+
+private:
+    void updateSubtype(ShootableObject* shooter);
+
+    Alien_subtype subtype;
 };
 
 class Bug_bullet: public Bullet{

@@ -1,10 +1,9 @@
 #include "maintainers.h"
 #include "ship.h"
+#include "alien.h"
 
 bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
-    if (bullet->shooterType() == ALIEN && (obj->getType() == BUG
-                                           || obj->getType() == ARROW
-                                           || obj->getType() == THICCBOI))
+    if (bullet->shooterType() == ALIEN && obj->getType() == ALIEN)
         return false;
     if (bullet->shooterType() == SHIP && obj->getType() == SHIP)
         return false;
@@ -29,7 +28,8 @@ void aliensBulletsCollide(Alien_Maintainer* alienMtn, Bullet_Maintainer* bulletM
             //**alienIter is an Alien
             if (bulletObjCollide(&(**alienIter), &(**bulletIter)))
             {
-                (*alienIter)->bulletHit();
+                Ship_bullet* bullet = static_cast<Ship_bullet*>(&(**bulletIter));
+                (*alienIter)->bulletHit(bullet->getSubtype());
                 (*bulletIter)->setActivationState(false);
                 break;
             }
@@ -155,7 +155,11 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer,
                                      alienPtr->getLocation().second +
                                      alienPtr->getDimension().second/2));
             alienPtr->explodeSound();
-            score->addScore(alienPtr->getScoreValue());
+            //assume that there is two player.
+            if (alienPtr->lastShipShotMe() == SHIP1)
+                score[0].addScore(alienPtr->getScoreValue());
+            if (alienPtr->lastShipShotMe() == SHIP2)
+                score[1].addScore(alienPtr->getScoreValue());
             alienList.erase(local_iter);
         }
     }

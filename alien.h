@@ -9,9 +9,9 @@ class Alien_Maintainer;
 
 struct Alien_image {
     ALLEGRO_BITMAP* alienBitmap;
-    Object_type type;
-    Alien_image(ALLEGRO_BITMAP* bitmap, Object_type t):
-        alienBitmap(bitmap), type(t){};
+    Alien_subtype type;
+    Alien_image(ALLEGRO_BITMAP* bitmap, Alien_subtype subtype):
+        alienBitmap(bitmap), type(subtype){};
 };
 
 struct Explosion{
@@ -62,19 +62,28 @@ public:
     }
 
     void explodeSound(){
-        if (type == THICCBOI)
+        if (subtype == THICCBOI)
             al_play_sample(sample_explode[1],0.75,0,1, ALLEGRO_PLAYMODE_ONCE,NULL);
         else
             al_play_sample(sample_explode[0],0.75,0,1.4, ALLEGRO_PLAYMODE_ONCE,NULL);
     }
 
-    void bulletHit(){
+    void bulletHit(Ship_subtype shipShotMe){
         --endurance;
         gotHit = true;
+        shipShotFinalBullet = shipShotMe;
+    }
+
+    Ship_subtype lastShipShotMe(){
+        return shipShotFinalBullet;
     }
 
     int getScoreValue(){
         return scoreValue;
+    }
+
+    Alien_subtype getSubtype(){
+        return subtype;
     }
 
 protected:
@@ -90,6 +99,8 @@ protected:
         al_play_sample(shot_sample,0.6,0,0.7, ALLEGRO_PLAYMODE_ONCE,NULL);
     }
 
+    Alien_subtype subtype;
+    Ship_subtype shipShotFinalBullet = DUMMY_SHIP;
     int scoreValue = 0;
     ALLEGRO_BITMAP* bug_img;
     ALLEGRO_BITMAP* explosion[3];
@@ -109,7 +120,7 @@ class Bug_alien : public Alien {
         fireWait = 8;
         endurance = 3;
         fireCountdown = fireWait;
-        type = BUG;
+        subtype = BUG;
         shoot_interval = 3;
         scoreValue = 200;
     }
@@ -122,7 +133,7 @@ class Arrow_alien: public Alien {
         fireWait = 10;
         endurance = 2;
         fireCountdown = fireWait;
-        type = ARROW;
+        subtype = ARROW;
         shoot_interval = 2;
         scoreValue = 150;
     }
@@ -135,7 +146,7 @@ class Thiccboi_alien: public Alien {
         fireWait = 12;
         endurance = 9;
         fireCountdown = fireWait;
-        type = THICCBOI;
+        subtype = THICCBOI;
         shoot_interval = 4;
         scoreValue = 800;
     }
@@ -143,11 +154,12 @@ class Thiccboi_alien: public Alien {
 
 class Alien_Factory{
 public:
-    Alien* createAlien(std::vector<Alien_image>& vec_AlienImage, Object_type type);
+    Alien* createAlien(std::vector<Alien_image>& vec_AlienImage,
+                       Alien_subtype subtype);
 
 private:
     ALLEGRO_BITMAP* chooseAlien (std::vector<Alien_image>& vec_AlienImage,
-                                  Object_type type);
+                                  Alien_subtype subtype);
 };
 
 

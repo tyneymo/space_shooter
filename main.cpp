@@ -47,9 +47,11 @@ int main()
     ALLEGRO_BITMAP* lifeBmp = sprite_grab(spritesheet, 0, 14, 6, 6);
 
     std::shared_ptr<Ship> ship_one(aShipFactory.createShip(2*DISPLAY_W /3 ,
-                                                           4*DISPLAY_H /5));
+                                                           4*DISPLAY_H /5,
+                                                            SHIP1));
     std::shared_ptr<Ship> ship_two(aShipFactory.createShip(DISPLAY_W /3,
-                                                           4*DISPLAY_H /5));
+                                                           4*DISPLAY_H /5,
+                                                           SHIP2));
 
     ship_two->set_control(ALLEGRO_KEY_W, ALLEGRO_KEY_S, 
                           ALLEGRO_KEY_A, ALLEGRO_KEY_D, ALLEGRO_KEY_SPACE);
@@ -67,7 +69,7 @@ int main()
     Alien_Factory alienFactory;
     Alien_Maintainer alienMaintainer(&alienFactory, spritesheet);
     long frameCounter = 0;
-    Score score;
+    Score scores[2];
     while(1){
         al_wait_for_event(queue, &event);
 
@@ -83,7 +85,7 @@ int main()
                     bulletMaintainer.add(&(*ship_two));
                 if (!(frameCounter % 40))
                     alienMaintainer.add();
-                alienMaintainer.maintain(&bulletMaintainer, &score);
+                alienMaintainer.maintain(&bulletMaintainer, scores);
                 bulletMaintainer.maintain(&(*ship_one), &alienMaintainer);
                 bulletMaintainer.maintain(&(*ship_two), &alienMaintainer);
                 redraw = true;
@@ -109,7 +111,7 @@ int main()
             al_clear_to_color(al_map_rgb(0,0,0));
             ship_one->draw();
             ship_two->draw();
-            drawPlayerInformation(lifeBmp,font, &score, &(*ship_one), &(*ship_two));
+            drawPlayerInformation(lifeBmp,font, scores, &(*ship_one), &(*ship_two));
             bulletMaintainer.draw();
             alienMaintainer.draw();
             al_set_target_backbuffer(disp);

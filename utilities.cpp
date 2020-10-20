@@ -34,7 +34,9 @@ ALLEGRO_BITMAP* sprite_grab(ALLEGRO_BITMAP* bigmap,int x, int y, int w, int h){
 void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font,Score* score,
                            Ship* ship1, Ship* ship2){
     al_draw_textf(font, al_map_rgb_f(1,1,1), 3, 3, 0,
-                  "%ld", score->getScore()); //draw score at x=3 y=3
+                  "%ld", score[1].getScore()); //draw score at x=3 y=3
+    al_draw_textf(font, al_map_rgb_f(1,1,1), DISPLAY_W - 9, 3, ALLEGRO_ALIGN_RIGHT,
+                  "%ld", score[0].getScore());
     int ship1LivesLeft = ship1->getLives();
     int ship2LivesLeft = ship2->getLives();
     if (!(ship1LivesLeft || ship2LivesLeft))

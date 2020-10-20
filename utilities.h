@@ -11,7 +11,10 @@ class ShootableObject;
 //bool bulletObjCollide(ShootableObject* obj, Bullet* bullet);
 
 enum Bullet_type {SHIP_BULLET1, SHIP_BULLET2, ALIEN_BULLET};
-enum Object_type {SHIP, ALIEN, BUG, ARROW,THICCBOI};
+enum Object_type {SHIP, ALIEN/*, BUG, ARROW,THICCBOI*/};
+enum Ship_subtype {SHIP1, SHIP2, DUMMY_SHIP};
+enum Alien_subtype {BUG, ARROW,THICCBOI};
+
 const int DISPLAY_W = 320;
 const int DISPLAY_H = 240;
 const int SCALE = 3;

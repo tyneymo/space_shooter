@@ -39,14 +39,20 @@ public:
         return respawning;
     }
 
+    Ship_subtype getSubtype(){
+        return subtype;
+    }
+
 private:
-    Ship(ALLEGRO_BITMAP* bitmap, int x, int y, int w, int h): ship_img(bitmap) {
+    Ship(ALLEGRO_BITMAP* bitmap, int x, int y, int w, int h, Ship_subtype ship_type):
+                                ship_img(bitmap) {
         pos_x = x;
         pos_y = y;
         width = w;
         height = h;
         fireWait = 8;
         type = SHIP;
+        subtype = ship_type;
         must_init(ship_img, "ship initialization");
     }
 
@@ -67,7 +73,7 @@ private:
 
 
     ALLEGRO_BITMAP* ship_img;
-
+    Ship_subtype subtype;
     int speed = 3;
     bool default_control = true;
     int new_up, new_down, new_left, new_right, new_shoot;
@@ -81,13 +87,13 @@ private:
 class Ship_factory{
 public:
     Ship_factory(ALLEGRO_BITMAP* sheet): sprite(sheet){}
-    Ship* createShip(int x, int y)    {
+    Ship* createShip(int x, int y, Ship_subtype ship)    {
         ALLEGRO_BITMAP* ship_image = sprite_grab(sprite, shipImage_x,
                                                           shipImage_y,
                                                           shipImage_w,
                                                           shipImage_h
                                                           );
-        return new Ship(ship_image, x, y, shipImage_w, shipImage_h);
+        return new Ship(ship_image, x, y, shipImage_w, shipImage_h, ship);
     }
 
 private:

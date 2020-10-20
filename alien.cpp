@@ -1,20 +1,17 @@
 #include "alien.h"
 
-Alien* Alien_Factory::createAlien(std::vector<Alien_image>& vec_AlienImage, Object_type type){
+Alien* Alien_Factory::createAlien(std::vector<Alien_image>& vec_AlienImage,
+                                  Alien_subtype subtype){
     ALLEGRO_BITMAP* alienBitmap;
-    alienBitmap = chooseAlien(vec_AlienImage, type);
+    alienBitmap = chooseAlien(vec_AlienImage, subtype);
     must_init(alienBitmap, "choose alien");
-    switch (type){
-    case SHIP: //shouldn't
-        return nullptr;
-
+    switch (subtype){
     case THICCBOI:
         return new Thiccboi_alien(alienBitmap);
 
     case ARROW:
         return new Arrow_alien(alienBitmap);
 
-    case ALIEN:
     case BUG:
         return new Bug_alien(alienBitmap);
     }
@@ -23,10 +20,10 @@ Alien* Alien_Factory::createAlien(std::vector<Alien_image>& vec_AlienImage, Obje
 }
 
 ALLEGRO_BITMAP* Alien_Factory::chooseAlien (std::vector<Alien_image>& vec_AlienImage,
-                              Object_type type){
+                              Alien_subtype subtype){
     auto iter = vec_AlienImage.begin();
     while (iter != vec_AlienImage.end()){
-        if (iter->type == type)
+        if (iter->type == subtype)
             return iter->alienBitmap;
         ++iter;
     }

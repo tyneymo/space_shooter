@@ -17,15 +17,15 @@ public:
         //BUG:
         x = 19, y = 0, w = 14, h = 9;
         bitmapPtr = sprite_grab(sprite, x,y,w,h);
-        alienImages.push_back(Alien_image(bitmapPtr, Object_type::BUG));
+        alienImages.push_back(Alien_image(bitmapPtr, BUG));
         //ARROW:
         x = 19, y = 10, w = 13, h = 10;
         bitmapPtr = sprite_grab(sprite, x,y,w,h);
-        alienImages.push_back(Alien_image(bitmapPtr, Object_type::ARROW));
+        alienImages.push_back(Alien_image(bitmapPtr, ARROW));
         //THICCBOI:
         x = 0, y = 21, w = 45, h = 27;
         bitmapPtr = sprite_grab(sprite, x,y,w,h);
-        alienImages.push_back(Alien_image(bitmapPtr, Object_type::THICCBOI));
+        alienImages.push_back(Alien_image(bitmapPtr, THICCBOI));
         //explostion frames effect, extracts from sprites
         explosion_array[0] = sprite_grab(sprite, 33,10,9,9);
         explosion_array[1] = sprite_grab(sprite, 43,9,11,11);
@@ -33,15 +33,15 @@ public:
         explosion_array[3] = sprite_grab(sprite, 46,40,17,17);
 
     }
-    void add(Object_type type){
+    void add(Alien_subtype type){
         alienList.push_back(std::shared_ptr<Alien>
                             (alienFactory->createAlien(alienImages, type)));
     }
 
     //add a random Alien
     void add(){
-        Object_type alienArray[] = {BUG, ARROW, THICCBOI, BUG, ARROW};
-        Object_type alienType = alienArray[rand() % (sizeof(alienArray) /
+        Alien_subtype alienArray[] = {BUG, ARROW, THICCBOI, BUG, ARROW};
+        Alien_subtype alienType = alienArray[rand() % (sizeof(alienArray) /
                                                      sizeof(Object_type))];
         alienList.push_back(std::shared_ptr<Alien>
                             (alienFactory->createAlien(alienImages, alienType)));
@@ -99,12 +99,12 @@ public:
         x = 13, y = 10, w = 4, h = 4;
         bmp = sprite_grab(spritesheet, x, y, w, h);
         bulletImages.push_back(Bullet_image(bmp, ALIEN));
-        //BUG:
-        bulletImages.push_back(Bullet_image(bmp, BUG));
-        //ARROW:
-        bulletImages.push_back(Bullet_image(bmp, ARROW));
-        //THICCBOI:
-        bulletImages.push_back(Bullet_image(bmp, THICCBOI));
+//        //BUG:
+//        bulletImages.push_back(Bullet_image(bmp, BUG));
+//        //ARROW:
+//        bulletImages.push_back(Bullet_image(bmp, ARROW));
+//        //THICCBOI:
+//        bulletImages.push_back(Bullet_image(bmp, THICCBOI));
 
 
         //initialize images in spark_array:
