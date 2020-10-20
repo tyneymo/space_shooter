@@ -62,7 +62,6 @@ public:
     ~Alien_Maintainer(){
         //clean all image except sprite, which is common to ship, bullet and /
         //aliens
-        std::cout << "start destroy alien maintainer" << std::endl;
         auto vec_iter = alienImages.begin();
         auto save = vec_iter->alienBitmap;
         al_destroy_bitmap(vec_iter->alienBitmap);
@@ -75,7 +74,6 @@ public:
         for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
              ++i)
             al_destroy_bitmap(explosion_array[i]);
-        std::cout << "finished destroy alien maintainer" << std::endl;
     }
 
 private:
@@ -133,7 +131,6 @@ public:
     }
 
     ~Bullet_Maintainer(){
-        std::cout << "start destroy bullet maintainer" << std::endl;
         auto vec_iter = bulletImages.begin();
         auto save = vec_iter->bulletBitmap;
         al_destroy_bitmap(vec_iter->bulletBitmap);
@@ -145,7 +142,6 @@ public:
         }
         for (unsigned int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
             al_destroy_bitmap(spark_array[i]);
-        std::cout << "finished destroy bullet maintainer" << std::endl;
     }
 
 private:
@@ -161,4 +157,4 @@ private:
 
 
 
-#endif // UTIL2_H
+#endif // MAINTAINERS_H
