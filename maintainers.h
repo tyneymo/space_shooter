@@ -1,5 +1,5 @@
-#ifndef UTIL2_H
-#define UTIL2_H
+#ifndef MAINTAINERS_H
+#define MAINTAINERS_H
 #include "alien.h"
 #include "bullet.h"
 #include <list>
