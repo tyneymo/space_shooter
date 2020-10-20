@@ -1,6 +1,6 @@
 # space_shooter
 Allegro Space Shooter game (Allegro Vivace) rewritten in object oriented C++ as a learning process.
-Allegro Vivace (https://github.com/liballeg/allegro_wiki/wiki/Allegro-Vivace) is a tutorial that I found very inspired. So I rewrote it (because I'm studying C++), added a second player for fun.
+Allegro Vivace (https://github.com/liballeg/allegro_wiki/wiki/Allegro-Vivace) is a tutorial that I found very inspired (yup, and of course it looks doable to me). So I rewrote it (because I'm studying C++), added a second player for fun.
 All Image and Sounds kept as original from Allegro tutorial. Game setting is a little bit hard (or I'm too bad at playing)
 
 1. Requirement:
