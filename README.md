@@ -13,7 +13,7 @@ All Image and Sounds kept as original from Allegro tutorial. Game setting is a l
 Or use .pro file to open Qt project and build from there. 
 
 3. Control: 
-- Player 1 use 'A', 'W', 'S', 'D' for navigation and 'SPACE' for shooting.
+- Player 1 use 'A', 'W', 'S', 'D' for navigation and 'F' for shooting.
 - Player 2 use arrow buttons for navigation and 'M' for shooting.
 - 'ESC' to quit game.
 
