@@ -11,6 +11,7 @@ int main()
     must_init(al_install_audio(), "allegro audio");
     must_init(al_init_acodec_addon(), "allegro audio codec");
     must_init(al_reserve_samples(16), "reserve samples");
+    must_init(al_init_font_addon(), "font addon init");
 
 
     //note: need destroy timer
@@ -64,6 +65,7 @@ int main()
     Alien_Factory alienFactory;
     Alien_Maintainer alienMaintainer(&alienFactory, spritesheet);
     long frameCounter = 0;
+    Score score;
     while(1){
         al_wait_for_event(queue, &event);
 
@@ -79,7 +81,7 @@ int main()
                     bulletMaintainer.add(&(*ship_two));
                 if (!(frameCounter % 40))
                     alienMaintainer.add();
-                alienMaintainer.maintain(&bulletMaintainer);
+                alienMaintainer.maintain(&bulletMaintainer, &score);
                 bulletMaintainer.maintain(&(*ship_one), &alienMaintainer);
                 bulletMaintainer.maintain(&(*ship_two), &alienMaintainer);
                 redraw = true;
@@ -105,6 +107,7 @@ int main()
             al_clear_to_color(al_map_rgb(0,0,0));
             ship_one->draw();
             ship_two->draw();
+            drawPlayerInformation(font, &score, &(*ship_one), &(*ship_two));
             bulletMaintainer.draw();
             alienMaintainer.draw();
             al_set_target_backbuffer(disp);

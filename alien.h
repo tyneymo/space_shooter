@@ -73,6 +73,10 @@ public:
         gotHit = true;
     }
 
+    int getScoreValue(){
+        return scoreValue;
+    }
+
 protected:
     Alien(ALLEGRO_BITMAP* bitmap):  bug_img(bitmap){
         type = ALIEN;
@@ -86,6 +90,7 @@ protected:
         al_play_sample(shot_sample,0.6,0,0.7, ALLEGRO_PLAYMODE_ONCE,NULL);
     }
 
+    int scoreValue = 0;
     ALLEGRO_BITMAP* bug_img;
     ALLEGRO_BITMAP* explosion[3];
     //two kind of speed allow: (x,1) give x pixel per frame and (1, y) with
@@ -106,6 +111,7 @@ class Bug_alien : public Alien {
         fireCountdown = fireWait;
         type = BUG;
         shoot_interval = 3;
+        scoreValue = 200;
     }
 };
 
@@ -118,6 +124,7 @@ class Arrow_alien: public Alien {
         fireCountdown = fireWait;
         type = ARROW;
         shoot_interval = 2;
+        scoreValue = 150;
     }
 };
 
@@ -130,6 +137,7 @@ class Thiccboi_alien: public Alien {
         fireCountdown = fireWait;
         type = THICCBOI;
         shoot_interval = 4;
+        scoreValue = 800;
     }
 };
 

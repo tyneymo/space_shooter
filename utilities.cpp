@@ -1,4 +1,5 @@
 #include "utilities.h"
+#include "ship.h"
 int between(int low, int high){
     return low + (rand() % (high - low));
 }
@@ -28,4 +29,12 @@ ALLEGRO_BITMAP* sprite_grab(ALLEGRO_BITMAP* bigmap,int x, int y, int w, int h){
     ALLEGRO_BITMAP* sprite = al_create_sub_bitmap(bigmap, x, y, w, h);
     must_init(sprite, "sprite grab");
     return sprite;
+}
+
+void drawPlayerInformation(ALLEGRO_FONT* font,Score* score, Ship* ship1, Ship* ship2){
+    al_draw_textf(font, al_map_rgb_f(1,1,1), 3, 3, 0,
+                  "%ld", score->getScore());
+    if (!(ship1->getLives() || ship2->getLives()))
+        al_draw_text(font, al_map_rgb_f(1,1,1),DISPLAY_W/2, DISPLAY_H/2,
+                     ALLEGRO_ALIGN_CENTER, "G A M E  O V E R");
 }

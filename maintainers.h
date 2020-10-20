@@ -47,7 +47,7 @@ public:
                             (alienFactory->createAlien(alienImages, alienType)));
     }
 
-    void maintain(Bullet_Maintainer* bulletMaintainer);
+    void maintain(Bullet_Maintainer* bulletMaintainer, Score* score);
 
     void draw();
 

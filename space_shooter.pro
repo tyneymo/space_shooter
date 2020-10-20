@@ -27,5 +27,6 @@ DISTFILES += \
 LIBS += -I/usr/include/x86_64-linux-gnu \
         -lallegro_image -lallegro_primitives \
         -lallegro_acodec -lallegro_audio \
+        -lallegro_font \
         -lallegro
 

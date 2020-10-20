@@ -132,7 +132,8 @@ void Bullet_Maintainer::add(ShootableObject *shooter){
         std::cout << "couldn't create bullet" << std::endl;
 }
 
-void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer){
+void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer,
+                                Score* score){
     auto alienIter = alienList.begin();
     while (alienIter != alienList.end()){
         auto local_iter = alienIter;
@@ -140,10 +141,13 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer){
         auto alienPtr = *local_iter;
         alienPtr->update();
         if (alienPtr->getLocation().second > DISPLAY_H )
+        {
             alienList.erase(local_iter);
+            continue;
+        }
         if (alienPtr->readyToFire())
             bulletMaintainer->add(&(*alienPtr));
-        if (!alienPtr->alive())
+        if (!alienPtr->alive()) //because of bullet hit
         {
             explosion_list.push_back(Explosion(explosion_array,
                                     alienPtr->getLocation().first +
@@ -151,6 +155,7 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer){
                                      alienPtr->getLocation().second +
                                      alienPtr->getDimension().second/2));
             alienPtr->explodeSound();
+            score->addScore(alienPtr->getScoreValue());
             alienList.erase(local_iter);
         }
     }
