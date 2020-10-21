@@ -1,5 +1,8 @@
 #include "bullet.h"
 
+extern ALLEGRO_CONFIG* config;
+extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+
 void Bullet::draw(){
     if (active){
         if (bulletSource != SHIP){
@@ -12,6 +15,17 @@ void Bullet::draw(){
     }
 }
 
+void Ship_bullet::ship_bullet_setup(){
+    speed_x = 0;
+    speed_y = -2*(PRIM_DISPLAY_H/240);
+    bulletSource = SHIP;
+}
+
+void Alien_bullet::alien_bullet_setup(int lim_x1, int lim_x2, int lim_y1,
+                                      int lim_y2){
+    speed_x = (PRIM_DISPLAY_W/320) * between(lim_x1, lim_x2);
+    speed_y = (PRIM_DISPLAY_H/240) * between(lim_y1, lim_y2);
+}
 Bullet* Bullet_factory::createBullet(std::vector<Bullet_image>& vBullet,
                      ShootableObject* shooter){
     ALLEGRO_BITMAP* bulletImg = chooseBullet(vBullet, shooter);

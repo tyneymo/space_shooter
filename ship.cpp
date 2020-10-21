@@ -82,5 +82,26 @@ Ship_factory::Ship_factory(ALLEGRO_BITMAP* sheet){
     int y = std::atoi(al_get_config_value(config, "components", "ship_y"));
     int w = std::atoi(al_get_config_value(config, "components", "ship_w"));
     int h = std::atoi(al_get_config_value(config, "components", "ship_h"));
-    shipImg = sprite_grab(sheet, x, y, w, h);
+    ALLEGRO_BITMAP* tempBmp = sprite_grab(sheet, x, y, w, h);
+    ALLEGRO_BITMAP* saveDisplay = al_get_target_bitmap();
+    shipImg = al_create_bitmap(al_get_bitmap_width(saveDisplay)/26,
+                               al_get_bitmap_height(saveDisplay)/18);
+    al_set_target_bitmap(shipImg);
+    al_clear_to_color(al_map_rgba_f(0,0,0,0));
+    al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(shipImg),
+                          al_get_bitmap_height(shipImg),0);
+    al_set_target_bitmap(saveDisplay);
+    al_destroy_bitmap(tempBmp);
+}
+
+Ship::Ship (ALLEGRO_BITMAP* bitmap, int x, int y){
+    ship_img = bitmap;
+    pos_x = x;
+    pos_y = y;
+    width = al_get_bitmap_width(bitmap);
+    height = al_get_bitmap_height(bitmap);
+    fireWait = 8;
+    type = SHIP;
+    must_init(ship_img, "ship initialization");
+    speed = PRIM_DISPLAY_W/150;
 }

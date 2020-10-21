@@ -76,7 +76,7 @@ protected:
     Bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
             : bullet_img(bitmap),
               pos_x(shooter->getLocation().first + shooter->getDimension().first/2),
-              pos_y(shooter->getLocation().second + shooter->getDimension().second/2),
+              pos_y(shooter->getLocation().second),
               width(al_get_bitmap_width(bitmap)),
               height(al_get_bitmap_height(bitmap)){
         must_init(bullet_img, "bulletimage");
@@ -94,40 +94,47 @@ class Ship_bullet: public Bullet{
 public:
     Ship_bullet (ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Bullet(bitmap,shooter){
-        Bullet::speed_x = 0;
-        Bullet::speed_y = -3;
-        bulletSource = SHIP;
+        ship_bullet_setup();
     }
+
+private:
+    void ship_bullet_setup();
 };
 
-class Bug_bullet: public Bullet{
+class Alien_bullet: public Bullet{
+public:
+    Alien_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
+        : Bullet(bitmap, shooter){
+        pos_y += shooter->getDimension().second;
+    };
+protected:
+    void alien_bullet_setup(int, int, int, int);
+};
+
+class Bug_bullet: public Alien_bullet{
 public:
     Bug_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
-        : Bullet(bitmap, shooter){
-        speed_x = between(-2, 2);
-        speed_y = between(-1, 3);
+        : Alien_bullet(bitmap, shooter){
+        alien_bullet_setup(-2,2,1,3);
         bulletSource = ALIEN;
     }
 
 };
 
-class Arrow_bullet: public Bullet{
+class Arrow_bullet: public Alien_bullet{
 public:
     Arrow_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
-        : Bullet(bitmap, shooter){
-        speed_x = between(-2, 2);
-        speed_y = between(-1, 3);
+        : Alien_bullet(bitmap, shooter){
+        alien_bullet_setup(-2,2,-1,3);
         bulletSource = ALIEN;
     }
 };
 
-class Thiccboi_bulelt: public Bullet{
+class Thiccboi_bulelt: public Alien_bullet{
 public:
     Thiccboi_bulelt(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
-        : Bullet(bitmap, shooter){
-        pos_x -= al_get_bitmap_width(bitmap)/2;
-        speed_x = 0;
-        speed_y = 2;
+        : Alien_bullet(bitmap, shooter){
+        alien_bullet_setup(0,1,2,3);
         bulletSource = ALIEN;
     }
 

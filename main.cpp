@@ -28,7 +28,7 @@ int main(int argc, char** argv)
     al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
     al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
-    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
+//    al_set_blender(ALLEGRO_DEST_COLOR, ALLEGRO_ONE, ALLEGRO_ONE);
 
     ALLEGRO_DISPLAY* disp = al_create_display(PRIM_DISPLAY_W * SCALE,
                                               PRIM_DISPLAY_H * SCALE);
@@ -113,13 +113,13 @@ int main(int argc, char** argv)
             al_clear_to_color(al_map_rgb(0,0,0));
             ship_one->draw();
             ship_two->draw();
-            drawPlayerInformation(lifeBmp,font, &score, &(*ship_one), &(*ship_two));
-            bulletMaintainer.draw();
             alienMaintainer.draw();
+            bulletMaintainer.draw();
             al_set_target_backbuffer(disp);
             al_clear_to_color(al_map_rgb(0,0,0));
             al_draw_scaled_bitmap(buffer, 0, 0, PRIM_DISPLAY_W, PRIM_DISPLAY_H,
                                   0, 0, PRIM_DISPLAY_W * SCALE, PRIM_DISPLAY_H * SCALE, 0);
+            drawPlayerInformation(lifeBmp,font, &score, &(*ship_one), &(*ship_two));
             al_flip_display();
             al_set_target_bitmap(buffer);
             redraw = false;

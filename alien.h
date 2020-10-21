@@ -84,7 +84,10 @@ protected:
         width = al_get_bitmap_width(bitmap);
         height = al_get_bitmap_height(bitmap);
         ALLEGRO_BITMAP* displaying = al_get_target_bitmap();
-        pos_x = between(0, al_get_bitmap_width(displaying) - width);
+        int appearRange = al_get_bitmap_width(displaying) - width;
+        int narrowRangeID = between(0,6);
+        pos_x = between(narrowRangeID*(appearRange/6), (narrowRangeID+1)*
+                                                        appearRange/6);
         pos_y = -height;
     }
 

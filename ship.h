@@ -16,7 +16,6 @@ public:
     enum control {UP, DOWN, LEFT, RIGHT};
 
     ~Ship(){
-        al_destroy_bitmap(ship_img);
         //destroy audio samples
     }
 
@@ -41,16 +40,7 @@ public:
     }
 
 private:
-    Ship(ALLEGRO_BITMAP* bitmap, int x, int y): ship_img(bitmap) {
-        pos_x = x;
-        pos_y = y;
-        width = al_get_bitmap_width(bitmap);
-        height = al_get_bitmap_height(bitmap);
-        fireWait = 8;
-        type = SHIP;
-        must_init(ship_img, "ship initialization");
-    }
-
+    Ship(ALLEGRO_BITMAP* bitmap, int x, int y);
     void update_util(Keyboard* keyboard, int up, int down,
                      int left, int right, int shoot);
 
@@ -69,7 +59,7 @@ private:
 
     ALLEGRO_BITMAP* ship_img;
 
-    int speed = 3;
+    int speed;
     bool default_control = true;
     int new_up, new_down, new_left, new_right, new_shoot;
     int life = 5;
@@ -87,7 +77,7 @@ public:
     }
 
     ~Ship_factory(){
-        al_destroy_bitmap(shipImg)   ;
+        al_destroy_bitmap(shipImg);
     }
 
 private:

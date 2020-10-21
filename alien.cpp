@@ -1,5 +1,8 @@
 #include "alien.h"
 
+extern ALLEGRO_CONFIG* config;
+extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+
 Alien* Alien_Factory::createAlien(std::vector<Alien_image>& vec_AlienImage, Object_type type){
     ALLEGRO_BITMAP* alienBitmap;
     alienBitmap = chooseAlien(vec_AlienImage, type);
@@ -39,13 +42,13 @@ void Alien::update(){
     //update position
     if (speed.second == 1)
     {
-        pos_y += speed.first;
+        pos_y += speed.first*(PRIM_DISPLAY_H/240);
     }
     //speed is a fraction:
     if (speedCounter != speed.second)
         ++speedCounter;
     else {
-             pos_y += 1;
+             pos_y += PRIM_DISPLAY_H/240;
              speedCounter = 1;
     }
     //update firing state
