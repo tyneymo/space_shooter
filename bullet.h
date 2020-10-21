@@ -105,7 +105,8 @@ class Alien_bullet: public Bullet{
 public:
     Alien_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Bullet(bitmap, shooter){
-        pos_y += shooter->getDimension().second;
+        pos_y += shooter->getDimension().second - al_get_bitmap_height(bitmap)/4;
+        pos_x -= al_get_bitmap_width(bitmap)/2;
     };
 protected:
     void alien_bullet_setup(int, int, int, int);

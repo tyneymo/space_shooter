@@ -30,6 +30,7 @@ class Score;
 class Ship;
 void drawPlayerInformation(ALLEGRO_BITMAP*,ALLEGRO_FONT* font,Score* score,
                            Ship* ship1, Ship* ship2);
+ALLEGRO_BITMAP* getLifeBmp(ALLEGRO_BITMAP*);
 
 class Score{
     long score = 0;

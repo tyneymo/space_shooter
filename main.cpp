@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     must_init(spritesheet, "init sprite, please check image file name!");
     Ship_factory aShipFactory(spritesheet);
 
-    ALLEGRO_BITMAP* lifeBmp = sprite_grab(spritesheet, 0, 14, 6, 6);
+    ALLEGRO_BITMAP* lifeBmp = getLifeBmp(spritesheet);
 
     std::shared_ptr<Ship> ship_one(aShipFactory.createShip(2*PRIM_DISPLAY_W /3 ,
                                                            4*PRIM_DISPLAY_H /5));
@@ -69,6 +69,9 @@ int main(int argc, char** argv)
     Alien_Maintainer alienMaintainer(&alienFactory, spritesheet);
     long frameCounter = 0;
     Score score;
+    int AlienCreateFrequent = 40;
+    int scoreToIncreaseFrequent = 1000;
+    int hardnessCounter = 0;
     while(1){
         al_wait_for_event(queue, &event);
 
@@ -82,9 +85,14 @@ int main(int argc, char** argv)
                     bulletMaintainer.add(&(*ship_one));
                 if (ship_two->readyToFire())
                     bulletMaintainer.add(&(*ship_two));
-                if (!(frameCounter % 40))
+                if (!(frameCounter % AlienCreateFrequent))
                     alienMaintainer.add();
                 alienMaintainer.maintain(&bulletMaintainer, &score);
+                if ((score.getScore() / scoreToIncreaseFrequent) > hardnessCounter)
+                {
+                    hardnessCounter++;
+                    AlienCreateFrequent -= 1;
+                }
                 bulletMaintainer.maintain(&(*ship_one), &alienMaintainer);
                 bulletMaintainer.maintain(&(*ship_two), &alienMaintainer);
                 redraw = true;

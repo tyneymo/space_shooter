@@ -54,7 +54,7 @@ void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font,Score* sc
         al_draw_bitmap(lifeImg, 3 + lifeImgWid*i, 12, 0 );
     }
     for (int i = 0; i < ship1LivesLeft; ++i){
-        al_draw_bitmap(lifeImg, PRIM_DISPLAY_W - (9 + lifeImgWid*i), 12, 0 );
+        al_draw_bitmap(lifeImg, PRIM_DISPLAY_W - (3 + lifeImgWid*(i+1)), 12, 0 );
     }
 }
 
@@ -160,4 +160,22 @@ void addConfig(ALLEGRO_CONFIG* config){
     al_set_config_value(config, section.c_str(), "spark2_w", "9");
     al_set_config_value(config, section.c_str(), "spark2_h", "8");
     al_save_config_file("ssconfig.ini", config);
+}
+
+ALLEGRO_BITMAP* getLifeBmp(ALLEGRO_BITMAP* spritesheet){
+    int x = atoi(al_get_config_value(config, "components", "life_x"));
+    int y = atoi(al_get_config_value(config, "components", "life_y"));
+    int w = atoi(al_get_config_value(config, "components", "life_w"));
+    int h = atoi(al_get_config_value(config, "components", "life_h"));
+    ALLEGRO_BITMAP* tempBmp = sprite_grab(spritesheet, x,y,w,h);
+    ALLEGRO_BITMAP* saveDisplay = al_get_target_bitmap();
+    int displayWidth = al_get_bitmap_width(saveDisplay);
+    int displayHeight = al_get_bitmap_height(saveDisplay);
+    ALLEGRO_BITMAP* lifeBmp = al_create_bitmap(displayWidth/53, displayHeight/40);
+    al_set_target_bitmap(lifeBmp);
+    al_clear_to_color(al_map_rgb(0,0,0));
+    al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,displayWidth/53, displayHeight/40,0);
+    al_set_target_bitmap(saveDisplay);
+    al_destroy_bitmap(tempBmp);
+    return lifeBmp;
 }
