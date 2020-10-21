@@ -3,7 +3,7 @@
 #include "maintainers.h"
 
 
-int main()
+int main(int argc, char** argv)
 {
     must_init(al_init(), "allegro init");
     must_init(al_install_keyboard(), "keyboard");
