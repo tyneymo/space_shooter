@@ -4,7 +4,6 @@
 
 ALLEGRO_CONFIG* config;
 int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
-float SCALE;
 
 
 int main(int argc, char** argv)
@@ -28,10 +27,9 @@ int main(int argc, char** argv)
     al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
     al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
-//    al_set_blender(ALLEGRO_DEST_COLOR, ALLEGRO_ONE, ALLEGRO_ONE);
 
-    ALLEGRO_DISPLAY* disp = al_create_display(PRIM_DISPLAY_W * SCALE,
-                                              PRIM_DISPLAY_H * SCALE);
+    ALLEGRO_DISPLAY* disp = al_create_display(PRIM_DISPLAY_W,
+                                              PRIM_DISPLAY_H);
     ALLEGRO_BITMAP* buffer = al_create_bitmap(PRIM_DISPLAY_W, PRIM_DISPLAY_H);
     must_init(disp, "display init");
     must_init(buffer, "display buffer");
@@ -118,7 +116,7 @@ int main(int argc, char** argv)
             al_set_target_backbuffer(disp);
             al_clear_to_color(al_map_rgb(0,0,0));
             al_draw_scaled_bitmap(buffer, 0, 0, PRIM_DISPLAY_W, PRIM_DISPLAY_H,
-                                  0, 0, PRIM_DISPLAY_W * SCALE, PRIM_DISPLAY_H * SCALE, 0);
+                                  0, 0, PRIM_DISPLAY_W, PRIM_DISPLAY_H, 0);
             drawPlayerInformation(lifeBmp,font, &score, &(*ship_one), &(*ship_two));
             al_flip_display();
             al_set_target_bitmap(buffer);

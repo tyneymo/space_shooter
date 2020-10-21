@@ -5,7 +5,6 @@
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
-extern float SCALE;
 
 int between(int low, int high){
     return low + (rand() % (high - low));
@@ -85,8 +84,6 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
                                                    "PRIM_DISPLAY_WIDTH"));
     PRIM_DISPLAY_H = std::atoi(al_get_config_value(config, "display",
                                                    "PRIM_DISPLAY_HEIGHT"));
-    SCALE = std::atof(al_get_config_value(config, "display",
-                                                   "SCALE"));
 }
 
 void addConfig(ALLEGRO_CONFIG* config){
@@ -102,9 +99,8 @@ void addConfig(ALLEGRO_CONFIG* config){
     al_set_config_value(config, section.c_str(), "explode2", "explode2.flac");
     section = "display";
     al_add_config_section(config, section.c_str());
-    al_set_config_value(config, section.c_str(), "PRIM_DISPLAY_WIDTH", "320");
-    al_set_config_value(config, section.c_str(), "PRIM_DISPLAY_HEIGHT", "240");
-    al_set_config_value(config, section.c_str(), "SCALE", "3");
+    al_set_config_value(config, section.c_str(), "PRIM_DISPLAY_WIDTH", "960");
+    al_set_config_value(config, section.c_str(), "PRIM_DISPLAY_HEIGHT", "720");
     section = "components";
     al_add_config_section(config, section.c_str());
     al_set_config_value(config, section.c_str(), "ship_x", "0");

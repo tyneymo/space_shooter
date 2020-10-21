@@ -17,5 +17,13 @@ Or use .pro file to open Qt project and build from there.
 - Player 2 use arrow buttons for navigation and 'M' for shooting.
 - 'ESC' to quit game.
 
+4. Config:
+First run of program, a config file name ssconfig.ini will be generated.
+You can change the spritesheet file name, sound file names, positions and dim 
+of components such as ships, aliens, explode effects...on this file. The game will
+auto rescale assigned components to fit game windows, so you can choose whatever
+sizes of spritesheet and components.
+
+
 Master branch will play at cooperate mode, two ships one score.
 For compete mode, two players with two scores, please use Seperate_scores branch

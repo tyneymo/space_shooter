@@ -51,12 +51,13 @@ Bullet* Bullet_factory::createBullet(std::vector<Bullet_image>& vBullet,
         //sometimes thiccboi shoot double, sometimes single row of bullets
         ALLEGRO_BITMAP* thiccboiBulletBmp = al_create_bitmap(oldWidth*3,
                                             oldHeigh + 2*oldHeigh*(rand() % 2));
-        ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
+        ALLEGRO_BITMAP* saveDisplay = al_get_target_bitmap();
         al_set_target_bitmap(thiccboiBulletBmp);
+        al_clear_to_color(al_map_rgba_f(0,0,0,0));
         for (int i = 0; i<2; ++i)
             for (int j = 0; j < 2; ++j)
                 al_draw_bitmap(bulletImg, 2*i*oldWidth, 2*j*oldHeigh, 0);
-        al_set_target_bitmap(old_target);
+        al_set_target_bitmap(saveDisplay);
         return new Thiccboi_bulelt(thiccboiBulletBmp, shooter);
         break;
     }
