@@ -41,11 +41,11 @@ public:
     }
 
 private:
-    Ship(ALLEGRO_BITMAP* bitmap, int x, int y, int w, int h): ship_img(bitmap) {
+    Ship(ALLEGRO_BITMAP* bitmap, int x, int y): ship_img(bitmap) {
         pos_x = x;
         pos_y = y;
-        width = w;
-        height = h;
+        width = al_get_bitmap_width(bitmap);
+        height = al_get_bitmap_height(bitmap);
         fireWait = 8;
         type = SHIP;
         must_init(ship_img, "ship initialization");
@@ -81,20 +81,19 @@ private:
 
 class Ship_factory{
 public:
-    Ship_factory(ALLEGRO_BITMAP* sheet): sprite(sheet){}
+    Ship_factory(ALLEGRO_BITMAP* sheet);
     Ship* createShip(int x, int y)    {
-        ALLEGRO_BITMAP* ship_image = sprite_grab(sprite, shipImage_x,
-                                                          shipImage_y,
-                                                          shipImage_w,
-                                                          shipImage_h
-                                                          );
-        return new Ship(ship_image, x, y, shipImage_w, shipImage_h);
+        return new Ship(shipImg, x, y);
+    }
+
+    ~Ship_factory(){
+        al_destroy_bitmap(shipImg)   ;
     }
 
 private:
     //sprite keep copy of a common sprite and should be destroyed by user
-    ALLEGRO_BITMAP* sprite;
-    int shipImage_x = 0, shipImage_y = 0, shipImage_w = 12, shipImage_h = 13;
+    ALLEGRO_BITMAP* shipImg;
+    int shipImage_x, shipImage_y, shipImage_w, shipImage_h;
 };
 
 #endif // SHIP_H

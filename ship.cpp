@@ -2,7 +2,6 @@
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
-extern int SCALE;
 
 void Ship::draw(){
     if (!life)
@@ -76,4 +75,12 @@ void Ship::update_util(Keyboard* keyboard, int up, int down,
         pos_y = PRIM_DISPLAY_H  - height;
     if (keyboard->key[shoot])
         shoot_command();
+}
+
+Ship_factory::Ship_factory(ALLEGRO_BITMAP* sheet){
+    int x = std::atoi(al_get_config_value(config, "components", "ship_x"));
+    int y = std::atoi(al_get_config_value(config, "components", "ship_y"));
+    int w = std::atoi(al_get_config_value(config, "components", "ship_w"));
+    int h = std::atoi(al_get_config_value(config, "components", "ship_h"));
+    shipImg = sprite_grab(sheet, x, y, w, h);
 }

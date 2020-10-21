@@ -3,7 +3,6 @@
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
-extern int SCALE;
 
 bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
     if (bullet->shooterType() == ALIEN && (obj->getType() == BUG

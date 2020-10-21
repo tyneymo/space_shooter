@@ -4,7 +4,7 @@
 
 ALLEGRO_CONFIG* config;
 int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
-int SCALE;
+float SCALE;
 
 
 int main(int argc, char** argv)
