@@ -2,6 +2,10 @@
 #include "utilities.h"
 #include "maintainers.h"
 
+ALLEGRO_CONFIG* config;
+int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+int SCALE;
+
 
 int main(int argc, char** argv)
 {
@@ -12,13 +16,12 @@ int main(int argc, char** argv)
     must_init(al_init_acodec_addon(), "allegro audio codec");
     must_init(al_reserve_samples(16), "reserve samples");
     must_init(al_init_font_addon(), "font addon init");
+    config = loadConfig();
+    setDisplayValues(config);
 
-
-    //note: need destroy timer
     ALLEGRO_TIMER* timer = al_create_timer(1.0/30.0);
     must_init(timer, "timer");
 
-    //note: need destroy queue
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     must_init(queue, "event queue");
 
@@ -27,10 +30,9 @@ int main(int argc, char** argv)
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ONE);
 
-    //note: need destroy queue
-    ALLEGRO_DISPLAY* disp = al_create_display(DISPLAY_W * SCALE,
-                                              DISPLAY_H * SCALE);
-    ALLEGRO_BITMAP* buffer = al_create_bitmap(DISPLAY_W, DISPLAY_H);
+    ALLEGRO_DISPLAY* disp = al_create_display(PRIM_DISPLAY_W * SCALE,
+                                              PRIM_DISPLAY_H * SCALE);
+    ALLEGRO_BITMAP* buffer = al_create_bitmap(PRIM_DISPLAY_W, PRIM_DISPLAY_H);
     must_init(disp, "display init");
     must_init(buffer, "display buffer");
     ALLEGRO_FONT* font = al_create_builtin_font();
@@ -40,16 +42,17 @@ int main(int argc, char** argv)
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_display_event_source(disp));
 
-    ALLEGRO_BITMAP* spritesheet = al_load_bitmap("spritesheet.png");
-    must_init(spritesheet, "init sprite");
+    ALLEGRO_BITMAP* spritesheet = al_load_bitmap(al_get_config_value(config,
+                                                 "files_name", "sprite_sheet"));
+    must_init(spritesheet, "init sprite, please check image file name!");
     Ship_factory aShipFactory(spritesheet);
 
     ALLEGRO_BITMAP* lifeBmp = sprite_grab(spritesheet, 0, 14, 6, 6);
 
-    std::shared_ptr<Ship> ship_one(aShipFactory.createShip(2*DISPLAY_W /3 ,
-                                                           4*DISPLAY_H /5));
-    std::shared_ptr<Ship> ship_two(aShipFactory.createShip(DISPLAY_W /3,
-                                                           4*DISPLAY_H /5));
+    std::shared_ptr<Ship> ship_one(aShipFactory.createShip(2*PRIM_DISPLAY_W /3 ,
+                                                           4*PRIM_DISPLAY_H /5));
+    std::shared_ptr<Ship> ship_two(aShipFactory.createShip(PRIM_DISPLAY_W /3,
+                                                           4*PRIM_DISPLAY_H /5));
 
     ship_two->set_control(ALLEGRO_KEY_W, ALLEGRO_KEY_S, 
                           ALLEGRO_KEY_A, ALLEGRO_KEY_D, ALLEGRO_KEY_F);
@@ -105,7 +108,8 @@ int main(int argc, char** argv)
 
         if (redraw && al_is_event_queue_empty(queue))
         {
-            al_set_target_bitmap(buffer);
+            if (buffer != al_get_target_bitmap())
+                al_set_target_bitmap(buffer);
             al_clear_to_color(al_map_rgb(0,0,0));
             ship_one->draw();
             ship_two->draw();
@@ -114,9 +118,10 @@ int main(int argc, char** argv)
             alienMaintainer.draw();
             al_set_target_backbuffer(disp);
             al_clear_to_color(al_map_rgb(0,0,0));
-            al_draw_scaled_bitmap(buffer, 0, 0, DISPLAY_W, DISPLAY_H,
-                                  0, 0, DISPLAY_W * SCALE, DISPLAY_H * SCALE, 0);
+            al_draw_scaled_bitmap(buffer, 0, 0, PRIM_DISPLAY_W, PRIM_DISPLAY_H,
+                                  0, 0, PRIM_DISPLAY_W * SCALE, PRIM_DISPLAY_H * SCALE, 0);
             al_flip_display();
+            al_set_target_bitmap(buffer);
             redraw = false;
         }
 
@@ -129,5 +134,6 @@ int main(int argc, char** argv)
     al_destroy_bitmap(spritesheet);
     al_destroy_bitmap(lifeBmp);
     al_destroy_font(font);
+    al_destroy_config(config);
     return 0;
 }

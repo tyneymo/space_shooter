@@ -1,5 +1,9 @@
 #include "ship.h"
 
+extern ALLEGRO_CONFIG* config;
+extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+extern int SCALE;
+
 void Ship::draw(){
     if (!life)
         return; //need add more stuff
@@ -64,12 +68,12 @@ void Ship::update_util(Keyboard* keyboard, int up, int down,
         pos_x += speed;
     if (pos_x < 0)
         pos_x = 0;
-    if (pos_x > DISPLAY_W  - width)
-        pos_x = DISPLAY_W  - width;
+    if (pos_x > PRIM_DISPLAY_W  - width)
+        pos_x = PRIM_DISPLAY_W  - width;
     if (pos_y < 0)
         pos_y = 0;
-    if (pos_y > DISPLAY_H  - height)
-        pos_y = DISPLAY_H  - height;
+    if (pos_y > PRIM_DISPLAY_H  - height)
+        pos_y = PRIM_DISPLAY_H  - height;
     if (keyboard->key[shoot])
         shoot_command();
 }

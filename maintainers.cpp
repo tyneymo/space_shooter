@@ -1,6 +1,10 @@
 #include "maintainers.h"
 #include "ship.h"
 
+extern ALLEGRO_CONFIG* config;
+extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+extern int SCALE;
+
 bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
     if (bullet->shooterType() == ALIEN && (obj->getType() == BUG
                                            || obj->getType() == ARROW
@@ -53,9 +57,9 @@ void Bullet_Maintainer::maintain(ShootableObject *ship,
         bulletPtr->update();
         //check out of bound
         if (bulletPtr->getLocation().second < 0 ||
-                            bulletPtr->getLocation().second > DISPLAY_H ||
+                            bulletPtr->getLocation().second > PRIM_DISPLAY_H ||
                             bulletPtr->getLocation().first < 0 ||
-                            bulletPtr->getLocation().first > DISPLAY_W)
+                            bulletPtr->getLocation().first > PRIM_DISPLAY_W)
         {
             bullet_list.erase(local_iter);
             erased = true;
@@ -140,7 +144,7 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer,
         alienIter++;
         auto alienPtr = *local_iter;
         alienPtr->update();
-        if (alienPtr->getLocation().second > DISPLAY_H )
+        if (alienPtr->getLocation().second > PRIM_DISPLAY_H )
         {
             alienList.erase(local_iter);
             continue;
@@ -177,5 +181,112 @@ void Alien_Maintainer::draw(){
         if (local_iter->exploded())
             explosion_list.erase(local_iter);
         else local_iter->draw();
+    }
+}
+
+Alien_Maintainer::Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* spritesheet){
+    alienFactory = factory;
+    sprite = spritesheet;
+    ALLEGRO_BITMAP* bitmapPtr;
+    std::string start_chars = "alien";
+    Object_type aliens[] = {BUG, ARROW, THICCBOI};
+    int x,y,w,h;
+    for (int i = 1; i <= 3; ++i){ //config file list alien from 1
+        std::string digits = std::to_string(i);
+        x = std::atoi(al_get_config_value(config, "components",
+                                          (start_chars + digits + "_x").c_str()));
+        y = std::atoi(al_get_config_value(config, "components",
+                                          (start_chars + digits + "_y").c_str()));
+        w = std::atoi(al_get_config_value(config, "components",
+                                          (start_chars + digits + "_w").c_str()));
+        h = std::atoi(al_get_config_value(config, "components",
+                                          (start_chars + digits + "_h").c_str()));
+        bitmapPtr = sprite_grab(sprite, x,y,w,h);
+        alienImages.push_back(Alien_image(bitmapPtr, aliens[i-1])); //i from 1
+    }
+//    //BUG:
+//    x = std::atoi(al_get_config_value(config, "components", "bug_x"));
+//    y = std::atoi(al_get_config_value(config, "components", "bug_y"));
+//    w = std::atoi(al_get_config_value(config, "components", "bug_w"));
+//    h = std::atoi(al_get_config_value(config, "components", "bug_h"));
+//    bitmapPtr = sprite_grab(sprite, x,y,w,h);
+//    alienImages.push_back(Alien_image(bitmapPtr, Object_type::BUG));
+//    //ARROW:
+//    x = std::atoi(al_get_config_value(config, "components", "arrow_x"));
+//    y = std::atoi(al_get_config_value(config, "components", "arrow_y"));
+//    w = std::atoi(al_get_config_value(config, "components", "arrow_w"));
+//    h = std::atoi(al_get_config_value(config, "components", "arrow_h"));
+//    bitmapPtr = sprite_grab(sprite, x,y,w,h);
+//    alienImages.push_back(Alien_image(bitmapPtr, Object_type::ARROW));
+//    //THICCBOI:
+//    x = std::atoi(al_get_config_value(config, "components", "thiccboi_x"));
+//    y = std::atoi(al_get_config_value(config, "components", "thiccboi_y"));
+//    w = std::atoi(al_get_config_value(config, "components", "thiccboi_w"));
+//    h = std::atoi(al_get_config_value(config, "components", "thiccboi_h"));
+//    bitmapPtr = sprite_grab(sprite, x,y,w,h);
+//    alienImages.push_back(Alien_image(bitmapPtr, Object_type::THICCBOI));
+    //explostion frames effect, extracts from sprites
+    start_chars = "explosion";
+    for (int i = 0; i < 4; ++i){
+        std::string digits = std::to_string(i);
+        x = std::atoi(al_get_config_value(config, "components",
+                                          (start_chars + digits + "_x").c_str()));
+        y = std::atoi(al_get_config_value(config, "components",
+                                          (start_chars + digits + "_y").c_str()));
+        w = std::atoi(al_get_config_value(config, "components",
+                                          (start_chars + digits + "_w").c_str()));
+        h = std::atoi(al_get_config_value(config, "components",
+                                          (start_chars + digits + "_h").c_str()));
+        explosion_array[i] = sprite_grab(sprite, x,y,w,h);
+    }
+
+}
+
+Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* spritesheet){
+    bulletFactory = factory;
+    sprite = spritesheet;
+    ALLEGRO_BITMAP* bmp;
+    std::string start_key_chars = "shipshot";
+    int x, y, w, h;
+    //SHIP:
+    x = std::atoi(al_get_config_value(config, "components",
+                                          (start_key_chars + "_x").c_str()));
+    y = std::atoi(al_get_config_value(config, "components",
+                                      (start_key_chars + "_y").c_str()));
+    w = std::atoi(al_get_config_value(config, "components",
+                                      (start_key_chars + "_w").c_str()));
+    h = std::atoi(al_get_config_value(config, "components",
+                                      (start_key_chars + "_h").c_str()));
+        bmp = sprite_grab(spritesheet, x, y, w, h);
+        bulletImages.push_back(Bullet_image(bmp, SHIP));
+    //ALIEN:
+    Object_type aliens[] = {BUG, ARROW, THICCBOI};
+    start_key_chars = "alienshot";
+    x = std::atoi(al_get_config_value(config, "components",
+                                      (start_key_chars + "_x").c_str()));
+    y = std::atoi(al_get_config_value(config, "components",
+                                      (start_key_chars + "_y").c_str()));
+    w = std::atoi(al_get_config_value(config, "components",
+                                      (start_key_chars + "_w").c_str()));
+    h = std::atoi(al_get_config_value(config, "components",
+                                      (start_key_chars + "_h").c_str()));
+    bmp = sprite_grab(spritesheet, x, y, w, h);
+    for (int i = 0; i < 3; ++i){
+        bulletImages.push_back(Bullet_image(bmp, aliens[i]));
+    }
+
+    //initialize images in spark_array:
+    start_key_chars = "spark";
+    for (int i = 0; i < 3; ++i){
+        std::string digits = std::to_string(i);
+        x = std::atoi(al_get_config_value(config, "components",
+                                          (start_key_chars + digits + "_x").c_str()));
+        y = std::atoi(al_get_config_value(config, "components",
+                                          (start_key_chars + digits + "_y").c_str()));
+        w = std::atoi(al_get_config_value(config, "components",
+                                          (start_key_chars + digits + "_w").c_str()));
+        h = std::atoi(al_get_config_value(config, "components",
+                                          (start_key_chars + digits + "_h").c_str()));
+        spark_array[i] = sprite_grab(sprite, x,y,w,h);
     }
 }

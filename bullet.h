@@ -8,6 +8,7 @@ class Alien;
 class Ship;
 class Alien_Maintainer;
 
+
 struct Bullet_image {
     ALLEGRO_BITMAP* bulletBitmap;
     Object_type type;

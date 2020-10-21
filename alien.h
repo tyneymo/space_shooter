@@ -7,6 +7,7 @@ class Alien_Factory;
 class Bullet_Maintainer;
 class Alien_Maintainer;
 
+
 struct Alien_image {
     ALLEGRO_BITMAP* alienBitmap;
     Object_type type;
@@ -82,7 +83,8 @@ protected:
         type = ALIEN;
         width = al_get_bitmap_width(bitmap);
         height = al_get_bitmap_height(bitmap);
-        pos_x = between(0, DISPLAY_W - width);
+        ALLEGRO_BITMAP* displaying = al_get_target_bitmap();
+        pos_x = between(0, al_get_bitmap_width(displaying) - width);
         pos_y = -height;
     }
 

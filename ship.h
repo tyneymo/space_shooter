@@ -6,6 +6,7 @@
 #include "utilities.h"
 #include "bullet.h"
 
+
 class Ship_factory;
 bool bulletObjCollide(ShootableObject* obj, Bullet* bullet);
 class Ship : public ShootableObject{

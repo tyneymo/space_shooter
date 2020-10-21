@@ -50,12 +50,3 @@ Bullet* Bullet_factory::createBullet(std::vector<Bullet_image>& vBullet,
     std::cout << "shooter type not availabe" << std::endl;
     return nullptr;
 }
-
-//void Thiccboi_bulelt::draw(){
-//    int flashing = (flashEffect++ / 2) % 2;
-//    ALLEGRO_COLOR tint = flashing? al_map_rgb_f(1,1,1) :
-//                                   al_map_rgb_f(0.2,0.2,0.2);
-//    al_draw_tinted_bitmap(bullet_img, tint, pos_x, pos_y, 0);
-//    al_draw_tinted_bitmap(bullet_img, tint,
-//                          pos_x+al_get_bitmap_width(bullet_img), pos_y, 0);
-//}

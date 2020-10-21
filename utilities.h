@@ -12,9 +12,6 @@ class ShootableObject;
 
 enum Bullet_type {SHIP_BULLET1, SHIP_BULLET2, ALIEN_BULLET};
 enum Object_type {SHIP, ALIEN, BUG, ARROW,THICCBOI};
-const int DISPLAY_W = 320;
-const int DISPLAY_H = 240;
-const int SCALE = 3;
 
 int between(int low, int high);
 
@@ -24,6 +21,11 @@ void must_init(bool test, const char* description);
 
 bool collide(int obj1_x, int obj1_y, int obj1_w, int obj1_h,
                int obj2_x, int obj2_y, int obj2_w, int obj2_h);
+
+void addConfig(ALLEGRO_CONFIG*);
+ALLEGRO_CONFIG* loadConfig();
+void setDisplayValues(ALLEGRO_CONFIG* config);
+
 class Score;
 class Ship;
 void drawPlayerInformation(ALLEGRO_BITMAP*,ALLEGRO_FONT* font,Score* score,
@@ -43,15 +45,7 @@ public:
 
 class ShootableObject{
 public:
-    ShootableObject(){
-        //audio file, hardcode :(
-        shot_sample = al_load_sample("shot.flac");
-        must_init(shot_sample, "shot sample");
-        sample_explode[0] = al_load_sample("explode1.flac");
-        must_init(sample_explode[0], "sample explode 1");
-        sample_explode[1] = al_load_sample("explode2.flac");
-        must_init(sample_explode[1], "sample explode 2");
-    }
+    ShootableObject();
 
     std::pair<int,int> getLocation(){
         return std::make_pair(pos_x, pos_y);
