@@ -187,9 +187,23 @@ void Alien_Maintainer::draw(){
     }
 }
 
-Alien_Maintainer::Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* spritesheet){
-    alienFactory = factory;
-    sprite = spritesheet;
+void Alien_Maintainer::cleanBitmaps(){
+    auto vec_iter = alienImages.begin();
+            auto save = vec_iter->alienBitmap;
+            al_destroy_bitmap(vec_iter->alienBitmap);
+            while (++vec_iter != alienImages.end())
+            {
+                if (vec_iter->alienBitmap != save)
+                    al_destroy_bitmap(vec_iter->alienBitmap);
+                save = vec_iter->alienBitmap;
+            }
+            for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
+                 ++i)
+                al_destroy_bitmap(explosion_array[i]);
+
+}
+
+void Alien_Maintainer::updateBitmaps(){
     ALLEGRO_BITMAP* bitmapPtr;
     std::string start_chars = "alien";
     Object_type aliens[] = {BUG, ARROW, THICCBOI};

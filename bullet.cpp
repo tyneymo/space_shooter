@@ -5,13 +5,29 @@ extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 extern int EFFECTIVE_DISPLAY_DIAG;
 extern float FRAMERATEMULTIPLIER;
 
+BulletSpark::BulletSpark(ALLEGRO_BITMAP** bm_array,int x, int y) {
+    spark_array = bm_array;
+    pos_x = x;
+    pos_y = y;
+    fixFramerate = 2*FRAMERATEMULTIPLIER;
+}
+
+void BulletSpark::draw(){
+        al_draw_bitmap(spark_array[numOfSparkFrames-counter], pos_x, pos_y, 0);
+        if (!fixFramerate--){
+            --counter;
+            fixFramerate = 2*FRAMERATEMULTIPLIER;
+        }
+}
+
 void Bullet::draw(){
     if (active){
         if (bulletSource != SHIP){
-            int flashing = (flashEffect++ / 2) % 2;
-            ALLEGRO_COLOR tint = flashing? al_map_rgb_f(1,1,1) :
-                                           al_map_rgb_f(0.6,0.6,0.6);
+            int flashing = (int)(flashEffect++ / (2*FRAMERATEMULTIPLIER)) % 2;
+            ALLEGRO_COLOR tint = flashing? al_map_rgba_f(1,1,1,1) :
+                                           al_map_rgba_f(0.5,0.5,0.5,0.5);
             al_draw_tinted_bitmap(bullet_img, tint, pos_x, pos_y, 0);
+            return;
         }
         al_draw_bitmap(bullet_img, pos_x, pos_y, 0);
     }

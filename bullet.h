@@ -24,13 +24,11 @@ struct BulletSpark{
     ALLEGRO_BITMAP** spark_array;
     int counter = numOfSparkFrames;
     int pos_x, pos_y;
+    int fixFramerate;
 
-    BulletSpark(ALLEGRO_BITMAP** bm_array,int x, int y): spark_array(bm_array),
-                                                        pos_x(x), pos_y(y){}
-    void draw(){
-        al_draw_bitmap(spark_array[numOfSparkFrames-counter], pos_x, pos_y, 0);
-        --counter;
-    }
+    BulletSpark(ALLEGRO_BITMAP** bm_array,int x, int y);
+
+    void draw();
 
     bool sparked(){
         return (!counter);

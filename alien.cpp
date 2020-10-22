@@ -5,6 +5,22 @@ extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 extern int EFFECTIVE_DISPLAY_DIAG;
 extern float FRAMERATEMULTIPLIER;
 
+Explosion::Explosion(ALLEGRO_BITMAP** bm_array,int x, int y): explosion_array(bm_array),
+                                                    pos_x(x), pos_y(y){
+    explosion_array = bm_array;
+    pos_x = x;
+    pos_y = y;
+    fixFramerate = 2*FRAMERATEMULTIPLIER;
+}
+
+void Explosion::draw(){
+    al_draw_bitmap(explosion_array[numOfExplosionFrames-counter], pos_x, pos_y, 0);
+    if (!fixFramerate--){
+        --counter;
+        fixFramerate = 2*FRAMERATEMULTIPLIER;
+    }
+}
+
 Alien* Alien_Factory::createAlien(std::vector<Alien_image>& vec_AlienImage, Object_type type){
     ALLEGRO_BITMAP* alienBitmap;
     alienBitmap = chooseAlien(vec_AlienImage, type);
@@ -65,13 +81,12 @@ void Alien::update(){
         fireNow = true;
     }
     //update blink_counter if neccessary
-    static int Blink_frames = 6*FRAMERATEMULTIPLIER;
-    if (gotHit && !(--blink_counter)){
+    if (gotHit && !(blink_counter--)){
         gotHit = false;
-        blink_counter = Blink_frames;
+        blink_counter =  6*FRAMERATEMULTIPLIER;
     }
-    //if blink_counter was not setup at first run
-    if (!blink_counter) blink_counter = Blink_frames;
+    //for first run only
+    if (!gotHit && !blink_counter) blink_counter = 6*FRAMERATEMULTIPLIER;
     return;
 }
 
@@ -93,7 +108,7 @@ bool Alien::readyToFire(){
 void Alien::draw(){
     if (alive() && (!gotHit))
         al_draw_bitmap(bug_img, pos_x, pos_y, 0);
-    if (gotHit && (blink_counter % 2))
+    if (gotHit && ((int)(blink_counter / (2*FRAMERATEMULTIPLIER)) % 2))
         al_draw_bitmap(bug_img, pos_x, pos_y, 0);
 }
 

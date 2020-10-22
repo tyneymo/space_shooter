@@ -20,13 +20,10 @@ struct Explosion{
     ALLEGRO_BITMAP** explosion_array;
     int counter = numOfExplosionFrames;
     int pos_x, pos_y;
+    int fixFramerate;
 
-    Explosion(ALLEGRO_BITMAP** bm_array,int x, int y): explosion_array(bm_array),
-                                                        pos_x(x), pos_y(y){}
-    void draw(){
-        al_draw_bitmap(explosion_array[numOfExplosionFrames-counter], pos_x, pos_y, 0);
-        --counter;
-    }
+    Explosion(ALLEGRO_BITMAP** bm_array,int x, int y);
+    void draw();
 
     bool exploded(){
         return (!counter);

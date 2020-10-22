@@ -10,7 +10,11 @@ class Alien_Factory;
 class Alien_Maintainer{
     friend void shotAndHit();
 public:
-    Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* spritesheet);
+    Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* spritesheet):
+                        alienFactory(factory), sprite(spritesheet){
+        updateBitmaps();
+    }
+
     void add(Object_type type){
         alienList.push_back(std::shared_ptr<Alien>
                             (alienFactory->createAlien(alienImages, type)));
@@ -40,21 +44,11 @@ public:
     ~Alien_Maintainer(){
         //clean all image except sprite, which is common to ship, bullet and /
         //aliens
-        auto vec_iter = alienImages.begin();
-                auto save = vec_iter->alienBitmap;
-                al_destroy_bitmap(vec_iter->alienBitmap);
-                while (++vec_iter != alienImages.end())
-                {
-                    if (vec_iter->alienBitmap != save)
-                        al_destroy_bitmap(vec_iter->alienBitmap);
-                    save = vec_iter->alienBitmap;
-                }
-                for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
-                     ++i)
-                    al_destroy_bitmap(explosion_array[i]);
+        cleanBitmaps();
     }
-
 private:
+    void updateBitmaps();
+    void cleanBitmaps();
     Alien_Factory* alienFactory;
     ALLEGRO_BITMAP* sprite;
     ALLEGRO_BITMAP* explosion_array[4];

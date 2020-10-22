@@ -28,7 +28,7 @@ void Ship::draw(){
         return;
     }
     //got hit
-    if (blink_respawn_counter/2 % 2)
+    if ((int)(blink_respawn_counter/(2*FRAMERATEMULTIPLIER)) % 2)
     {
         al_draw_bitmap(ship_img, pos_x, pos_y, 0);
     }

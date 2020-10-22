@@ -114,6 +114,9 @@ int main(int argc, char** argv)
                 break;
 
             case ALLEGRO_EVENT_DISPLAY_RESIZE:
+            //acknowledge is required to actual redraw of graphic. That means,
+            //to let window server redraw disp. Without acknowledge, newWidth
+            //and newHeight always return old values.
             if (al_acknowledge_resize(disp)){
                 int newWidth = al_get_display_width(disp);
                 int newHeight = al_get_display_height(disp);
@@ -122,7 +125,6 @@ int main(int argc, char** argv)
                                     std::to_string(newWidth).c_str());
                 al_set_config_value(config,"display", "PRIM_DISPLAY_HEIGHT",
                                     std::to_string(newHeight).c_str());
-//                std::cout << newWidth << ' ' << newHeight << std::endl;
                 setDisplayValues(config);
                 al_destroy_bitmap(buffer);
                 buffer = al_create_bitmap(newWidth, newHeight);
