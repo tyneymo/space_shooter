@@ -107,7 +107,7 @@ public:
         pos_x -= al_get_bitmap_width(bitmap)/2;
     };
 protected:
-    void alien_bullet_setup(float, float, float, float);
+    virtual void alien_bullet_setup(float, float, float, float);
 };
 
 class Bug_bullet: public Alien_bullet{

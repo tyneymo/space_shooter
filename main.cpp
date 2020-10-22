@@ -5,6 +5,7 @@
 ALLEGRO_CONFIG* config;
 int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 int EFFECTIVE_DISPLAY_DIAG; //keep things move at reasonable speed at different framerate
+int EFFECTIVE_DISPLAY_HEIGHT;
 float FRAMERATE;
 float FRAMERATEMULTIPLIER;
 

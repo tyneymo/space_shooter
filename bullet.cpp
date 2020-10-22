@@ -3,6 +3,7 @@
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 extern int EFFECTIVE_DISPLAY_DIAG;
+extern int EFFECTIVE_DISPLAY_HEIGHT;
 extern float FRAMERATEMULTIPLIER;
 
 BulletSpark::BulletSpark(ALLEGRO_BITMAP** bm_array,int x, int y) {
@@ -35,7 +36,7 @@ void Bullet::draw(){
 
 void Ship_bullet::ship_bullet_setup(){
     speed_x = 0;
-    speed_y = (EFFECTIVE_DISPLAY_DIAG/(1.4*240)) * (-1.5);
+    speed_y = (EFFECTIVE_DISPLAY_HEIGHT/240) * (-2);
     bulletSource = SHIP;
 }
 
@@ -47,7 +48,7 @@ void Alien_bullet::alien_bullet_setup(float lim_x1, float lim_x2, float lim_y1,
 
 void Thiccboi_bulelt::alien_bullet_setup(int, int, int, int){
     speed_x = 0;
-    speed_y = (EFFECTIVE_DISPLAY_DIAG/(1.4*240));
+    speed_y = (EFFECTIVE_DISPLAY_HEIGHT/240);
 }
 
 Bullet* Bullet_factory::createBullet(std::vector<Bullet_image>& vBullet,

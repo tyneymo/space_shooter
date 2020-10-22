@@ -7,6 +7,7 @@
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 extern int EFFECTIVE_DISPLAY_DIAG;
+extern int EFFECTIVE_DISPLAY_HEIGHT;
 extern float FRAMERATE;
 extern float FRAMERATEMULTIPLIER;
 
@@ -92,9 +93,32 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
                                                    "PRIM_DISPLAY_HEIGHT"));
     FRAMERATE = std::atoi(al_get_config_value(config, "display",
                                               "FRAMERATE"));
+
+    //for some code calculate speed base on dividend, if the display dimensions
+    //and framerate config is not appropriate (too small display, too high frame
+    //rate), things might not move. So here the code check for bad config.
+    if (PRIM_DISPLAY_H < 240)
+    {
+        PRIM_DISPLAY_H = 400;
+        PRIM_DISPLAY_W = 600;
+        FRAMERATE = 30;
+        std::cout << "Too small display config" << std::endl;
+    }
+
     FRAMERATEMULTIPLIER = FRAMERATE/30.0;
-    EFFECTIVE_DISPLAY_DIAG = std::sqrt(PRIM_DISPLAY_W*PRIM_DISPLAY_W +
-                            PRIM_DISPLAY_H*PRIM_DISPLAY_H) / FRAMERATEMULTIPLIER;
+    int diag = std::sqrt((long)PRIM_DISPLAY_W*PRIM_DISPLAY_W +
+                            PRIM_DISPLAY_H*PRIM_DISPLAY_H);
+    if (diag > 1.33 * PRIM_DISPLAY_H) //just to limit effective diag
+        diag = 1.33 * PRIM_DISPLAY_H;
+    EFFECTIVE_DISPLAY_DIAG = diag / FRAMERATEMULTIPLIER;
+    if (EFFECTIVE_DISPLAY_DIAG < 320*1.4){
+        FRAMERATE = 30;
+        FRAMERATEMULTIPLIER = 1.0;
+        EFFECTIVE_DISPLAY_DIAG = diag;
+        std::cout << "Too high frame rate and/or too small display config"
+                  << std::endl;
+    }
+    EFFECTIVE_DISPLAY_HEIGHT = PRIM_DISPLAY_H / FRAMERATEMULTIPLIER;
 }
 
 bool addConfig(ALLEGRO_CONFIG* config){

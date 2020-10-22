@@ -3,6 +3,7 @@
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 extern int EFFECTIVE_DISPLAY_DIAG;
+extern int EFFECTIVE_DISPLAY_HEIGHT;
 extern float FRAMERATEMULTIPLIER;
 
 Explosion::Explosion(ALLEGRO_BITMAP** bm_array,int x, int y): explosion_array(bm_array),
@@ -60,7 +61,7 @@ void Alien::update(){
     //update position
     if (speed.second == 1)
     {
-        pos_y += speed.first*(EFFECTIVE_DISPLAY_DIAG/(1.4*240));
+        pos_y += speed.first*(EFFECTIVE_DISPLAY_HEIGHT/240);
     }
     //speed is a fraction:
     if (speedCounter != speed.second)
