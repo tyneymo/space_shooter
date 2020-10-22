@@ -29,6 +29,7 @@ int main(int argc, char** argv)
 
     al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
     al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
+    al_set_new_display_flags(ALLEGRO_RESIZABLE);
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
 
     ALLEGRO_DISPLAY* disp = al_create_display(PRIM_DISPLAY_W,
@@ -111,6 +112,23 @@ int main(int argc, char** argv)
             case ALLEGRO_EVENT_DISPLAY_CLOSE:
                 done = true;
                 break;
+
+            case ALLEGRO_EVENT_DISPLAY_RESIZE:
+            if (al_acknowledge_resize(disp)){
+                int newWidth = al_get_display_width(disp);
+                int newHeight = al_get_display_height(disp);
+
+                al_set_config_value(config,"display", "PRIM_DISPLAY_WIDTH",
+                                    std::to_string(newWidth).c_str());
+                al_set_config_value(config,"display", "PRIM_DISPLAY_HEIGHT",
+                                    std::to_string(newHeight).c_str());
+//                std::cout << newWidth << ' ' << newHeight << std::endl;
+                setDisplayValues(config);
+                al_destroy_bitmap(buffer);
+                buffer = al_create_bitmap(newWidth, newHeight);
+                must_init(buffer, "resize event not successful");
+            }
+                break;
         }
 
         keyboard.update(&event);
@@ -128,8 +146,7 @@ int main(int argc, char** argv)
             bulletMaintainer.draw();
             al_set_target_backbuffer(disp);
             al_clear_to_color(al_map_rgb(0,0,0));
-            al_draw_scaled_bitmap(buffer, 0, 0, PRIM_DISPLAY_W, PRIM_DISPLAY_H,
-                                  0, 0, PRIM_DISPLAY_W, PRIM_DISPLAY_H, 0);
+            al_draw_bitmap(buffer, 0, 0, 0);
             drawPlayerInformation(lifeBmp,font, &score, &(*ship_one), &(*ship_two));
             al_flip_display();
             al_set_target_bitmap(buffer);

@@ -175,6 +175,7 @@ bool addConfig(ALLEGRO_CONFIG* config){
     {
         std::cout << "Created a default config file, name \"ssconfig.ini\"" <<
                                                                     std::endl;
+        al_destroy_config(config);
         return true;
     }
     else std::cout << "Cannot create config file" << std::endl;
