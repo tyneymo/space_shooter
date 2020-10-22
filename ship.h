@@ -63,10 +63,9 @@ private:
     bool default_control = true;
     int new_up, new_down, new_left, new_right, new_shoot;
     int life = 5;
-    int blinking = 60;
-    int blink_counter = 0;
+    int blink_respawn_counter = 0;
     bool respawning = false;
-    int respawnTimer = 60; //2 seconds
+    int respawnTimer;
 };
 
 class Ship_factory{

@@ -15,6 +15,8 @@ Ship::Ship (ALLEGRO_BITMAP* bitmap, int x, int y){
     type = SHIP;
     must_init(ship_img, "ship initialization");
     speed = EFFECTIVE_DISPLAY_DIAG/140;
+    respawnTimer = 60*FRAMERATEMULTIPLIER;
+    blink_respawn_counter = respawnTimer;
 }
 
 void Ship::draw(){
@@ -26,15 +28,9 @@ void Ship::draw(){
         return;
     }
     //got hit
-    ++blink_counter;
-    if (!(blink_counter % 3))
+    if (blink_respawn_counter/2 % 2)
     {
         al_draw_bitmap(ship_img, pos_x, pos_y, 0);
-    }
-    if (blink_counter == blinking)
-    {
-        blink_counter = 1;
-        gotHit = false;
     }
 }
 
@@ -43,10 +39,11 @@ void Ship::update (Keyboard* keyboard){
         return;
     if (respawning)
     {
-        if (--respawnTimer == 0)
+        if (!(--blink_respawn_counter))
         {
             respawning = false;
-            respawnTimer = 60;
+            gotHit = false;
+            blink_respawn_counter = respawnTimer;
         }
         return;
     }

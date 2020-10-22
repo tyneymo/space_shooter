@@ -57,7 +57,6 @@ void Alien::update(){
     if (fireCountdown > 0)
     {
         --fireCountdown;
-        std::cout << fireCountdown << std::endl;
     }
     else
     {
@@ -65,6 +64,14 @@ void Alien::update(){
 
         fireNow = true;
     }
+    //update blink_counter if neccessary
+    static int Blink_frames = 6*FRAMERATEMULTIPLIER;
+    if (gotHit && !(--blink_counter)){
+        gotHit = false;
+        blink_counter = Blink_frames;
+    }
+    //if blink_counter was not setup at first run
+    if (!blink_counter) blink_counter = Blink_frames;
     return;
 }
 
@@ -81,6 +88,13 @@ bool Alien::readyToFire(){
         }
     }
     return false;
+}
+
+void Alien::draw(){
+    if (alive() && (!gotHit))
+        al_draw_bitmap(bug_img, pos_x, pos_y, 0);
+    if (gotHit && (blink_counter % 2))
+        al_draw_bitmap(bug_img, pos_x, pos_y, 0);
 }
 
 void Bug_alien::alien_setup(){

@@ -63,10 +63,8 @@ public:
         if (fireNow){
             fireNow = false;
             fireCountdown = fireWait;
-//            std::cout << "ready to fire" << std::endl;
             return true;
         }
-//        std::cout << "alien count down to fire " << fireCountdown << std::endl;
         return false;
     }
 

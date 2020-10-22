@@ -111,6 +111,7 @@ void addConfig(ALLEGRO_CONFIG* config){
     al_add_config_section(config, section.c_str());
     al_set_config_value(config, section.c_str(), "PRIM_DISPLAY_WIDTH", "960");
     al_set_config_value(config, section.c_str(), "PRIM_DISPLAY_HEIGHT", "720");
+    al_set_config_value(config, section.c_str(), "FRAMERATE", "60");
     section = "components";
     al_add_config_section(config, section.c_str());
     al_set_config_value(config, section.c_str(), "ship_x", "0");

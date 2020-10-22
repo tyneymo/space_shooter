@@ -94,7 +94,9 @@ int main(int argc, char** argv)
                 if ((score.getScore() / scoreToIncreaseFrequent) > hardnessCounter)
                 {
                     hardnessCounter++;
-                    AlienCreateFrequent -= 1;
+                    AlienCreateFrequent -= 2;
+                    //for non-human players only:
+                    if (AlienCreateFrequent <= 0) AlienCreateFrequent = 1;
                 }
                 bulletMaintainer.maintain(&(*ship_one), &alienMaintainer);
                 bulletMaintainer.maintain(&(*ship_two), &alienMaintainer);

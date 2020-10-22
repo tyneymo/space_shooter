@@ -128,7 +128,6 @@ void Bullet_Maintainer::add(ShootableObject *shooter){
     if (bulletPtr){
         if (bulletPtr->speed_x == 0 && bulletPtr->speed_y == 0) //no moving bullet not allow
         {
-            std::cout << "static bullet" << std::endl;
             return;
         }
         bullet_list.push_back(std::shared_ptr<Bullet>(bulletPtr));
@@ -154,7 +153,6 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer,
         if (alienPtr->readyToFire())
         {
             bulletMaintainer->add(&(*alienPtr));
-            std::cout << "adding a bullet to alien" << std::endl;
         }
         if (!alienPtr->alive()) //because of bullet hit
         {

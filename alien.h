@@ -36,11 +36,7 @@ struct Explosion{
 class Alien : public ShootableObject {
     friend class Alien_Factory;
 public:
-    void draw(){
-        if (alive() && (!gotHit))
-            al_draw_bitmap(bug_img, pos_x, pos_y, 0);
-        gotHit = false;
-    }
+    void draw();
 
     bool readyToFire();
 
@@ -94,7 +90,7 @@ protected:
     int speedCounter=0; //got a bug when not giving speedCounter a initial value
     int endurance;
     int shoot_interval; //give alien a unsteady shoting behave
-    int interval_counter = 1;
+    int blink_counter = 0;
 };
 
 class Bug_alien : public Alien {
