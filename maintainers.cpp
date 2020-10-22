@@ -127,7 +127,10 @@ void Bullet_Maintainer::add(ShootableObject *shooter){
     auto bulletPtr = bulletFactory->createBullet(bulletImages,shooter);
     if (bulletPtr){
         if (bulletPtr->speed_x == 0 && bulletPtr->speed_y == 0) //no moving bullet not allow
+        {
+            std::cout << "static bullet" << std::endl;
             return;
+        }
         bullet_list.push_back(std::shared_ptr<Bullet>(bulletPtr));
         ++bulletCreated;
     }
@@ -149,7 +152,10 @@ void Alien_Maintainer::maintain(Bullet_Maintainer *bulletMaintainer,
             continue;
         }
         if (alienPtr->readyToFire())
+        {
             bulletMaintainer->add(&(*alienPtr));
+            std::cout << "adding a bullet to alien" << std::endl;
+        }
         if (!alienPtr->alive()) //because of bullet hit
         {
             explosion_list.push_back(Explosion(explosion_array,
@@ -199,7 +205,7 @@ Alien_Maintainer::Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* sprit
                                           std::make_pair(displayWidth/7,
                                            displayHeight/9)};
     int x,y,w,h;
-    for (int i = 1; i <= 3; ++i){ //config file list alien from 1
+    for (int i = 0; i < 3; ++i){ //config file list alien from 1
         std::string digits = std::to_string(i);
         x = std::atoi(al_get_config_value(config, "components",
                                           (start_chars + digits + "_x").c_str()));
@@ -211,12 +217,12 @@ Alien_Maintainer::Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* sprit
                                           (start_chars + digits + "_h").c_str()));
         ALLEGRO_BITMAP* tempBmp = sprite_grab(sprite, x,y,w,h);
 
-        bitmapPtr = al_create_bitmap(alienDimension[i-1].first,
-                                    alienDimension[i-1].second);
+        bitmapPtr = al_create_bitmap(alienDimension[i].first,
+                                    alienDimension[i].second);
         al_set_target_bitmap(bitmapPtr);
-        al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,alienDimension[i-1].first,
-                                alienDimension[i-1].second, 0);
-        alienImages.push_back(Alien_image(bitmapPtr, aliens[i-1])); //i from 1
+        al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bitmapPtr),
+                                al_get_bitmap_height(bitmapPtr), 0);
+        alienImages.push_back(Alien_image(bitmapPtr, aliens[i])); //i from 1
         al_set_target_bitmap(saveDisplay);
         al_destroy_bitmap(tempBmp);
     }

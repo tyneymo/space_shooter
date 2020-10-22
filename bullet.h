@@ -98,7 +98,7 @@ public:
     }
 
 private:
-    void ship_bullet_setup();
+    virtual void ship_bullet_setup();
 };
 
 class Alien_bullet: public Bullet{
@@ -109,14 +109,14 @@ public:
         pos_x -= al_get_bitmap_width(bitmap)/2;
     };
 protected:
-    void alien_bullet_setup(int, int, int, int);
+    void alien_bullet_setup(float, float, float, float);
 };
 
 class Bug_bullet: public Alien_bullet{
 public:
     Bug_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Alien_bullet(bitmap, shooter){
-        alien_bullet_setup(-2,2,1,3);
+        alien_bullet_setup(-2.0,2.0,-1.0,1.0);
         bulletSource = ALIEN;
     }
 
@@ -126,7 +126,7 @@ class Arrow_bullet: public Alien_bullet{
 public:
     Arrow_bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Alien_bullet(bitmap, shooter){
-        alien_bullet_setup(-2,2,-1,3);
+        alien_bullet_setup(-2.0,2.0,-1.0,1.0);
         bulletSource = ALIEN;
     }
 };
@@ -135,9 +135,11 @@ class Thiccboi_bulelt: public Alien_bullet{
 public:
     Thiccboi_bulelt(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
         : Alien_bullet(bitmap, shooter){
-        alien_bullet_setup(0,1,2,3);
+        alien_bullet_setup(0,0,0,0);
         bulletSource = ALIEN;
     }
+
+    void alien_bullet_setup(int,int,int,int); //override aliens setup
 
 //    void draw();
 };

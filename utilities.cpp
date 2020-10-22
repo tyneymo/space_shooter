@@ -2,9 +2,14 @@
 #include "ship.h"
 #include <cstdlib>
 #include <string>
+#include <cmath>
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+extern int EFFECTIVE_DISPLAY_DIAG;
+extern float FRAMERATE;
+extern float FRAMERATEMULTIPLIER;
+
 
 int between(int low, int high){
     return low + (rand() % (high - low));
@@ -12,7 +17,7 @@ int between(int low, int high){
 
 
 float between_f (float low, float high){
-    return low + ((float)rand() / (float)RAND_MAX) / (high - low);
+    return low + (((float)rand() / (float)RAND_MAX)) * (high - low);
 }
 
 bool collide(int obj1_x, int obj1_y, int obj1_w, int obj1_h,
@@ -84,6 +89,11 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
                                                    "PRIM_DISPLAY_WIDTH"));
     PRIM_DISPLAY_H = std::atoi(al_get_config_value(config, "display",
                                                    "PRIM_DISPLAY_HEIGHT"));
+    FRAMERATE = std::atoi(al_get_config_value(config, "display",
+                                              "FRAMERATE"));
+    FRAMERATEMULTIPLIER = FRAMERATE/30.0;
+    EFFECTIVE_DISPLAY_DIAG = std::sqrt(PRIM_DISPLAY_W*PRIM_DISPLAY_W +
+                            PRIM_DISPLAY_H*PRIM_DISPLAY_H) / FRAMERATEMULTIPLIER;
 }
 
 void addConfig(ALLEGRO_CONFIG* config){
@@ -115,18 +125,18 @@ void addConfig(ALLEGRO_CONFIG* config){
     al_set_config_value(config, section.c_str(), "life_y", "14");
     al_set_config_value(config, section.c_str(), "life_w", "6");
     al_set_config_value(config, section.c_str(), "life_h", "6");
+    al_set_config_value(config, section.c_str(), "alien0_x", "19");
+    al_set_config_value(config, section.c_str(), "alien0_y", "0");
+    al_set_config_value(config, section.c_str(), "alien0_w", "14");
+    al_set_config_value(config, section.c_str(), "alien0_h", "9");
     al_set_config_value(config, section.c_str(), "alien1_x", "19");
-    al_set_config_value(config, section.c_str(), "alien1_y", "0");
-    al_set_config_value(config, section.c_str(), "alien1_w", "14");
-    al_set_config_value(config, section.c_str(), "alien1_h", "9");
-    al_set_config_value(config, section.c_str(), "alien2_x", "19");
-    al_set_config_value(config, section.c_str(), "alien2_y", "10");
-    al_set_config_value(config, section.c_str(), "alien2_w", "13");
-    al_set_config_value(config, section.c_str(), "alien2_h", "10");
-    al_set_config_value(config, section.c_str(), "alien3_x", "0");
-    al_set_config_value(config, section.c_str(), "alien3_y", "21");
-    al_set_config_value(config, section.c_str(), "alien3_w", "45");
-    al_set_config_value(config, section.c_str(), "alien3_h", "27");
+    al_set_config_value(config, section.c_str(), "alien1_y", "10");
+    al_set_config_value(config, section.c_str(), "alien1_w", "13");
+    al_set_config_value(config, section.c_str(), "alien1_h", "10");
+    al_set_config_value(config, section.c_str(), "alien2_x", "0");
+    al_set_config_value(config, section.c_str(), "alien2_y", "21");
+    al_set_config_value(config, section.c_str(), "alien2_w", "45");
+    al_set_config_value(config, section.c_str(), "alien2_h", "27");
     al_set_config_value(config, section.c_str(), "alienshot_x", "13");
     al_set_config_value(config, section.c_str(), "alienshot_y", "10");
     al_set_config_value(config, section.c_str(), "alienshot_w", "4");

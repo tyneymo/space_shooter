@@ -42,19 +42,7 @@ public:
         gotHit = false;
     }
 
-    bool readyToFire(){
-        if (fireNow)
-        {
-            fireNow = false;
-            //give some chances to missfire
-            if ((rand() % 3))
-            {
-                shootSound();
-                return true;
-            }
-        }
-        return false;
-    }
+    bool readyToFire();
 
     void update();
 
@@ -91,6 +79,8 @@ protected:
         pos_y = -height;
     }
 
+    virtual void alien_setup()=0;
+
     void shootSound(){
         al_play_sample(shot_sample,0.6,0,0.7, ALLEGRO_PLAYMODE_ONCE,NULL);
     }
@@ -110,40 +100,28 @@ protected:
 class Bug_alien : public Alien {
     friend class Alien_Factory;
     Bug_alien(ALLEGRO_BITMAP* bitmap): Alien(bitmap){
-        speed = std::pair<int,int>(1,2); //speed 1/2 pixel per frame
-        fireWait = 8;
-        endurance = 3;
-        fireCountdown = fireWait;
-        type = BUG;
-        shoot_interval = 3;
-        scoreValue = 200;
+        alien_setup();
     }
+
+    void alien_setup();
 };
 
 class Arrow_alien: public Alien {
     friend class Alien_Factory;
     Arrow_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
-        speed = std::pair<int,int>(1,1); //speed 1 pixel per frame
-        fireWait = 10;
-        endurance = 2;
-        fireCountdown = fireWait;
-        type = ARROW;
-        shoot_interval = 2;
-        scoreValue = 150;
+        alien_setup();
     }
+
+    void alien_setup();
 };
 
 class Thiccboi_alien: public Alien {
     friend class Alien_Factory;
     Thiccboi_alien(ALLEGRO_BITMAP* bitmap) : Alien(bitmap){
-        speed = std::pair<int,int>(1,3); //speed 1/3 pixel per frame
-        fireWait = 12;
-        endurance = 9;
-        fireCountdown = fireWait;
-        type = THICCBOI;
-        shoot_interval = 4;
-        scoreValue = 800;
+        alien_setup();
     }
+
+    void alien_setup();
 };
 
 class Alien_Factory{

@@ -2,6 +2,8 @@
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+extern int EFFECTIVE_DISPLAY_DIAG;
+extern float FRAMERATEMULTIPLIER;
 
 void Bullet::draw(){
     if (active){
@@ -17,15 +19,21 @@ void Bullet::draw(){
 
 void Ship_bullet::ship_bullet_setup(){
     speed_x = 0;
-    speed_y = -2*(PRIM_DISPLAY_H/240);
+    speed_y = (EFFECTIVE_DISPLAY_DIAG/(1.4*240)) * (-1.5);
     bulletSource = SHIP;
 }
 
-void Alien_bullet::alien_bullet_setup(int lim_x1, int lim_x2, int lim_y1,
-                                      int lim_y2){
-    speed_x = (PRIM_DISPLAY_W/320) * between(lim_x1, lim_x2);
-    speed_y = (PRIM_DISPLAY_H/240) * between(lim_y1, lim_y2);
+void Alien_bullet::alien_bullet_setup(float lim_x1, float lim_x2, float lim_y1,
+                                      float lim_y2){
+    speed_x = (EFFECTIVE_DISPLAY_DIAG/(1.4*320)) * between_f(lim_x1, lim_x2);
+    speed_y = (EFFECTIVE_DISPLAY_DIAG/(1.4*240)) * between_f(lim_y1, lim_y2);
 }
+
+void Thiccboi_bulelt::alien_bullet_setup(int, int, int, int){
+    speed_x = 0;
+    speed_y = (EFFECTIVE_DISPLAY_DIAG/(1.4*240));
+}
+
 Bullet* Bullet_factory::createBullet(std::vector<Bullet_image>& vBullet,
                      ShootableObject* shooter){
     ALLEGRO_BITMAP* bulletImg = chooseBullet(vBullet, shooter);

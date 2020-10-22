@@ -4,6 +4,9 @@
 
 ALLEGRO_CONFIG* config;
 int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+int EFFECTIVE_DISPLAY_DIAG; //keep things move at reasonable speed at different framerate
+float FRAMERATE;
+float FRAMERATEMULTIPLIER;
 
 
 int main(int argc, char** argv)
@@ -18,7 +21,7 @@ int main(int argc, char** argv)
     config = loadConfig();
     setDisplayValues(config);
 
-    ALLEGRO_TIMER* timer = al_create_timer(1.0/30.0);
+    ALLEGRO_TIMER* timer = al_create_timer(1.0/FRAMERATE);
     must_init(timer, "timer");
 
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
@@ -69,7 +72,7 @@ int main(int argc, char** argv)
     Alien_Maintainer alienMaintainer(&alienFactory, spritesheet);
     long frameCounter = 0;
     Score score;
-    int AlienCreateFrequent = 40;
+    int AlienCreateFrequent = 40*FRAMERATEMULTIPLIER;
     int scoreToIncreaseFrequent = 1000;
     int hardnessCounter = 0;
     while(1){

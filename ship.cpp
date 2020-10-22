@@ -2,6 +2,20 @@
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+extern int EFFECTIVE_DISPLAY_DIAG;
+extern float FRAMERATEMULTIPLIER;
+
+Ship::Ship (ALLEGRO_BITMAP* bitmap, int x, int y){
+    ship_img = bitmap;
+    pos_x = x;
+    pos_y = y;
+    width = al_get_bitmap_width(bitmap);
+    height = al_get_bitmap_height(bitmap);
+    fireWait = 8*FRAMERATEMULTIPLIER;
+    type = SHIP;
+    must_init(ship_img, "ship initialization");
+    speed = EFFECTIVE_DISPLAY_DIAG/140;
+}
 
 void Ship::draw(){
     if (!life)
@@ -94,14 +108,4 @@ Ship_factory::Ship_factory(ALLEGRO_BITMAP* sheet){
     al_destroy_bitmap(tempBmp);
 }
 
-Ship::Ship (ALLEGRO_BITMAP* bitmap, int x, int y){
-    ship_img = bitmap;
-    pos_x = x;
-    pos_y = y;
-    width = al_get_bitmap_width(bitmap);
-    height = al_get_bitmap_height(bitmap);
-    fireWait = 8;
-    type = SHIP;
-    must_init(ship_img, "ship initialization");
-    speed = PRIM_DISPLAY_W/150;
-}
+

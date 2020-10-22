@@ -7,6 +7,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_font.h>
 
+
 class ShootableObject;
 //bool bulletObjCollide(ShootableObject* obj, Bullet* bullet);
 
@@ -14,6 +15,7 @@ enum Bullet_type {SHIP_BULLET1, SHIP_BULLET2, ALIEN_BULLET};
 enum Object_type {SHIP, ALIEN, BUG, ARROW,THICCBOI};
 
 int between(int low, int high);
+
 
 float between_f (float low, float high);
 
