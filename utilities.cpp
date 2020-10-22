@@ -80,7 +80,8 @@ ShootableObject::ShootableObject(){
 
 ALLEGRO_CONFIG* loadConfig(){
     ALLEGRO_CONFIG* config = al_load_config_file("ssconfig.ini");
-    addConfig(config);
+    if (addConfig(config))
+        config = al_load_config_file("ssconfig.ini");
     return config;
 }
 
@@ -96,9 +97,9 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
                             PRIM_DISPLAY_H*PRIM_DISPLAY_H) / FRAMERATEMULTIPLIER;
 }
 
-void addConfig(ALLEGRO_CONFIG* config){
+bool addConfig(ALLEGRO_CONFIG* config){
     if (config) //nothing to do,
-        return;
+        return false;
     config = al_create_config();
     std::string section = "files_name";
     al_add_config_section(config, section.c_str());
@@ -170,7 +171,14 @@ void addConfig(ALLEGRO_CONFIG* config){
     al_set_config_value(config, section.c_str(), "spark2_y", "0");
     al_set_config_value(config, section.c_str(), "spark2_w", "9");
     al_set_config_value(config, section.c_str(), "spark2_h", "8");
-    al_save_config_file("ssconfig.ini", config);
+    if (al_save_config_file("ssconfig.ini", config))
+    {
+        std::cout << "Created a default config file, name \"ssconfig.ini\"" <<
+                                                                    std::endl;
+        return true;
+    }
+    else std::cout << "Cannot create config file" << std::endl;
+        return false;
 }
 
 ALLEGRO_BITMAP* getLifeBmp(ALLEGRO_BITMAP* spritesheet){

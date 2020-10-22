@@ -23,7 +23,8 @@ DISTFILES += \
     explode1.flac \
     explode2.flac \
     shot.flac \
-    spritesheet.png
+    spritesheet.png \
+    ssconfig.ini
 
 LIBS += -I/usr/include/x86_64-linux-gnu \
         -lallegro_image -lallegro_primitives \

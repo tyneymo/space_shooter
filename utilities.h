@@ -24,7 +24,7 @@ void must_init(bool test, const char* description);
 bool collide(int obj1_x, int obj1_y, int obj1_w, int obj1_h,
                int obj2_x, int obj2_y, int obj2_w, int obj2_h);
 
-void addConfig(ALLEGRO_CONFIG*);
+bool addConfig(ALLEGRO_CONFIG*);
 ALLEGRO_CONFIG* loadConfig();
 void setDisplayValues(ALLEGRO_CONFIG* config);
 
