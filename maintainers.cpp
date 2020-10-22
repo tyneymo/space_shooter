@@ -197,9 +197,9 @@ Alien_Maintainer::Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* sprit
     int displayWidth = al_get_bitmap_width(saveDisplay);
     int displayHeight = al_get_bitmap_height(saveDisplay);
     std::pair<int,int> alienDimension[] = {std::make_pair(displayWidth/14,
-                                           displayHeight/26),
+                                           displayHeight/21),
                                           std::make_pair(displayWidth/18,
-                                           displayHeight/24),
+                                           displayHeight/19),
                                           std::make_pair(displayWidth/7,
                                            displayHeight/9)};
     int x,y,w,h;
@@ -214,8 +214,8 @@ Alien_Maintainer::Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* sprit
         h = std::atoi(al_get_config_value(config, "components",
                                           (start_chars + digits + "_h").c_str()));
         ALLEGRO_BITMAP* tempBmp = sprite_grab(sprite, x,y,w,h);
-
-        bitmapPtr = al_create_bitmap(alienDimension[i].first,
+        float bmpRatio = (float) w / (float) h;
+        bitmapPtr = al_create_bitmap(alienDimension[i].second*bmpRatio,
                                     alienDimension[i].second);
         al_set_target_bitmap(bitmapPtr);
         al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bitmapPtr),
@@ -245,11 +245,12 @@ Alien_Maintainer::Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* sprit
         h = std::atoi(al_get_config_value(config, "components",
                                           (start_chars + digits + "_h").c_str()));
         ALLEGRO_BITMAP* tempBmp = sprite_grab(sprite, x,y,w,h);
-        explosion_array[i] = al_create_bitmap(explodeDimension[i].first,
+        float bmpRatio = (float) w / (float) h;
+        explosion_array[i] = al_create_bitmap(explodeDimension[i].second*bmpRatio,
                                               explodeDimension[i].second);
         al_set_target_bitmap(explosion_array[i]);
-        al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,explodeDimension[i].first,
-                              explodeDimension[i].second,0);
+        al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(explosion_array[i]),
+                              al_get_bitmap_height(explosion_array[i]),0);
         al_set_target_bitmap(saveDisplay);
         al_destroy_bitmap(tempBmp);
     }
@@ -275,9 +276,11 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
     h = std::atoi(al_get_config_value(config, "components",
                                       (start_key_chars + "_h").c_str()));
     ALLEGRO_BITMAP* tempBmp = sprite_grab(spritesheet, x, y, w, h);
-    bmp = al_create_bitmap(displayWidth/160, displayHeight/26);
+    float bmpRatio = (float) w / (float) h;
+    bmp = al_create_bitmap(bmpRatio*displayHeight/26, displayHeight/26);
     al_set_target_bitmap(bmp);
-    al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,displayWidth/160, displayHeight/26, 0);
+    al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bmp),
+                          al_get_bitmap_height(bmp), 0);
     al_set_target_bitmap(saveDisplay);
     al_destroy_bitmap(tempBmp);
     bulletImages.push_back(Bullet_image(bmp, SHIP));
@@ -293,9 +296,11 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
     h = std::atoi(al_get_config_value(config, "components",
                                       (start_key_chars + "_h").c_str()));
     tempBmp = sprite_grab(spritesheet, x, y, w, h);
-    bmp = al_create_bitmap(displayWidth/80, displayHeight/60);
+    bmpRatio = (float) w / (float) h;
+    bmp = al_create_bitmap(bmpRatio*displayHeight/60, displayHeight/60);
     al_set_target_bitmap(bmp);
-    al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,displayWidth/80, displayHeight/60, 0);
+    al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bmp),
+                          al_get_bitmap_height(bmp), 0);
     al_set_target_bitmap(saveDisplay);
     al_destroy_bitmap(tempBmp);
     for (int i = 0; i < 3; ++i){
@@ -321,11 +326,12 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
         h = std::atoi(al_get_config_value(config, "components",
                                           (start_key_chars + digits + "_h").c_str()));
         tempBmp = sprite_grab(sprite, x,y,w,h);
-        spark_array[i] = al_create_bitmap(sparkDimension[i].first,
+        bmpRatio = (float) w / (float) h;
+        spark_array[i] = al_create_bitmap(sparkDimension[i].second*bmpRatio,
                                           sparkDimension[i].second);
         al_set_target_bitmap(spark_array[i]);
-        al_draw_scaled_bitmap(tempBmp, 0,0,w,h,0,0,sparkDimension[i].first,
-                              sparkDimension[i].second,0);
+        al_draw_scaled_bitmap(tempBmp, 0,0,w,h,0,0,al_get_bitmap_width(bmp),
+                              al_get_bitmap_height(bmp),0);
         al_set_target_bitmap(saveDisplay);
         al_destroy_bitmap(tempBmp);
     }

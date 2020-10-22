@@ -94,8 +94,9 @@ Ship_factory::Ship_factory(ALLEGRO_BITMAP* sheet){
     int w = std::atoi(al_get_config_value(config, "components", "ship_w"));
     int h = std::atoi(al_get_config_value(config, "components", "ship_h"));
     ALLEGRO_BITMAP* tempBmp = sprite_grab(sheet, x, y, w, h);
+    float bmpRatio = (float) w / (float) h;
     ALLEGRO_BITMAP* saveDisplay = al_get_target_bitmap();
-    shipImg = al_create_bitmap(al_get_bitmap_width(saveDisplay)/26,
+    shipImg = al_create_bitmap(bmpRatio * al_get_bitmap_height(saveDisplay)/18,
                                al_get_bitmap_height(saveDisplay)/18);
     al_set_target_bitmap(shipImg);
     al_clear_to_color(al_map_rgba_f(0,0,0,0));

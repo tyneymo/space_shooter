@@ -10,7 +10,7 @@ void Bullet::draw(){
         if (bulletSource != SHIP){
             int flashing = (flashEffect++ / 2) % 2;
             ALLEGRO_COLOR tint = flashing? al_map_rgb_f(1,1,1) :
-                                           al_map_rgb_f(0.2,0.2,0.2);
+                                           al_map_rgb_f(0.6,0.6,0.6);
             al_draw_tinted_bitmap(bullet_img, tint, pos_x, pos_y, 0);
         }
         al_draw_bitmap(bullet_img, pos_x, pos_y, 0);
