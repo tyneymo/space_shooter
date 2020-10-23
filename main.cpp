@@ -78,6 +78,7 @@ int main(int argc, char** argv)
     int scoreToIncreaseFrequent = 1000;
     int hardnessCounter = 0;
     bool pausing = false;
+    bool askForEnding = false;
     while(1){
         al_wait_for_event(queue, &event);
 
@@ -85,15 +86,20 @@ int main(int argc, char** argv)
             case ALLEGRO_EVENT_KEY_DOWN:
                 if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
                 {
-                    done = true;
-                    break;
+                    if (!askForEnding)
+                        pausing = true;
+                    else pausing = false;
+                    askForEnding = !askForEnding;
                 }
                 if (event.keyboard.keycode == ALLEGRO_KEY_P)
                 {
                     pausing = !pausing;
-                    redraw = true;
-                    break;
+                    if (askForEnding)
+                        askForEnding = !askForEnding;
                 }
+                if (event.keyboard.keycode == ALLEGRO_KEY_Y && askForEnding)
+                    done = true;
+                redraw = true;
 
 
             case ALLEGRO_EVENT_TIMER:
@@ -128,30 +134,29 @@ int main(int argc, char** argv)
                 break;
 
             case ALLEGRO_EVENT_DISPLAY_RESIZE:
-            //acknowledge is required to actual redraw of graphic. That means,
-            //to let window server redraw disp. Without acknowledge, newWidth
-            //and newHeight always return old values.
-            if (al_acknowledge_resize(disp)){
-                int newWidth = al_get_display_width(disp);
-                int newHeight = al_get_display_height(disp);
+                //acknowledge is required to actual redraw of graphic. That means,
+                //to let window server redraw disp. Without acknowledge, newWidth
+                //and newHeight always return old values.
+                if (al_acknowledge_resize(disp)){
+                    int newWidth = al_get_display_width(disp);
+                    int newHeight = al_get_display_height(disp);
 
-                al_set_config_value(config,"display", "PRIM_DISPLAY_WIDTH",
-                                    std::to_string(newWidth).c_str());
-                al_set_config_value(config,"display", "PRIM_DISPLAY_HEIGHT",
-                                    std::to_string(newHeight).c_str());
-                setDisplayValues(config);
-                al_destroy_bitmap(buffer);
-                buffer = al_create_bitmap(newWidth, newHeight);
-                must_init(buffer, "resize event not successful");
-            }
+                    al_set_config_value(config,"display", "PRIM_DISPLAY_WIDTH",
+                                        std::to_string(newWidth).c_str());
+                    al_set_config_value(config,"display", "PRIM_DISPLAY_HEIGHT",
+                                        std::to_string(newHeight).c_str());
+                    setDisplayValues(config);
+                    al_destroy_bitmap(buffer);
+                    buffer = al_create_bitmap(newWidth, newHeight);
+                    must_init(buffer, "resize event not successful");
+                    redraw = true;
+                }
                 break;
         }
 
         keyboard.update(&event);
 
         if (done) break;
-
-
 
         if (redraw && al_is_event_queue_empty(queue))
         {
@@ -165,7 +170,7 @@ int main(int argc, char** argv)
             al_set_target_backbuffer(disp);
             al_clear_to_color(al_map_rgb(0,0,0));
             al_draw_bitmap(buffer, 0, 0, 0);
-            drawPlayerInformation(lifeBmp,font, &score, pausing,
+            drawPlayerInformation(lifeBmp,font, &score, askForEnding, pausing,
                                   &(*ship_one), &(*ship_two));
             al_flip_display();
             al_set_target_bitmap(buffer);
