@@ -30,8 +30,8 @@ void setDisplayValues(ALLEGRO_CONFIG* config);
 
 class Score;
 class Ship;
-void drawPlayerInformation(ALLEGRO_BITMAP*,ALLEGRO_FONT* font,Score* score,
-                           bool askForEnd, bool pausing, Ship* ship1, Ship* ship2);
+void drawPlayerInformation(ALLEGRO_BITMAP*,ALLEGRO_FONT* font,Score& score,
+                           bool askForEnd, bool pausing, Ship& ship1, Ship& ship2);
 ALLEGRO_BITMAP* getLifeBmp(ALLEGRO_BITMAP*);
 
 class Score{

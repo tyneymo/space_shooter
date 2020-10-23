@@ -28,7 +28,7 @@ public:
                             (alienFactory->createAlien(alienImages, alienType)));
     }
 
-    void maintain(Bullet_Maintainer* bulletMaintainer, Score* score);
+    void maintain(Bullet_Maintainer& bulletMaintainer, Score& score);
 
     void draw();
 
@@ -65,9 +65,9 @@ public:
 
     Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* spritesheet);
 
-    void add(ShootableObject* shooter);
+    void add(ShootableObject& shooter);
 
-    void maintain(ShootableObject* ship, Alien_Maintainer* alienMaintainer);
+    void maintain(ShootableObject& ship, Alien_Maintainer& alienMaintainer);
 
     iterator begin(){
         return bullet_list.begin();

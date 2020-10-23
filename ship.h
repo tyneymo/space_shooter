@@ -20,7 +20,7 @@ public:
     }
 
     void draw();
-    void update (Keyboard* keyboard);
+    void update (Keyboard& keyboard);
     void set_control(int up, int down, int left, int right, int shoot);
 
     void gotShoot(){
@@ -41,7 +41,7 @@ public:
 
 private:
     Ship(ALLEGRO_BITMAP* bitmap, int x, int y);
-    void update_util(Keyboard* keyboard, int up, int down,
+    void update_util(Keyboard& keyboard, int up, int down,
                      int left, int right, int shoot);
 
     void shoot_command(){

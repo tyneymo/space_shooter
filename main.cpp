@@ -107,15 +107,15 @@ int main(int argc, char** argv)
                     break;
                 //update position and fire_ready state
                 ++frameCounter;
-                ship_one->update(&keyboard);
-                ship_two->update(&keyboard);
+                ship_one->update(keyboard);
+                ship_two->update(keyboard);
                 if (ship_one->readyToFire())
-                    bulletMaintainer.add(&(*ship_one));
+                    bulletMaintainer.add(*ship_one);
                 if (ship_two->readyToFire())
-                    bulletMaintainer.add(&(*ship_two));
+                    bulletMaintainer.add(*ship_two);
                 if (!(frameCounter % AlienCreateFrequent))
                     alienMaintainer.add();
-                alienMaintainer.maintain(&bulletMaintainer, &score);
+                alienMaintainer.maintain(bulletMaintainer, score);
                 if ((score.getScore() / scoreToIncreaseFrequent) > hardnessCounter)
                 {
                     hardnessCounter++;
@@ -123,8 +123,8 @@ int main(int argc, char** argv)
                     //for non-human players only:
                     if (AlienCreateFrequent <= 0) AlienCreateFrequent = 1;
                 }
-                bulletMaintainer.maintain(&(*ship_one), &alienMaintainer);
-                bulletMaintainer.maintain(&(*ship_two), &alienMaintainer);
+                bulletMaintainer.maintain(*ship_one, alienMaintainer);
+                bulletMaintainer.maintain(*ship_two, alienMaintainer);
                 redraw = true;
                 break;
 
@@ -170,8 +170,8 @@ int main(int argc, char** argv)
             al_set_target_backbuffer(disp);
             al_clear_to_color(al_map_rgb(0,0,0));
             al_draw_bitmap(buffer, 0, 0, 0);
-            drawPlayerInformation(lifeBmp,font, &score, askForEnding, pausing,
-                                  &(*ship_one), &(*ship_two));
+            drawPlayerInformation(lifeBmp,font, score, askForEnding, pausing,
+                                  *ship_one, *ship_two);
             al_flip_display();
             al_set_target_bitmap(buffer);
             redraw = false;

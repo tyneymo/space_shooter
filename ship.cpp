@@ -34,7 +34,7 @@ void Ship::draw(){
     }
 }
 
-void Ship::update (Keyboard* keyboard){
+void Ship::update (Keyboard& keyboard){
     if (!life)
         return;
     if (respawning)
@@ -66,15 +66,15 @@ void Ship::set_control(int up, int down, int left, int right, int shoot){
     new_shoot = shoot;
 }
 
-void Ship::update_util(Keyboard* keyboard, int up, int down,
+void Ship::update_util(Keyboard& keyboard, int up, int down,
                  int left, int right, int shoot){
-    if (keyboard->key[up])
+    if (keyboard.key[up])
         pos_y -= speed;
-    if (keyboard->key[down])
+    if (keyboard.key[down])
         pos_y += speed;
-    if (keyboard->key[left])
+    if (keyboard.key[left])
         pos_x -= speed;
-    if (keyboard->key[right])
+    if (keyboard.key[right])
         pos_x += speed;
     if (pos_x < 0)
         pos_x = 0;
@@ -84,7 +84,7 @@ void Ship::update_util(Keyboard* keyboard, int up, int down,
         pos_y = 0;
     if (pos_y > PRIM_DISPLAY_H  - height)
         pos_y = PRIM_DISPLAY_H  - height;
-    if (keyboard->key[shoot])
+    if (keyboard.key[shoot])
         shoot_command();
 }
 
