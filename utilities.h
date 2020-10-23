@@ -1,14 +1,17 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 #include <iostream>
+#include <vector>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_primitives.h>
 
 
 class ShootableObject;
+class AllStars;
 //bool bulletObjCollide(ShootableObject* obj, Bullet* bullet);
 
 enum Bullet_type {SHIP_BULLET1, SHIP_BULLET2, ALIEN_BULLET};
@@ -122,4 +125,34 @@ struct Keyboard{
         }
     }
 };
+
+class Star{
+public:
+    friend class AllStars;
+    Star();
+    void draw();
+
+    ~Star(){
+        al_destroy_bitmap(starImg);
+    }
+private:
+    void relocate();
+
+    ALLEGRO_BITMAP* starImg;
+    int pos_x, pos_y;
+    int effectCounter;
+    int elementsNumber; //number of drawing elements per side on screen
+};
+
+class AllStars{
+public:
+    AllStars();
+    void update();
+    void draw();
+
+private:
+    std::vector<Star> stars;
+    int elementsNumber = 10;
+};
+
 #endif // UTILITIES_H

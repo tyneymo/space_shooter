@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <string>
 #include <cmath>
+#include <allegro5/allegro_primitives.h>
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
@@ -87,6 +88,91 @@ ShootableObject::ShootableObject(){
                                     "files_name", "explode2"));
     must_init(sample_explode[1],
             "sample explode 2, please check audio file name for explode 2!");
+}
+
+Star::Star(){
+    ALLEGRO_BITMAP* rect1 = al_create_bitmap(PRIM_DISPLAY_H/20, PRIM_DISPLAY_H/40);
+    ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
+    al_set_target_bitmap(rect1);
+    al_clear_to_color(al_map_rgb(0,0,0));
+    int rectSide = al_get_bitmap_height(rect1);
+    ALLEGRO_COLOR colorWhite = al_map_rgba_f(0.5,0.5,0.5,0.2);
+    al_draw_filled_triangle(rectSide/2, 0, rectSide/3, rectSide/2, rectSide*2/3,
+                            rectSide/2,colorWhite);
+    al_draw_filled_triangle(0, rectSide/2, rectSide/2, rectSide/3, rectSide/2,
+                            rectSide*2/3,colorWhite);
+    al_draw_filled_triangle(rectSide/2, rectSide, rectSide/3, rectSide/2,
+                            rectSide*2/3, rectSide/2, colorWhite);
+    al_draw_filled_triangle(rectSide, rectSide/2, rectSide/3, rectSide/2,
+                            rectSide/2, rectSide*2/3, colorWhite);
+    int newSide = rectSide*between_f(0,1.0);
+    ALLEGRO_BITMAP* dest = al_create_bitmap(newSide, newSide);
+    al_set_target_bitmap(dest);
+    al_draw_scaled_bitmap(rect1,0,0,rectSide,rectSide, 0,0, newSide,newSide,0);
+    starImg = dest;
+    al_destroy_bitmap(rect1);
+    al_set_target_bitmap(saveDisp);
+    effectCounter = between(0, 30*FRAMERATEMULTIPLIER);
+}
+
+void Star::draw(){
+    float drawRatio;
+    int cutPoint = 40*FRAMERATEMULTIPLIER;
+    //give stars effect of slow blinking
+    drawRatio = (float)(effectCounter++ % cutPoint) / cutPoint;
+    int bmpWid  = al_get_bitmap_width(starImg);
+    int bmpHei = al_get_bitmap_height(starImg);
+    int drawWid = drawRatio * bmpWid;
+    int drawHei = drawRatio * bmpHei;
+    al_draw_scaled_bitmap(starImg, 0,0,bmpWid, bmpHei, pos_x, pos_y, drawWid,
+                          drawHei, 0);
+    //when a star get highest size, it relocate itself.
+    if (!(effectCounter % cutPoint)){
+        relocate();
+    }
+}
+
+void Star::relocate(){
+    int element_w = PRIM_DISPLAY_W/elementsNumber;
+    int element_h = PRIM_DISPLAY_H/elementsNumber;
+    int ran = between(0,elementsNumber);
+    pos_x = between (ran * element_w, (ran+1) * element_w);
+    ran = between(0,elementsNumber);
+    pos_y = between (ran * element_h, (ran+1) * element_h);
+}
+
+AllStars::AllStars(){
+    stars.resize(elementsNumber*elementsNumber);
+    int element_w = PRIM_DISPLAY_W/elementsNumber;
+    int element_h = PRIM_DISPLAY_H/elementsNumber;
+    int sz = stars.size();
+    //distribute stars all over screen
+    for (int i = 0; i < sz; ++i){
+        stars[i].elementsNumber = elementsNumber;
+        int ran = between(0,elementsNumber);
+        stars[i].pos_x = between (ran * element_w, (ran+1) * element_w);
+        ran = between(0,elementsNumber);
+        stars[i].pos_y = between (ran * element_h, (ran+1) * element_h);
+    }
+}
+
+//only called when resize.
+void AllStars::update(){
+    int element_w = PRIM_DISPLAY_W/elementsNumber;
+    int element_h = PRIM_DISPLAY_H/elementsNumber;
+    int sz = stars.size();
+    for (int i = 0; i < sz; ++i){
+        int ran = between(0,elementsNumber);
+        stars[i].pos_x = between (ran * element_w, (ran+1) * element_w);
+        ran = between(0,elementsNumber);
+        stars[i].pos_y = between (ran * element_h, (ran+1) * element_h);
+    }
+}
+
+void AllStars::draw(){
+    int sz = stars.size();
+    for (int i = 0; i < sz; ++i)
+        stars[i].draw();
 }
 
 ALLEGRO_CONFIG* loadConfig(){
