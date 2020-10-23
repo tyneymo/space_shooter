@@ -70,13 +70,13 @@ void Ship::set_control(int up, int down, int left, int right, int shoot){
 void Ship::update_util(Keyboard& keyboard, int up, int down,
                  int left, int right, int shoot){
     if (keyboard.key[up])
-        pos_y -= speed;
+        pos_y -= EFFECTIVE_DISPLAY_DIAG/140;
     if (keyboard.key[down])
-        pos_y += speed;
+        pos_y += EFFECTIVE_DISPLAY_DIAG/140;
     if (keyboard.key[left])
-        pos_x -= speed;
+        pos_x -= EFFECTIVE_DISPLAY_DIAG/140;
     if (keyboard.key[right])
-        pos_x += speed;
+        pos_x += EFFECTIVE_DISPLAY_DIAG/140;
     if (pos_x < 0)
         pos_x = 0;
     if (pos_x > PRIM_DISPLAY_W  - width)
