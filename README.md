@@ -1,7 +1,7 @@
 # space_shooter
 Allegro Space Shooter game (Allegro Vivace) rewritten in object oriented C++ as a learning process.
 Allegro Vivace (https://github.com/liballeg/allegro_wiki/wiki/Allegro-Vivace) is a tutorial that I found very inspired (yup, and of course it looks doable to me). So I rewrote it (because I'm studying C++), added a second player for fun.
-All Image and Sounds kept as original from Allegro tutorial.
+All Image and Sounds kept as original from Allegro tutorial. But you can add your own and adjust config accordingly.
 
 1. Requirement:
 - Allegro5
@@ -26,4 +26,3 @@ sizes of spritesheet and components.
 
 
 Master branch will play at cooperate mode, two ships one score.
-For compete mode, two players with two scores, please use Seperate_scores branch

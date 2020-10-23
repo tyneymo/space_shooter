@@ -8,7 +8,6 @@
 class Alien_Factory;
 
 class Alien_Maintainer{
-    friend void shotAndHit();
 public:
     Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* spritesheet):
                         alienFactory(factory), sprite(spritesheet){
@@ -58,7 +57,6 @@ private:
 };
 
 class Bullet_Maintainer{
-    friend void shotAndHit();
 public:
     friend class Alien;
     friend class Ship;

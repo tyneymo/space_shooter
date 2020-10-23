@@ -106,12 +106,12 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
     }
 
     FRAMERATEMULTIPLIER = FRAMERATE/30.0;
-    int diag = std::sqrt((long)PRIM_DISPLAY_W*PRIM_DISPLAY_W +
+    int diag = std::sqrt(PRIM_DISPLAY_W*PRIM_DISPLAY_W +
                             PRIM_DISPLAY_H*PRIM_DISPLAY_H);
     if (diag > 1.33 * PRIM_DISPLAY_H) //just to limit effective diag
         diag = 1.33 * PRIM_DISPLAY_H;
     EFFECTIVE_DISPLAY_DIAG = diag / FRAMERATEMULTIPLIER;
-    if (EFFECTIVE_DISPLAY_DIAG < 320*1.4){
+    if (EFFECTIVE_DISPLAY_DIAG < 320){
         FRAMERATE = 30;
         FRAMERATEMULTIPLIER = 1.0;
         EFFECTIVE_DISPLAY_DIAG = diag;
