@@ -129,7 +129,7 @@ struct Keyboard{
 class Star{
 public:
     friend class AllStars;
-    Star();
+    Star(ALLEGRO_BITMAP*);
     void draw();
 
     ~Star(){

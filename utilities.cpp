@@ -90,28 +90,20 @@ ShootableObject::ShootableObject(){
             "sample explode 2, please check audio file name for explode 2!");
 }
 
-Star::Star(){
-    ALLEGRO_BITMAP* rect1 = al_create_bitmap(PRIM_DISPLAY_H/20, PRIM_DISPLAY_H/40);
+Star::Star(ALLEGRO_BITMAP* bmp){
     ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
-    al_set_target_bitmap(rect1);
-    al_clear_to_color(al_map_rgb(0,0,0));
-    int rectSide = al_get_bitmap_height(rect1);
-    ALLEGRO_COLOR colorWhite = al_map_rgba_f(0.5,0.5,0.5,0.2);
-    al_draw_filled_triangle(rectSide/2, 0, rectSide/3, rectSide/2, rectSide*2/3,
-                            rectSide/2,colorWhite);
-    al_draw_filled_triangle(0, rectSide/2, rectSide/2, rectSide/3, rectSide/2,
-                            rectSide*2/3,colorWhite);
-    al_draw_filled_triangle(rectSide/2, rectSide, rectSide/3, rectSide/2,
-                            rectSide*2/3, rectSide/2, colorWhite);
-    al_draw_filled_triangle(rectSide, rectSide/2, rectSide/3, rectSide/2,
-                            rectSide/2, rectSide*2/3, colorWhite);
-    int newSide = rectSide*between_f(0,1.0);
+    int rectSide = al_get_bitmap_height(bmp);
+    std::cout << rectSide << std::endl;
+    float floatRand = between_f(0,1.0);
+    int newSide = rectSide*floatRand;
+    std::cout << newSide << std::endl;
     ALLEGRO_BITMAP* dest = al_create_bitmap(newSide, newSide);
+    must_init(dest , "create bitmap for star");
     al_set_target_bitmap(dest);
-    al_draw_scaled_bitmap(rect1,0,0,rectSide,rectSide, 0,0, newSide,newSide,0);
+    al_draw_scaled_bitmap(bmp,0,0,rectSide,rectSide, 0,0, newSide,newSide,0);
     starImg = dest;
-    al_destroy_bitmap(rect1);
     al_set_target_bitmap(saveDisp);
+    std::cout << "a star was born" << std::endl;
     effectCounter = between(0, 30*FRAMERATEMULTIPLIER);
 }
 
@@ -142,18 +134,39 @@ void Star::relocate(){
 }
 
 AllStars::AllStars(){
-    stars.resize(elementsNumber*elementsNumber);
+    //create a star bitmap model then feed it to star's constructor
+    ALLEGRO_BITMAP* bmpModel = al_create_bitmap(PRIM_DISPLAY_H/20,
+                                                PRIM_DISPLAY_H/40);
+    must_init(bmpModel, "create model for stars");
+    ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
+    al_set_target_bitmap(bmpModel);
+    al_clear_to_color(al_map_rgb(0,0,0));
+    int rectSide = al_get_bitmap_height(bmpModel);
+    ALLEGRO_COLOR colorWhite = al_map_rgb_f(0.5,0.5,0.5);
+    al_draw_filled_triangle(rectSide/2, 0, rectSide/3, rectSide/2, rectSide*2/3,
+                            rectSide/2,colorWhite);
+    al_draw_filled_triangle(0, rectSide/2, rectSide/2, rectSide/3, rectSide/2,
+                            rectSide*2/3,colorWhite);
+    al_draw_filled_triangle(rectSide/2, rectSide, rectSide/3, rectSide/2,
+                            rectSide*2/3, rectSide/2, colorWhite);
+    al_draw_filled_triangle(rectSide, rectSide/2, rectSide/3, rectSide/2,
+                            rectSide/2, rectSide*2/3, colorWhite);
+    //restore drawing to original
+    al_set_target_bitmap(saveDisp);
+    stars.reserve(elementsNumber*elementsNumber);
     int element_w = PRIM_DISPLAY_W/elementsNumber;
     int element_h = PRIM_DISPLAY_H/elementsNumber;
-    int sz = stars.size();
-    //distribute stars all over screen
+    int sz = elementsNumber*elementsNumber;
+    //create stars and distribute stars all over screen
     for (int i = 0; i < sz; ++i){
+        stars.emplace_back(bmpModel);
         stars[i].elementsNumber = elementsNumber;
         int ran = between(0,elementsNumber);
         stars[i].pos_x = between (ran * element_w, (ran+1) * element_w);
         ran = between(0,elementsNumber);
         stars[i].pos_y = between (ran * element_h, (ran+1) * element_h);
     }
+    al_destroy_bitmap(bmpModel);
 }
 
 //only called when resize.
