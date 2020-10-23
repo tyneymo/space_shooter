@@ -77,11 +77,28 @@ int main(int argc, char** argv)
     int AlienCreateFrequent = 40*FRAMERATEMULTIPLIER;
     int scoreToIncreaseFrequent = 1000;
     int hardnessCounter = 0;
+    bool pausing = false;
     while(1){
         al_wait_for_event(queue, &event);
 
         switch(event.type){
+            case ALLEGRO_EVENT_KEY_DOWN:
+                if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+                {
+                    done = true;
+                    break;
+                }
+                if (event.keyboard.keycode == ALLEGRO_KEY_P)
+                {
+                    pausing = !pausing;
+                    redraw = true;
+                    break;
+                }
+
+
             case ALLEGRO_EVENT_TIMER:
+                if (pausing)
+                    break;
                 //update position and fire_ready state
                 ++frameCounter;
                 ship_one->update(&keyboard);
@@ -105,10 +122,6 @@ int main(int argc, char** argv)
                 redraw = true;
                 break;
 
-            case ALLEGRO_EVENT_KEY_DOWN:
-                if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-                    done = true;
-                break;
 
             case ALLEGRO_EVENT_DISPLAY_CLOSE:
                 done = true;
@@ -138,24 +151,26 @@ int main(int argc, char** argv)
 
         if (done) break;
 
+
+
         if (redraw && al_is_event_queue_empty(queue))
         {
             if (buffer != al_get_target_bitmap())
                 al_set_target_bitmap(buffer);
             al_clear_to_color(al_map_rgb(0,0,0));
+            alienMaintainer.draw();
             ship_one->draw();
             ship_two->draw();
-            alienMaintainer.draw();
             bulletMaintainer.draw();
             al_set_target_backbuffer(disp);
             al_clear_to_color(al_map_rgb(0,0,0));
             al_draw_bitmap(buffer, 0, 0, 0);
-            drawPlayerInformation(lifeBmp,font, &score, &(*ship_one), &(*ship_two));
+            drawPlayerInformation(lifeBmp,font, &score, pausing,
+                                  &(*ship_one), &(*ship_two));
             al_flip_display();
             al_set_target_bitmap(buffer);
             redraw = false;
         }
-
     }
 
     al_destroy_timer(timer);

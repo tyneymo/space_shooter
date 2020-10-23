@@ -43,13 +43,17 @@ ALLEGRO_BITMAP* sprite_grab(ALLEGRO_BITMAP* bigmap,int x, int y, int w, int h){
     return sprite;
 }
 
-void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font,Score* score,
-                           Ship* ship1, Ship* ship2){
+void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font,
+                           Score* score,bool pausing,Ship* ship1, Ship* ship2){
     al_draw_textf(font, al_map_rgb_f(1,1,1), 3, 3, 0,
                   "%ld", score->getScore()); //draw score at x=3 y=3
     int ship1LivesLeft = ship1->getLives();
     int ship2LivesLeft = ship2->getLives();
     int lifeImgWid = al_get_bitmap_width(lifeImg);
+    if (pausing){
+        al_draw_text(font, al_map_rgb_f(1,1,1),PRIM_DISPLAY_W/2, PRIM_DISPLAY_H/2,
+                     ALLEGRO_ALIGN_CENTER, "P A U S E");
+    }
     if (!(ship1LivesLeft || ship2LivesLeft))
     {
         al_draw_text(font, al_map_rgb_f(1,1,1),PRIM_DISPLAY_W/2, PRIM_DISPLAY_H/2,
