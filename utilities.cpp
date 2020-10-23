@@ -50,10 +50,6 @@ void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font, Score* s
     int ship1LivesLeft = ship1->getLives();
     int ship2LivesLeft = ship2->getLives();
     int lifeImgWid = al_get_bitmap_width(lifeImg);
-    if (pausing){
-        al_draw_text(font, al_map_rgb_f(1,1,1),PRIM_DISPLAY_W/2, PRIM_DISPLAY_H/2,
-                     ALLEGRO_ALIGN_CENTER, "P A U S E");
-    }
     if (askForEnding){
         al_draw_text(font, al_map_rgb_f(1,1,1),PRIM_DISPLAY_W/2, PRIM_DISPLAY_H/2 + 2*al_get_font_line_height(font),
                      ALLEGRO_ALIGN_CENTER, "press Y to end game");
@@ -65,6 +61,10 @@ void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font, Score* s
         al_draw_text(font, al_map_rgb_f(1,1,1),PRIM_DISPLAY_W/2, PRIM_DISPLAY_H/2,
                      ALLEGRO_ALIGN_CENTER, "G A M E  O V E R");
         return;
+    }
+    if (pausing){
+        al_draw_text(font, al_map_rgb_f(1,1,1),PRIM_DISPLAY_W/2, PRIM_DISPLAY_H/2,
+                     ALLEGRO_ALIGN_CENTER, "P A U S E");
     }
     for (int i = 0; i < ship2LivesLeft; ++i){
         al_draw_bitmap(lifeImg, 3 + lifeImgWid*i, 12, 0 );

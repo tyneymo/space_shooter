@@ -246,7 +246,7 @@ void Alien_Maintainer::updateBitmaps(){
                                              std::make_pair(displayWidth/19,
                                               displayHeight/14),
                                              std::make_pair(displayWidth/19,
-                                              displayHeight/14)};
+                                              displayHeight/10)};
     start_chars = "explosion";
     for (int i = 0; i < 4; ++i){
         std::string digits = std::to_string(i);
@@ -323,11 +323,11 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
 
     //initialize images in spark_array:
     std::pair<int,int> sparkDimension[] = {std::make_pair(displayWidth/32,
-                                           displayHeight/24),
+                                           displayHeight/20),
                                            std::make_pair(displayWidth/32,
-                                           displayHeight/24),
+                                           displayHeight/18),
                                            std::make_pair(displayWidth/32,
-                                           displayHeight/24)};
+                                           displayHeight/16)};
     start_key_chars = "spark";
     for (int i = 0; i < 3; ++i){
         std::string digits = std::to_string(i);
