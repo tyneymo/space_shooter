@@ -59,7 +59,6 @@ private:
 
     ALLEGRO_BITMAP* ship_img;
 
-    int speed;
     bool default_control = true;
     int new_up, new_down, new_left, new_right, new_shoot;
     int life = 5;

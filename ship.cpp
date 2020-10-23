@@ -15,7 +15,6 @@ Ship::Ship (ALLEGRO_BITMAP* bitmap, int x, int y){
     fireWait = 8*FRAMERATEMULTIPLIER;
     type = SHIP;
     must_init(ship_img, "ship initialization");
-    speed = EFFECTIVE_DISPLAY_DIAG/140;
     respawnTimer = 60*FRAMERATEMULTIPLIER;
     blink_respawn_counter = respawnTimer;
 }

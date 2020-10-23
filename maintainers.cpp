@@ -304,8 +304,8 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
                                       (start_key_chars + "_h").c_str()));
     tempBmp = sprite_grab(spritesheet, x, y, w, h);
     bmpRatio = (float) w / (float) h;
-    bmp = al_create_bitmap(bmpRatio*EFFECTIVE_DRAWING_DIMENSION/70,
-                           EFFECTIVE_DRAWING_DIMENSION/70);
+    bmp = al_create_bitmap(bmpRatio*EFFECTIVE_DRAWING_DIMENSION/80,
+                           EFFECTIVE_DRAWING_DIMENSION/80);
     al_set_target_bitmap(bmp);
     al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bmp),
                           al_get_bitmap_height(bmp), 0);
