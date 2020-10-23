@@ -3,6 +3,7 @@
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
+extern int EFFECTIVE_DRAWING_DIMENSION;
 
 bool bulletObjCollide(ShootableObject* obj, Bullet* bullet){
     if (bullet->shooterType() == ALIEN && (obj->getType() == BUG
@@ -208,14 +209,9 @@ void Alien_Maintainer::updateBitmaps(){
     std::string start_chars = "alien";
     Object_type aliens[] = {BUG, ARROW, THICCBOI};
     ALLEGRO_BITMAP* saveDisplay = al_get_target_bitmap();
-    int displayWidth = al_get_bitmap_width(saveDisplay);
-    int displayHeight = al_get_bitmap_height(saveDisplay);
-    std::pair<int,int> alienDimension[] = {std::make_pair(displayWidth/14,
-                                           displayHeight/21),
-                                          std::make_pair(displayWidth/18,
-                                           displayHeight/19),
-                                          std::make_pair(displayWidth/7,
-                                           displayHeight/9)};
+    int alienDimension[] = {EFFECTIVE_DRAWING_DIMENSION/24,
+                            EFFECTIVE_DRAWING_DIMENSION/22,
+                            EFFECTIVE_DRAWING_DIMENSION/14};
     int x,y,w,h;
     for (int i = 0; i < 3; ++i){ //config file list alien from 1
         std::string digits = std::to_string(i);
@@ -229,8 +225,8 @@ void Alien_Maintainer::updateBitmaps(){
                                           (start_chars + digits + "_h").c_str()));
         ALLEGRO_BITMAP* tempBmp = sprite_grab(sprite, x,y,w,h);
         float bmpRatio = (float) w / (float) h;
-        bitmapPtr = al_create_bitmap(alienDimension[i].second*bmpRatio,
-                                    alienDimension[i].second);
+        bitmapPtr = al_create_bitmap(alienDimension[i]*bmpRatio,
+                                    alienDimension[i]);
         al_set_target_bitmap(bitmapPtr);
         al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bitmapPtr),
                                 al_get_bitmap_height(bitmapPtr), 0);
@@ -239,14 +235,10 @@ void Alien_Maintainer::updateBitmaps(){
         al_destroy_bitmap(tempBmp);
     }
     //explostion frames effect, extracts from sprites
-    std::pair<int,int> explodeDimension[] = {std::make_pair(displayWidth/35,
-                                             displayHeight/26),
-                                            std::make_pair(displayWidth/29,
-                                             displayHeight/21),
-                                             std::make_pair(displayWidth/19,
-                                              displayHeight/14),
-                                             std::make_pair(displayWidth/19,
-                                              displayHeight/10)};
+    int explodeDimension[] = {EFFECTIVE_DRAWING_DIMENSION/26,
+                               EFFECTIVE_DRAWING_DIMENSION/21,
+                                 EFFECTIVE_DRAWING_DIMENSION/14,
+                                 EFFECTIVE_DRAWING_DIMENSION/10};
     start_chars = "explosion";
     for (int i = 0; i < 4; ++i){
         std::string digits = std::to_string(i);
@@ -260,8 +252,8 @@ void Alien_Maintainer::updateBitmaps(){
                                           (start_chars + digits + "_h").c_str()));
         ALLEGRO_BITMAP* tempBmp = sprite_grab(sprite, x,y,w,h);
         float bmpRatio = (float) w / (float) h;
-        explosion_array[i] = al_create_bitmap(explodeDimension[i].second*bmpRatio,
-                                              explodeDimension[i].second);
+        explosion_array[i] = al_create_bitmap(explodeDimension[i]*bmpRatio,
+                                              explodeDimension[i]);
         al_set_target_bitmap(explosion_array[i]);
         al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(explosion_array[i]),
                               al_get_bitmap_height(explosion_array[i]),0);
@@ -276,8 +268,6 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
     sprite = spritesheet;
     ALLEGRO_BITMAP* bmp;
     ALLEGRO_BITMAP* saveDisplay = al_get_target_bitmap();
-    int displayWidth = al_get_bitmap_width(saveDisplay);
-    int displayHeight = al_get_bitmap_height(saveDisplay);
     std::string start_key_chars = "shipshot";
     int x, y, w, h;
     //SHIP:
@@ -290,8 +280,11 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
     h = std::atoi(al_get_config_value(config, "components",
                                       (start_key_chars + "_h").c_str()));
     ALLEGRO_BITMAP* tempBmp = sprite_grab(spritesheet, x, y, w, h);
-    float bmpRatio = (float) w / (float) h;
-    bmp = al_create_bitmap(bmpRatio*displayHeight/26, displayHeight/26);
+    //make sure ship bullet is not too wide
+    float bmpRatio = ((float) w / (float) h < 1.0)? (float) w / (float) h:
+                                                    (float) h / (float) w;
+    bmp = al_create_bitmap(bmpRatio*EFFECTIVE_DRAWING_DIMENSION/40,
+                           EFFECTIVE_DRAWING_DIMENSION/40);
     al_set_target_bitmap(bmp);
     al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bmp),
                           al_get_bitmap_height(bmp), 0);
@@ -311,7 +304,8 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
                                       (start_key_chars + "_h").c_str()));
     tempBmp = sprite_grab(spritesheet, x, y, w, h);
     bmpRatio = (float) w / (float) h;
-    bmp = al_create_bitmap(bmpRatio*displayHeight/60, displayHeight/60);
+    bmp = al_create_bitmap(bmpRatio*EFFECTIVE_DRAWING_DIMENSION/70,
+                           EFFECTIVE_DRAWING_DIMENSION/70);
     al_set_target_bitmap(bmp);
     al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bmp),
                           al_get_bitmap_height(bmp), 0);
@@ -322,12 +316,9 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
     }
 
     //initialize images in spark_array:
-    std::pair<int,int> sparkDimension[] = {std::make_pair(displayWidth/32,
-                                           displayHeight/20),
-                                           std::make_pair(displayWidth/32,
-                                           displayHeight/18),
-                                           std::make_pair(displayWidth/32,
-                                           displayHeight/16)};
+    int sparkDimension[] = {EFFECTIVE_DRAWING_DIMENSION/20,
+                            EFFECTIVE_DRAWING_DIMENSION/20,
+                           EFFECTIVE_DRAWING_DIMENSION/20};
     start_key_chars = "spark";
     for (int i = 0; i < 3; ++i){
         std::string digits = std::to_string(i);
@@ -341,8 +332,8 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
                                           (start_key_chars + digits + "_h").c_str()));
         tempBmp = sprite_grab(sprite, x,y,w,h);
         bmpRatio = (float) w / (float) h;
-        spark_array[i] = al_create_bitmap(sparkDimension[i].second*bmpRatio,
-                                          sparkDimension[i].second);
+        spark_array[i] = al_create_bitmap(sparkDimension[i]*bmpRatio,
+                                          sparkDimension[i]);
         al_set_target_bitmap(spark_array[i]);
         al_draw_scaled_bitmap(tempBmp, 0,0,w,h,0,0,al_get_bitmap_width(bmp),
                               al_get_bitmap_height(bmp),0);

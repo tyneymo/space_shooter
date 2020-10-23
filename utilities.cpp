@@ -9,6 +9,7 @@ extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 extern int EFFECTIVE_DISPLAY_DIAG;
 extern int EFFECTIVE_DISPLAY_HEIGHT;
+extern int EFFECTIVE_DRAWING_DIMENSION;
 extern float FRAMERATE;
 extern float FRAMERATEMULTIPLIER;
 
@@ -93,17 +94,14 @@ ShootableObject::ShootableObject(){
 Star::Star(ALLEGRO_BITMAP* bmp){
     ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
     int rectSide = al_get_bitmap_height(bmp);
-    std::cout << rectSide << std::endl;
     float floatRand = between_f(0,1.0);
     int newSide = rectSide*floatRand;
-    std::cout << newSide << std::endl;
     ALLEGRO_BITMAP* dest = al_create_bitmap(newSide, newSide);
     must_init(dest , "create bitmap for star");
     al_set_target_bitmap(dest);
     al_draw_scaled_bitmap(bmp,0,0,rectSide,rectSide, 0,0, newSide,newSide,0);
     starImg = dest;
     al_set_target_bitmap(saveDisp);
-    std::cout << "a star was born" << std::endl;
     effectCounter = between(0, 30*FRAMERATEMULTIPLIER);
 }
 
@@ -228,6 +226,14 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
                   << std::endl;
     }
     EFFECTIVE_DISPLAY_HEIGHT = PRIM_DISPLAY_H / FRAMERATEMULTIPLIER;
+    ALLEGRO_DISPLAY_MODE oldMode;
+    auto displayMode = al_get_display_mode(0, &oldMode);
+    if (displayMode)
+        EFFECTIVE_DRAWING_DIMENSION = (displayMode->height < displayMode->width)?
+                                    displayMode->height : displayMode->width /
+                                    FRAMERATEMULTIPLIER;
+    else
+        EFFECTIVE_DRAWING_DIMENSION = EFFECTIVE_DISPLAY_HEIGHT;
 }
 
 bool addConfig(ALLEGRO_CONFIG* config){

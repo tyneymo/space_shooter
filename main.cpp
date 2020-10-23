@@ -6,8 +6,10 @@ ALLEGRO_CONFIG* config;
 int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 int EFFECTIVE_DISPLAY_DIAG; //keep things move at reasonable speed at different framerate
 int EFFECTIVE_DISPLAY_HEIGHT;
+int EFFECTIVE_DRAWING_DIMENSION;
 float FRAMERATE;
 float FRAMERATEMULTIPLIER;
+
 
 
 int main(int argc, char** argv)
@@ -41,7 +43,6 @@ int main(int argc, char** argv)
     must_init(buffer, "display buffer");
     ALLEGRO_FONT* font = al_create_builtin_font();
     must_init(font, "font init");
-
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_display_event_source(disp));

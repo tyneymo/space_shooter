@@ -152,7 +152,7 @@ public:
 
 private:
     std::vector<Star> stars;
-    int elementsNumber = 10;
+    int elementsNumber = 15;
 };
 
 #endif // UTILITIES_H

@@ -3,6 +3,7 @@
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 extern int EFFECTIVE_DISPLAY_DIAG;
+extern int EFFECTIVE_DRAWING_DIMENSION;
 extern float FRAMERATEMULTIPLIER;
 
 Ship::Ship (ALLEGRO_BITMAP* bitmap, int x, int y){
@@ -96,8 +97,8 @@ Ship_factory::Ship_factory(ALLEGRO_BITMAP* sheet){
     ALLEGRO_BITMAP* tempBmp = sprite_grab(sheet, x, y, w, h);
     float bmpRatio = (float) w / (float) h;
     ALLEGRO_BITMAP* saveDisplay = al_get_target_bitmap();
-    shipImg = al_create_bitmap(bmpRatio * al_get_bitmap_height(saveDisplay)/18,
-                               al_get_bitmap_height(saveDisplay)/18);
+    shipImg = al_create_bitmap(bmpRatio * EFFECTIVE_DRAWING_DIMENSION/20,
+                               EFFECTIVE_DRAWING_DIMENSION/20);
     al_set_target_bitmap(shipImg);
     al_clear_to_color(al_map_rgba_f(0,0,0,0));
     al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(shipImg),
