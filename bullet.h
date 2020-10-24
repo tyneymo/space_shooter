@@ -135,11 +135,14 @@ public:
         : Alien_bullet(bitmap, shooter){
         alien_bullet_setup(0,0,0,0);
         bulletSource = ALIEN;
+        rotating = between(0,18);
     }
 
-    void alien_bullet_setup(int,int,int,int); //override aliens setup
+    void alien_bullet_setup(float,float,float,float); //override aliens setup
 
-//    void draw();
+    void draw();
+private:
+    int rotating = 0;
 };
 
 class Bullet_factory{

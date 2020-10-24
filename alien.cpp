@@ -15,7 +15,7 @@ Explosion::Explosion(ALLEGRO_BITMAP** bm_array,int x, int y): explosion_array(bm
 }
 
 void Explosion::draw(){
-    al_draw_bitmap(explosion_array[numOfExplosionFrames-counter], pos_x, pos_y, 0);
+    draw_centre(explosion_array[numOfExplosionFrames-counter], pos_x, pos_y);
     if (!fixFramerate--){
         --counter;
         fixFramerate = 2*FRAMERATEMULTIPLIER;

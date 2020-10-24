@@ -76,6 +76,32 @@ void drawPlayerInformation(ALLEGRO_BITMAP* lifeImg ,ALLEGRO_FONT* font, Score& s
     }
 }
 
+void draw_centre(ALLEGRO_BITMAP* bmp, int x, int y){
+    int w = al_get_bitmap_width(bmp);
+    int h = al_get_bitmap_height(bmp);
+    al_draw_bitmap_region(bmp, 0,0,w/2,h/2, x-w/2,y-h/2,0);
+    al_draw_bitmap_region(bmp, w/2,0,w/2,h/2, x,y-h/2,0);
+    al_draw_bitmap_region(bmp, 0,h/2,w/2,h/2, x-w/2,y,0);
+    al_draw_bitmap_region(bmp, w/2,h/2,w/2,h/2, x,y,0);
+}
+
+void draw_scaled_centre(ALLEGRO_BITMAP* bmp, int x, int y, float ratio){
+    int w = al_get_bitmap_width(bmp);
+    int h = al_get_bitmap_height(bmp);
+    ShortLiveBitmap bmp1_1 = al_create_sub_bitmap(bmp, 0,0,w/2,h/2);
+    ShortLiveBitmap bmp1_2 = al_create_sub_bitmap(bmp, w/2, 0, w/2,h/2);
+    ShortLiveBitmap bmp2_1 = al_create_sub_bitmap(bmp, 0, h/2, w/2,h/2);
+    ShortLiveBitmap bmp2_2 = al_create_sub_bitmap(bmp, w/2, h/2, w/2,h/2);
+    al_draw_scaled_bitmap(bmp1_1.getBitmap(),0,0,w/2,h/2,x+w/2-ratio*w/2,
+                          y+h/2-ratio*h/2,ratio*w/2, ratio*h/2,0);
+    al_draw_scaled_bitmap(bmp1_2.getBitmap(),0,0,w/2,h/2,x+w/2,
+                          y+h/2-ratio*h/2,ratio*w/2, ratio*h/2,0);
+    al_draw_scaled_bitmap(bmp2_1.getBitmap(),0,0,w/2,h/2,x+w/2-ratio*w/2,
+                          y+h/2,ratio*w/2, ratio*h/2,0);
+    al_draw_scaled_bitmap(bmp2_2.getBitmap(),0,0,w/2,h/2,x+w/2,
+                          y+h/2,ratio*w/2, ratio*h/2,0);
+}
+
 ShootableObject::ShootableObject(){
     //audio file, hardcode :(
     shot_sample = al_load_sample(al_get_config_value(config,
@@ -92,32 +118,19 @@ ShootableObject::ShootableObject(){
 }
 
 Star::Star(ALLEGRO_BITMAP* bmp){
-    ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
-    int rectSide = al_get_bitmap_height(bmp);
-    float floatRand = between_f(0,1.0);
-    int newSide = rectSide*floatRand;
-    ALLEGRO_BITMAP* dest = al_create_bitmap(newSide, newSide);
-    must_init(dest , "create bitmap for star");
-    al_set_target_bitmap(dest);
-    al_draw_scaled_bitmap(bmp,0,0,rectSide,rectSide, 0,0, newSide,newSide,0);
-    starImg = dest;
-    al_set_target_bitmap(saveDisp);
-    effectCounter = between(0, 30*FRAMERATEMULTIPLIER);
+    starImg = bmp;
+    ratio = between_f(0,1.0);
+    effectCounter = between(0, 60*FRAMERATEMULTIPLIER);
 }
 
 void Star::draw(){
     float drawRatio;
-    int cutPoint = 40*FRAMERATEMULTIPLIER;
+    int cutPoint = 60*FRAMERATEMULTIPLIER;
     //give stars effect of slow blinking
     drawRatio = (float)(effectCounter++ % cutPoint) / cutPoint;
-    int bmpWid  = al_get_bitmap_width(starImg);
-    int bmpHei = al_get_bitmap_height(starImg);
-    int drawWid = drawRatio * bmpWid;
-    int drawHei = drawRatio * bmpHei;
-    al_draw_scaled_bitmap(starImg, 0,0,bmpWid, bmpHei, pos_x, pos_y, drawWid,
-                          drawHei, 0);
+    draw_scaled_centre(starImg, pos_x, pos_y, drawRatio*ratio);
     //when a star get highest size, it relocate itself.
-    if (!(effectCounter % cutPoint)){
+    if (!(effectCounter % (cutPoint))){
         relocate();
     }
 }
@@ -133,13 +146,13 @@ void Star::relocate(){
 
 AllStars::AllStars(){
     //create a star bitmap model then feed it to star's constructor
-    ALLEGRO_BITMAP* bmpModel = al_create_bitmap(PRIM_DISPLAY_H/20,
+    starModel = al_create_bitmap(PRIM_DISPLAY_H/20,
                                                 PRIM_DISPLAY_H/40);
-    must_init(bmpModel, "create model for stars");
+    must_init(starModel, "create model for stars");
     ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
-    al_set_target_bitmap(bmpModel);
+    al_set_target_bitmap(starModel);
     al_clear_to_color(al_map_rgb(0,0,0));
-    int rectSide = al_get_bitmap_height(bmpModel);
+    int rectSide = al_get_bitmap_height(starModel);
     ALLEGRO_COLOR colorWhite = al_map_rgb_f(0.5,0.5,0.5);
     al_draw_filled_triangle(rectSide/2, 0, rectSide/3, rectSide/2, rectSide*2/3,
                             rectSide/2,colorWhite);
@@ -157,14 +170,13 @@ AllStars::AllStars(){
     int sz = elementsNumber*elementsNumber;
     //create stars and distribute stars all over screen
     for (int i = 0; i < sz; ++i){
-        stars.emplace_back(bmpModel);
+        stars.emplace_back(starModel);
         stars[i].elementsNumber = elementsNumber;
         int ran = between(0,elementsNumber);
         stars[i].pos_x = between (ran * element_w, (ran+1) * element_w);
         ran = between(0,elementsNumber);
         stars[i].pos_y = between (ran * element_h, (ran+1) * element_h);
     }
-    al_destroy_bitmap(bmpModel);
 }
 
 //only called when resize.

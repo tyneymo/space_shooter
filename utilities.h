@@ -19,7 +19,6 @@ enum Object_type {SHIP, ALIEN, BUG, ARROW,THICCBOI};
 
 int between(int low, int high);
 
-
 float between_f (float low, float high);
 
 void must_init(bool test, const char* description);
@@ -27,9 +26,14 @@ void must_init(bool test, const char* description);
 bool collide(int obj1_x, int obj1_y, int obj1_w, int obj1_h,
                int obj2_x, int obj2_y, int obj2_w, int obj2_h);
 
+void draw_centre(ALLEGRO_BITMAP*, int, int);
+void draw_scaled_centre(ALLEGRO_BITMAP*, int, int, float);
+
 bool addConfig(ALLEGRO_CONFIG*);
 ALLEGRO_CONFIG* loadConfig();
 void setDisplayValues(ALLEGRO_CONFIG* config);
+
+
 
 class Score;
 class Ship;
@@ -126,18 +130,25 @@ struct Keyboard{
     }
 };
 
+class ShortLiveBitmap{
+public:
+    ShortLiveBitmap(ALLEGRO_BITMAP* bitmap): bmp(bitmap) {
+        must_init(bmp, "initialize shortlivebitmap");}
+    ~ShortLiveBitmap(){al_destroy_bitmap(bmp);}
+    ALLEGRO_BITMAP* getBitmap(){return bmp;}
+private:
+    ALLEGRO_BITMAP* bmp;
+};
+
 class Star{
 public:
     friend class AllStars;
     Star(ALLEGRO_BITMAP*);
     void draw();
 
-    ~Star(){
-        al_destroy_bitmap(starImg);
-    }
 private:
     void relocate();
-
+    float ratio;
     ALLEGRO_BITMAP* starImg;
     int pos_x, pos_y;
     int effectCounter;
@@ -147,10 +158,12 @@ private:
 class AllStars{
 public:
     AllStars();
+    ~AllStars(){al_destroy_bitmap(starModel);}
     void update();
     void draw();
 
 private:
+    ALLEGRO_BITMAP* starModel;
     std::vector<Star> stars;
     int elementsNumber = 15;
 };

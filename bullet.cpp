@@ -34,6 +34,16 @@ void Bullet::draw(){
     }
 }
 
+void Thiccboi_bulelt::draw(){
+    if (active){
+            int w = al_get_bitmap_width(bullet_img);
+            int h = al_get_bitmap_height(bullet_img);
+            al_draw_rotated_bitmap(bullet_img, w/2, h/2, pos_x + w/2, pos_y + h/2,
+                                   (rotating++/FRAMERATEMULTIPLIER)*ALLEGRO_PI/18,0);
+            return;
+        }
+}
+
 void Ship_bullet::ship_bullet_setup(){
     speed_x = 0;
     speed_y = (EFFECTIVE_DISPLAY_HEIGHT/240) * (-2);
@@ -46,7 +56,7 @@ void Alien_bullet::alien_bullet_setup(float lim_x1, float lim_x2, float lim_y1,
     speed_y = (EFFECTIVE_DISPLAY_DIAG/(1.4*240)) * between_f(lim_y1, lim_y2);
 }
 
-void Thiccboi_bulelt::alien_bullet_setup(int, int, int, int){
+void Thiccboi_bulelt::alien_bullet_setup(float,float,float,float){
     speed_x = 0;
     speed_y = (EFFECTIVE_DISPLAY_HEIGHT/240);
 }
