@@ -86,7 +86,6 @@ protected:
     std::pair<int,int> speed;
     int speedCounter=0; //got a bug when not giving speedCounter a initial value
     int endurance;
-    int shoot_interval; //give alien a unsteady shoting behave
     int blink_counter = 0;
 };
 

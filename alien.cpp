@@ -77,7 +77,7 @@ void Alien::update(){
     }
     else
     {
-        fireCountdown = fireWait * shoot_interval;
+        fireCountdown = fireWait;
 
         fireNow = true;
     }
@@ -115,30 +115,27 @@ void Alien::draw(){
 
 void Bug_alien::alien_setup(){
     speed = std::pair<int,int>(1,2); //speed 1/2 pixel per frame
-    fireWait = 8*FRAMERATEMULTIPLIER;
+    fireWait = 35*FRAMERATEMULTIPLIER;
     endurance = 3;
     fireCountdown = fireWait;
     type = BUG;
-    shoot_interval = 3;
     scoreValue = 200;
 }
 
 void Arrow_alien::alien_setup(){
     speed = std::pair<int,int>(1,1); //speed 1 pixel per frame
-    fireWait = 10*FRAMERATEMULTIPLIER;
+    fireWait = 45*FRAMERATEMULTIPLIER;
     endurance = 2;
     fireCountdown = fireWait;
     type = ARROW;
-    shoot_interval = 2;
     scoreValue = 150;
 }
 
 void Thiccboi_alien::alien_setup(){
     speed = std::pair<int,int>(1,3); //speed 1/3 pixel per frame
-    fireWait = 12*FRAMERATEMULTIPLIER;
+    fireWait = 80*FRAMERATEMULTIPLIER;
     endurance = 9;
     fireCountdown = fireWait;
     type = THICCBOI;
-    shoot_interval = 4;
     scoreValue = 800;
 }

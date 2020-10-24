@@ -14,7 +14,7 @@ BulletSpark::BulletSpark(ALLEGRO_BITMAP** bm_array,int x, int y) {
 }
 
 void BulletSpark::draw(){
-        al_draw_bitmap(spark_array[numOfSparkFrames-counter], pos_x, pos_y, 0);
+        draw_centre(spark_array[numOfSparkFrames-counter], pos_x, pos_y);
         if (!fixFramerate--){
             --counter;
             fixFramerate = 2*FRAMERATEMULTIPLIER;
