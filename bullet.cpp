@@ -14,11 +14,14 @@ BulletSpark::BulletSpark(ALLEGRO_BITMAP** bm_array,int x, int y) {
 }
 
 void BulletSpark::draw(){
-        draw_centre(spark_array[numOfSparkFrames-counter], pos_x, pos_y);
-        if (!fixFramerate--){
-            --counter;
-            fixFramerate = 2*FRAMERATEMULTIPLIER;
-        }
+    int w = al_get_bitmap_width(spark_array[numOfSparkFrames-counter]);
+    int h = al_get_bitmap_height(spark_array[numOfSparkFrames-counter]);
+    al_draw_rotated_bitmap(spark_array[numOfSparkFrames-counter], w/2, h/2,
+                            pos_x, pos_y,0,0);
+    if (!fixFramerate--){
+        --counter;
+        fixFramerate = 2*FRAMERATEMULTIPLIER;
+    }
 }
 
 void Bullet::draw(){

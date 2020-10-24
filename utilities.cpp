@@ -125,17 +125,18 @@ Star::Star(ALLEGRO_BITMAP* bmp){
 
 void Star::draw(){
     float drawRatio;
-    int cutPoint = 60*FRAMERATEMULTIPLIER;
+    int cutPoint = 30*FRAMERATEMULTIPLIER;
     //give stars effect of slow blinking
-    drawRatio = (float)(effectCounter++ % cutPoint) / cutPoint;
-//    draw_scaled_centre(starImg, pos_x, pos_y, drawRatio*ratio);
+    if ((effectCounter / cutPoint) % 2)
+    drawRatio = (float)(cutPoint - (effectCounter++ % cutPoint)) / cutPoint;
+    else drawRatio = (float)(effectCounter++ % cutPoint) / cutPoint;
     int w = al_get_bitmap_width(starImg);
     int h = al_get_bitmap_height(starImg);
     al_draw_scaled_rotated_bitmap(starImg,w/2,h/2,pos_x,
                                   pos_y, drawRatio*ratio,
                                   drawRatio*ratio, 0, 0);
-    //when a star get highest size, it relocate itself.
-    if (!(effectCounter % (cutPoint))){
+    //when a star get dimmed, it relocate itself.
+    if (!(effectCounter % (2*cutPoint))){
         relocate();
     }
 }

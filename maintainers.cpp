@@ -67,8 +67,10 @@ void Bullet_Maintainer::maintain(ShootableObject& ship,
         //check bullet not actives because hit alien
         if (!bulletPtr->ifActive()){
             spark_list.push_back(BulletSpark(spark_array,
-                                  bulletPtr->getLocation().first,
-                                  bulletPtr->getLocation().second));
+                                  bulletPtr->getLocation().first +
+                                  bulletPtr->getDimension().first/2,
+                                  bulletPtr->getLocation().second +
+                                  bulletPtr->getDimension().second/2));
             if (!erased)
             {
                 bullet_list.erase(local_iter);
