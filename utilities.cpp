@@ -128,7 +128,12 @@ void Star::draw(){
     int cutPoint = 60*FRAMERATEMULTIPLIER;
     //give stars effect of slow blinking
     drawRatio = (float)(effectCounter++ % cutPoint) / cutPoint;
-    draw_scaled_centre(starImg, pos_x, pos_y, drawRatio*ratio);
+//    draw_scaled_centre(starImg, pos_x, pos_y, drawRatio*ratio);
+    int w = al_get_bitmap_width(starImg);
+    int h = al_get_bitmap_height(starImg);
+    al_draw_scaled_rotated_bitmap(starImg,w/2,h/2,pos_x,
+                                  pos_y, drawRatio*ratio,
+                                  drawRatio*ratio, 0, 0);
     //when a star get highest size, it relocate itself.
     if (!(effectCounter % (cutPoint))){
         relocate();
@@ -146,7 +151,7 @@ void Star::relocate(){
 
 AllStars::AllStars(){
     //create a star bitmap model then feed it to star's constructor
-    starModel = al_create_bitmap(PRIM_DISPLAY_H/20,
+    starModel = al_create_bitmap(PRIM_DISPLAY_H/40,
                                                 PRIM_DISPLAY_H/40);
     must_init(starModel, "create model for stars");
     ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
@@ -160,7 +165,7 @@ AllStars::AllStars(){
                             rectSide*2/3,colorWhite);
     al_draw_filled_triangle(rectSide/2, rectSide, rectSide/3, rectSide/2,
                             rectSide*2/3, rectSide/2, colorWhite);
-    al_draw_filled_triangle(rectSide, rectSide/2, rectSide/3, rectSide/2,
+    al_draw_filled_triangle(rectSide, rectSide/2, rectSide/2, rectSide/3,
                             rectSide/2, rectSide*2/3, colorWhite);
     //restore drawing to original
     al_set_target_bitmap(saveDisp);
