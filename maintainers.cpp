@@ -1,4 +1,4 @@
-#include "maintainers.h"
+x#include "maintainers.h"
 #include "ship.h"
 #include "shootableObject.h"
 #include <string>
@@ -49,7 +49,7 @@ void aliensBulletsCollide(Alien_Maintainer& alienMtn, Bullet_Maintainer& bulletM
 void Bullet_Maintainer::maintain(ShootableObject& ship,
                                  Alien_Maintainer& alienMaintainer){
     aliensBulletsCollide(alienMaintainer, *this); //update if bullets hit aliens,
-                                        //set active state of bullet according.
+    //set active state of bullet according.
     auto bulletIter = bullet_list.begin();
     while (bulletIter != bullet_list.end()){
         bool erased = false;
@@ -59,9 +59,9 @@ void Bullet_Maintainer::maintain(ShootableObject& ship,
         bulletPtr->update();
         //check out of bound
         if (bulletPtr->getLocation().second < 0 ||
-                            bulletPtr->getLocation().second > PRIM_DISPLAY_H ||
-                            bulletPtr->getLocation().first < 0 ||
-                            bulletPtr->getLocation().first > PRIM_DISPLAY_W)
+                bulletPtr->getLocation().second > PRIM_DISPLAY_H ||
+                bulletPtr->getLocation().first < 0 ||
+                bulletPtr->getLocation().first > PRIM_DISPLAY_W)
         {
             bullet_list.erase(local_iter);
             erased = true;
@@ -69,8 +69,8 @@ void Bullet_Maintainer::maintain(ShootableObject& ship,
         //check bullet not actives because hit alien
         if (!bulletPtr->ifActive()){
             spark_list.push_back(BulletSpark(spark_array,
-                                  bulletPtr->getLocation().first,
-                                  bulletPtr->getLocation().second));
+                                             bulletPtr->getLocation().first,
+                                             bulletPtr->getLocation().second));
             if (!erased)
             {
                 bullet_list.erase(local_iter);
@@ -81,17 +81,17 @@ void Bullet_Maintainer::maintain(ShootableObject& ship,
         if (ship.getType() == SHIP && bulletPtr->shooterType() != SHIP
                 && static_cast<Ship*>(&ship)->getLives() > 0)
             if (collide(ship.getLocation().first,
-                    ship.getLocation().second,
-                    ship.getDimension().first,
-                    ship.getDimension().second,
-                    bulletPtr->getLocation().first,
-                    bulletPtr->getLocation().second,
-                    bulletPtr->getDimension().first,
-                    bulletPtr->getDimension().second))
+                        ship.getLocation().second,
+                        ship.getDimension().first,
+                        ship.getDimension().second,
+                        bulletPtr->getLocation().first,
+                        bulletPtr->getLocation().second,
+                        bulletPtr->getDimension().first,
+                        bulletPtr->getDimension().second))
             {
                 spark_list.push_back(BulletSpark(spark_array,
-                                      bulletPtr->getLocation().first,
-                                      bulletPtr->getLocation().second));
+                                                 bulletPtr->getLocation().first,
+                                                 bulletPtr->getLocation().second));
                 if (!erased)
                 {
                     bullet_list.erase(local_iter);
@@ -109,21 +109,21 @@ void Bullet_Maintainer::maintain(ShootableObject& ship,
 }
 
 void Bullet_Maintainer::draw(){
-        auto bullet_iter = bullet_list.begin();
-        while (bullet_iter != bullet_list.end()){
-            auto local_iter = bullet_iter;
-            bullet_iter++;
-            auto ptr = *local_iter;
-            if (ptr->ifActive())
-                ptr->draw();
-        }
-        auto spark_iter = spark_list.begin();
-        while (spark_iter != spark_list.end()){
-            auto local_iter = spark_iter;
-            spark_iter++;
-            if (!local_iter->sparked())
-                local_iter->draw();
-        }
+    auto bullet_iter = bullet_list.begin();
+    while (bullet_iter != bullet_list.end()){
+        auto local_iter = bullet_iter;
+        bullet_iter++;
+        auto ptr = *local_iter;
+        if (ptr->ifActive())
+            ptr->draw();
+    }
+    auto spark_iter = spark_list.begin();
+    while (spark_iter != spark_list.end()){
+        auto local_iter = spark_iter;
+        spark_iter++;
+        if (!local_iter->sparked())
+            local_iter->draw();
+    }
 }
 
 void Bullet_Maintainer::add(ShootableObject& shooter){
@@ -160,10 +160,10 @@ void Alien_Maintainer::maintain(Bullet_Maintainer& bulletMaintainer,
         if (!alienPtr->alive()) //because of bullet hit
         {
             explosion_list.push_back(Explosion(explosion_array,
-                                    alienPtr->getLocation().first +
-                                    alienPtr->getDimension().first/2,
-                                     alienPtr->getLocation().second +
-                                     alienPtr->getDimension().second/2));
+                                               alienPtr->getLocation().first +
+                                               alienPtr->getDimension().first/2,
+                                               alienPtr->getLocation().second +
+                                               alienPtr->getDimension().second/2));
             alienPtr->explodeSound();
             score.addScore(alienPtr->getScoreValue());
             alienList.erase(local_iter);
@@ -192,17 +192,17 @@ void Alien_Maintainer::draw(){
 
 void Alien_Maintainer::cleanBitmaps(){
     auto vec_iter = alienImages.begin();
-            auto save = vec_iter->alienBitmap;
+    auto save = vec_iter->alienBitmap;
+    al_destroy_bitmap(vec_iter->alienBitmap);
+    while (++vec_iter != alienImages.end())
+    {
+        if (vec_iter->alienBitmap != save)
             al_destroy_bitmap(vec_iter->alienBitmap);
-            while (++vec_iter != alienImages.end())
-            {
-                if (vec_iter->alienBitmap != save)
-                    al_destroy_bitmap(vec_iter->alienBitmap);
-                save = vec_iter->alienBitmap;
-            }
-            for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
-                 ++i)
-                al_destroy_bitmap(explosion_array[i]);
+        save = vec_iter->alienBitmap;
+    }
+    for (unsigned int i = 0; i < sizeof(explosion_array) / sizeof(ALLEGRO_BITMAP*);
+         ++i)
+        al_destroy_bitmap(explosion_array[i]);
 
 }
 
@@ -228,19 +228,19 @@ void Alien_Maintainer::updateBitmaps(){
         ALLEGRO_BITMAP* tempBmp = sprite_grab(sprite, x,y,w,h);
         float bmpRatio = (float) w / (float) h;
         bitmapPtr = al_create_bitmap(alienDimension[i]*bmpRatio,
-                                    alienDimension[i]);
+                                     alienDimension[i]);
         al_set_target_bitmap(bitmapPtr);
         al_draw_scaled_bitmap(tempBmp,0,0,w,h,0,0,al_get_bitmap_width(bitmapPtr),
-                                al_get_bitmap_height(bitmapPtr), 0);
+                              al_get_bitmap_height(bitmapPtr), 0);
         alienImages.push_back(Alien_image(bitmapPtr, aliens[i])); //i from 1
         al_set_target_bitmap(saveDisplay);
         al_destroy_bitmap(tempBmp);
     }
     //explostion frames effect, extracts from sprites
     int explodeDimension[] = {EFFECTIVE_DRAWING_DIMENSION/26,
-                               EFFECTIVE_DRAWING_DIMENSION/21,
-                                 EFFECTIVE_DRAWING_DIMENSION/14,
-                                 EFFECTIVE_DRAWING_DIMENSION/10};
+                              EFFECTIVE_DRAWING_DIMENSION/21,
+                              EFFECTIVE_DRAWING_DIMENSION/14,
+                              EFFECTIVE_DRAWING_DIMENSION/10};
     start_chars = "explosion";
     for (int i = 0; i < 4; ++i){
         std::string digits = std::to_string(i);
@@ -274,7 +274,7 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
     int x, y, w, h;
     //SHIP:
     x = std::atoi(al_get_config_value(config, "components",
-                                          (start_key_chars + "_x").c_str()));
+                                      (start_key_chars + "_x").c_str()));
     y = std::atoi(al_get_config_value(config, "components",
                                       (start_key_chars + "_y").c_str()));
     w = std::atoi(al_get_config_value(config, "components",
@@ -320,7 +320,7 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
     //initialize images in spark_array:
     int sparkDimension[] = {EFFECTIVE_DRAWING_DIMENSION/20,
                             EFFECTIVE_DRAWING_DIMENSION/20,
-                           EFFECTIVE_DRAWING_DIMENSION/20};
+                            EFFECTIVE_DRAWING_DIMENSION/20};
     start_key_chars = "spark";
     for (int i = 0; i < 3; ++i){
         std::string digits = std::to_string(i);

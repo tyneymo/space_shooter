@@ -67,7 +67,7 @@ void Ship::set_control(int up, int down, int left, int right, int shoot){
 }
 
 void Ship::update_util(Keyboard& keyboard, int up, int down,
-                 int left, int right, int shoot){
+                       int left, int right, int shoot){
     if (keyboard.key[up])
         pos_y -= EFFECTIVE_DISPLAY_DIAG/140;
     if (keyboard.key[down])

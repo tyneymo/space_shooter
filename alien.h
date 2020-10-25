@@ -68,7 +68,7 @@ protected:
         int appearRange = al_get_bitmap_width(displaying) - width;
         int narrowRangeID = between(0,6);
         pos_x = between(narrowRangeID*(appearRange/6), (narrowRangeID+1)*
-                                                        appearRange/6);
+                        appearRange/6);
         pos_y = -height;
     }
 
@@ -122,7 +122,7 @@ public:
 
 private:
     ALLEGRO_BITMAP* chooseAlien (std::vector<Alien_image>& vec_AlienImage,
-                                  Object_type type);
+                                 Object_type type);
 };
 
 

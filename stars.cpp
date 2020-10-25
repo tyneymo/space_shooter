@@ -21,7 +21,7 @@ void Star::draw(){
     int cutPoint = 30*FRAMERATEMULTIPLIER;
     //give stars effect of slow blinking
     if ((effectCounter / cutPoint) % 2)
-    drawRatio = (float)(cutPoint - (effectCounter++ % cutPoint)) / cutPoint;
+        drawRatio = (float)(cutPoint - (effectCounter++ % cutPoint)) / cutPoint;
     else drawRatio = (float)(effectCounter++ % cutPoint) / cutPoint;
     int w = al_get_bitmap_width(starImg);
     int h = al_get_bitmap_height(starImg);
@@ -46,7 +46,7 @@ void Star::relocate(){
 AllStars::AllStars(){
     //create a star bitmap model then feed it to star's constructor
     starModel = al_create_bitmap(PRIM_DISPLAY_H/40,
-                                                PRIM_DISPLAY_H/40);
+                                 PRIM_DISPLAY_H/40);
     must_init(starModel, "create model for stars");
     ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
     al_set_target_bitmap(starModel);
@@ -71,7 +71,6 @@ AllStars::AllStars(){
     Star::elementsNumber = elementsNumber;
     for (int i = 0; i < sz; ++i){
         stars.emplace_back(starModel);
-//        stars[i].elementsNumber = elementsNumber;
         int ran = between(0,elementsNumber);
         stars[i].pos_x = between (ran * element_w, (ran+1) * element_w);
         ran = between(0,elementsNumber);

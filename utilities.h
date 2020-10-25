@@ -21,8 +21,10 @@ float between_f (float low, float high);
 
 void must_init(bool test, const char* description);
 
+void setIcon(ALLEGRO_DISPLAY*);
+
 bool collide(int obj1_x, int obj1_y, int obj1_w, int obj1_h,
-               int obj2_x, int obj2_y, int obj2_w, int obj2_h);
+             int obj2_x, int obj2_y, int obj2_w, int obj2_h);
 
 void draw_centre(ALLEGRO_BITMAP*, int, int);
 void draw_scaled_centre(ALLEGRO_BITMAP*, int, int, float);
@@ -68,38 +70,26 @@ struct Keyboard{
 
     void update(ALLEGRO_EVENT* event){
         switch (event->type){
-            case ALLEGRO_EVENT_TIMER:
-                //each frame, reset all bit of all key, keep only key that seen
-                for (int i = 0; i < ALLEGRO_KEY_MAX; ++i)
-                    { 
-                        key[i] &= key_seen;
-                    }
-                break;
+        case ALLEGRO_EVENT_TIMER:
+            //each frame, reset all bit of all key, keep only key that seen
+            for (int i = 0; i < ALLEGRO_KEY_MAX; ++i)
+            {
+                key[i] &= key_seen;
+            }
+            break;
 
             //if a key down, update value at position according to the keycode
-            case ALLEGRO_EVENT_KEY_DOWN:
-                key[event->keyboard.keycode] = key_seen | key_release;
-                break;
+        case ALLEGRO_EVENT_KEY_DOWN:
+            key[event->keyboard.keycode] = key_seen | key_release;
+            break;
             
-            //erase key_seen when key is up. keep only key_release. 
-            //the timer will erase the key_release also. 
-            case ALLEGRO_EVENT_KEY_UP:
-                key[event->keyboard.keycode] &= key_release;
-                break;
+            //erase key_seen when key is up. keep only key_release.
+            //the timer event will erase the key_release also.
+        case ALLEGRO_EVENT_KEY_UP:
+            key[event->keyboard.keycode] &= key_release;
+            break;
         }
     }
 };
-
-class ShortLiveBitmap{
-public:
-    ShortLiveBitmap(ALLEGRO_BITMAP* bitmap): bmp(bitmap) {
-        must_init(bmp, "initialize shortlivebitmap");}
-    ~ShortLiveBitmap(){al_destroy_bitmap(bmp);}
-    ALLEGRO_BITMAP* getBitmap(){return bmp;}
-private:
-    ALLEGRO_BITMAP* bmp;
-};
-
-
 
 #endif // UTILITIES_H

@@ -10,7 +10,7 @@ class Alien_Factory;
 class Alien_Maintainer{
 public:
     Alien_Maintainer(Alien_Factory* factory, ALLEGRO_BITMAP* spritesheet):
-                        alienFactory(factory), sprite(spritesheet){
+        alienFactory(factory), sprite(spritesheet){
         updateBitmaps();
     }
 
@@ -85,16 +85,16 @@ public:
 
     ~Bullet_Maintainer(){
         auto vec_iter = bulletImages.begin();
-                auto save = vec_iter->bulletBitmap;
+        auto save = vec_iter->bulletBitmap;
+        al_destroy_bitmap(vec_iter->bulletBitmap);
+        while (++vec_iter != bulletImages.end())
+        {
+            if (vec_iter->bulletBitmap != save)
                 al_destroy_bitmap(vec_iter->bulletBitmap);
-                while (++vec_iter != bulletImages.end())
-                {
-                    if (vec_iter->bulletBitmap != save)
-                        al_destroy_bitmap(vec_iter->bulletBitmap);
-                    save = vec_iter->bulletBitmap;
-                }
-                for (unsigned int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
-                    al_destroy_bitmap(spark_array[i]);
+            save = vec_iter->bulletBitmap;
+        }
+        for (unsigned int i  = 0; i < sizeof (spark_array) / sizeof(ALLEGRO_BITMAP*); ++i)
+            al_destroy_bitmap(spark_array[i]);
     }
 
 private:

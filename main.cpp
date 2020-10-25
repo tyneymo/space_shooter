@@ -42,6 +42,7 @@ int main(int argc, char** argv)
     ALLEGRO_BITMAP* buffer = al_create_bitmap(PRIM_DISPLAY_W, PRIM_DISPLAY_H);
     must_init(disp, "display init");
     must_init(buffer, "display buffer");
+    setIcon(disp);
     ALLEGRO_FONT* font = al_create_builtin_font();
     must_init(font, "font init");
     al_register_event_source(queue, al_get_timer_event_source(timer));
@@ -49,7 +50,8 @@ int main(int argc, char** argv)
     al_register_event_source(queue, al_get_display_event_source(disp));
 
     ALLEGRO_BITMAP* spritesheet = al_load_bitmap(al_get_config_value(config,
-                                                 "files_name", "sprite_sheet"));
+                                                                     "files_name", "sprite_sheet"));
+
     must_init(spritesheet, "init sprite, please check image file name!");
     Ship_factory aShipFactory(spritesheet);
 
@@ -60,7 +62,7 @@ int main(int argc, char** argv)
     std::shared_ptr<Ship> ship_two(aShipFactory.createShip(PRIM_DISPLAY_W /3,
                                                            4*PRIM_DISPLAY_H /5));
 
-    ship_two->set_control(ALLEGRO_KEY_W, ALLEGRO_KEY_S, 
+    ship_two->set_control(ALLEGRO_KEY_W, ALLEGRO_KEY_S,
                           ALLEGRO_KEY_A, ALLEGRO_KEY_D, ALLEGRO_KEY_F);
 
 
@@ -87,76 +89,76 @@ int main(int argc, char** argv)
         al_wait_for_event(queue, &event);
 
         switch(event.type){
-            case ALLEGRO_EVENT_KEY_DOWN:
-                if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-                {
-                    if (!askForEnding)
-                        pausing = true;
-                    else pausing = false;
+        case ALLEGRO_EVENT_KEY_DOWN:
+            if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+            {
+                if (!askForEnding)
+                    pausing = true;
+                else pausing = false;
+                askForEnding = !askForEnding;
+            }
+            if (event.keyboard.keycode == ALLEGRO_KEY_P)
+            {
+                pausing = !pausing;
+                if (askForEnding)
                     askForEnding = !askForEnding;
-                }
-                if (event.keyboard.keycode == ALLEGRO_KEY_P)
-                {
-                    pausing = !pausing;
-                    if (askForEnding)
-                        askForEnding = !askForEnding;
-                }
-                if (event.keyboard.keycode == ALLEGRO_KEY_Y && askForEnding)
-                    done = true;
-                redraw = true;
-
-
-            case ALLEGRO_EVENT_TIMER:
-                if (pausing)
-                    break;
-                //update position and fire_ready state
-                ++frameCounter;
-                ship_one->update(keyboard);
-                ship_two->update(keyboard);
-                if (ship_one->readyToFire())
-                    bulletMaintainer.add(*ship_one);
-                if (ship_two->readyToFire())
-                    bulletMaintainer.add(*ship_two);
-                if (!(frameCounter % AlienCreateFrequent))
-                    alienMaintainer.add();
-                alienMaintainer.maintain(bulletMaintainer, score);
-                if ((score.getScore() / scoreToIncreaseFrequent) > hardnessCounter)
-                {
-                    hardnessCounter++;
-                    AlienCreateFrequent -= 2;
-                    //for non-human players only:
-                    if (AlienCreateFrequent <= 0) AlienCreateFrequent = 1;
-                }
-                bulletMaintainer.maintain(*ship_one, alienMaintainer);
-                bulletMaintainer.maintain(*ship_two, alienMaintainer);
-                redraw = true;
-                break;
-
-
-            case ALLEGRO_EVENT_DISPLAY_CLOSE:
+            }
+            if (event.keyboard.keycode == ALLEGRO_KEY_Y && askForEnding)
                 done = true;
-                break;
+            redraw = true;
 
-            case ALLEGRO_EVENT_DISPLAY_RESIZE:
-                //acknowledge is required to actual redraw of graphic. That means,
-                //to let window server redraw disp. Without acknowledge, newWidth
-                //and newHeight always return old values.
-                if (al_acknowledge_resize(disp)){
-                    int newWidth = al_get_display_width(disp);
-                    int newHeight = al_get_display_height(disp);
 
-                    al_set_config_value(config,"display", "PRIM_DISPLAY_WIDTH",
-                                        std::to_string(newWidth).c_str());
-                    al_set_config_value(config,"display", "PRIM_DISPLAY_HEIGHT",
-                                        std::to_string(newHeight).c_str());
-                    setDisplayValues(config);
-                    al_destroy_bitmap(buffer);
-                    buffer = al_create_bitmap(newWidth, newHeight);
-                    must_init(buffer, "resize event not successful");
-                    allStars.update();
-                    redraw = true;
-                }
+        case ALLEGRO_EVENT_TIMER:
+            if (pausing)
                 break;
+            //update position and fire_ready state
+            ++frameCounter;
+            ship_one->update(keyboard);
+            ship_two->update(keyboard);
+            if (ship_one->readyToFire())
+                bulletMaintainer.add(*ship_one);
+            if (ship_two->readyToFire())
+                bulletMaintainer.add(*ship_two);
+            if (!(frameCounter % AlienCreateFrequent))
+                alienMaintainer.add();
+            alienMaintainer.maintain(bulletMaintainer, score);
+            if ((score.getScore() / scoreToIncreaseFrequent) > hardnessCounter)
+            {
+                hardnessCounter++;
+                AlienCreateFrequent -= 2;
+                //for non-human players only:
+                if (AlienCreateFrequent <= 0) AlienCreateFrequent = 1;
+            }
+            bulletMaintainer.maintain(*ship_one, alienMaintainer);
+            bulletMaintainer.maintain(*ship_two, alienMaintainer);
+            redraw = true;
+            break;
+
+
+        case ALLEGRO_EVENT_DISPLAY_CLOSE:
+            done = true;
+            break;
+
+        case ALLEGRO_EVENT_DISPLAY_RESIZE:
+            //acknowledge is required to actual redraw of graphic. That means,
+            //to let window server redraw disp. Without acknowledge, newWidth
+            //and newHeight always return old values.
+            if (al_acknowledge_resize(disp)){
+                int newWidth = al_get_display_width(disp);
+                int newHeight = al_get_display_height(disp);
+
+                al_set_config_value(config,"display", "PRIM_DISPLAY_WIDTH",
+                                    std::to_string(newWidth).c_str());
+                al_set_config_value(config,"display", "PRIM_DISPLAY_HEIGHT",
+                                    std::to_string(newHeight).c_str());
+                setDisplayValues(config);
+                al_destroy_bitmap(buffer);
+                buffer = al_create_bitmap(newWidth, newHeight);
+                must_init(buffer, "resize event not successful");
+                allStars.update();
+                redraw = true;
+            }
+            break;
         }
 
         keyboard.update(&event);

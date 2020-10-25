@@ -17,7 +17,7 @@ void BulletSpark::draw(){
     int w = al_get_bitmap_width(spark_array[numOfSparkFrames-counter]);
     int h = al_get_bitmap_height(spark_array[numOfSparkFrames-counter]);
     al_draw_rotated_bitmap(spark_array[numOfSparkFrames-counter], w/2, h/2,
-                            pos_x+w/2, pos_y+h/2,0,0);
+            pos_x+w/2, pos_y+h/2,0,0);
     if (!fixFramerate--){
         --counter;
         fixFramerate = 2*FRAMERATEMULTIPLIER;
@@ -39,12 +39,12 @@ void Bullet::draw(){
 
 void Thiccboi_bulelt::draw(){
     if (active){
-            int w = al_get_bitmap_width(bullet_img);
-            int h = al_get_bitmap_height(bullet_img);
-            al_draw_rotated_bitmap(bullet_img, w/2, h/2, pos_x + w/2, pos_y + h/2,
-                                   (rotating++/FRAMERATEMULTIPLIER)*ALLEGRO_PI/18,0);
-            return;
-        }
+        int w = al_get_bitmap_width(bullet_img);
+        int h = al_get_bitmap_height(bullet_img);
+        al_draw_rotated_bitmap(bullet_img, w/2, h/2, pos_x + w/2, pos_y + h/2,
+                               (rotating++/FRAMERATEMULTIPLIER)*ALLEGRO_PI/18,0);
+        return;
+    }
 }
 
 void Ship_bullet::ship_bullet_setup(){
@@ -65,7 +65,7 @@ void Thiccboi_bulelt::alien_bullet_setup(float,float,float,float){
 }
 
 Bullet* Bullet_factory::createBullet(std::vector<Bullet_image>& vBullet,
-                     ShootableObject* shooter){
+                                     ShootableObject* shooter){
     ALLEGRO_BITMAP* bulletImg = chooseBullet(vBullet, shooter);
     must_init(bulletImg, "bulletimage in create function");
     switch (shooter->getType()){
@@ -88,7 +88,7 @@ Bullet* Bullet_factory::createBullet(std::vector<Bullet_image>& vBullet,
         int oldHeigh = al_get_bitmap_height(bulletImg);
         //sometimes thiccboi shoot double, sometimes single row of bullets
         ALLEGRO_BITMAP* thiccboiBulletBmp = al_create_bitmap(oldWidth*3,
-                                            oldHeigh + 2*oldHeigh*(rand() % 2));
+                                                             oldHeigh + 2*oldHeigh*(rand() % 2));
         ALLEGRO_BITMAP* saveDisplay = al_get_target_bitmap();
         al_set_target_bitmap(thiccboiBulletBmp);
         al_clear_to_color(al_map_rgba_f(0,0,0,0));

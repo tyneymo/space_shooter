@@ -24,9 +24,9 @@ float between_f (float low, float high){
 }
 
 bool collide(int obj1_x, int obj1_y, int obj1_w, int obj1_h,
-               int obj2_x, int obj2_y, int obj2_w, int obj2_h){
+             int obj2_x, int obj2_y, int obj2_w, int obj2_h){
     if ((obj1_x + obj1_w < obj2_x) || (obj1_x > obj2_x + obj2_w) ||
-        (obj1_y + obj1_h < obj2_y) || (obj1_y > obj2_y + obj2_h))
+            (obj1_y + obj1_h < obj2_y) || (obj1_y > obj2_y + obj2_h))
         return false;
     return true;
 }
@@ -36,6 +36,15 @@ void must_init(bool test, const char* description){
 
     std::cout << "can not initialize " << description << std::endl;
     exit(1);
+}
+
+void setIcon(ALLEGRO_DISPLAY* display){
+    ALLEGRO_BITMAP* icon = al_load_bitmap("space_ship.png");
+    if (icon){
+        al_set_display_icon(display, icon);
+    }
+    std::cout << "please add an icon file to the same directory as run file "
+              << '\n' << " and name it \"space_ship.png\"" << std::endl;
 }
 
 //extract sprite from _sheet.
@@ -85,26 +94,6 @@ void draw_centre(ALLEGRO_BITMAP* bmp, int x, int y){
     al_draw_bitmap_region(bmp, w/2,h/2,w/2,h/2, x,y,0);
 }
 
-void draw_scaled_centre(ALLEGRO_BITMAP* bmp, int x, int y, float ratio){
-    int w = al_get_bitmap_width(bmp);
-    int h = al_get_bitmap_height(bmp);
-    ShortLiveBitmap bmp1_1 = al_create_sub_bitmap(bmp, 0,0,w/2,h/2);
-    ShortLiveBitmap bmp1_2 = al_create_sub_bitmap(bmp, w/2, 0, w/2,h/2);
-    ShortLiveBitmap bmp2_1 = al_create_sub_bitmap(bmp, 0, h/2, w/2,h/2);
-    ShortLiveBitmap bmp2_2 = al_create_sub_bitmap(bmp, w/2, h/2, w/2,h/2);
-    al_draw_scaled_bitmap(bmp1_1.getBitmap(),0,0,w/2,h/2,x+w/2-ratio*w/2,
-                          y+h/2-ratio*h/2,ratio*w/2, ratio*h/2,0);
-    al_draw_scaled_bitmap(bmp1_2.getBitmap(),0,0,w/2,h/2,x+w/2,
-                          y+h/2-ratio*h/2,ratio*w/2, ratio*h/2,0);
-    al_draw_scaled_bitmap(bmp2_1.getBitmap(),0,0,w/2,h/2,x+w/2-ratio*w/2,
-                          y+h/2,ratio*w/2, ratio*h/2,0);
-    al_draw_scaled_bitmap(bmp2_2.getBitmap(),0,0,w/2,h/2,x+w/2,
-                          y+h/2,ratio*w/2, ratio*h/2,0);
-}
-
-
-
-
 void setDisplayValues(ALLEGRO_CONFIG* config){
     PRIM_DISPLAY_W = std::atoi(al_get_config_value(config, "display",
                                                    "PRIM_DISPLAY_WIDTH"));
@@ -117,17 +106,17 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
     //for some code calculate speed base on dividend, if the display dimensions
     //and framerate config is not appropriate (too small display, too high frame
     //rate), things might not move. So here the code check for bad config.
-//    if (PRIM_DISPLAY_H < 240)
-//    {
-//        PRIM_DISPLAY_H = 400;
-//        PRIM_DISPLAY_W = 600;
-//        FRAMERATE = 30;
-//        std::cout << "Too small display config" << std::endl;
-//    }
+    if (PRIM_DISPLAY_H < 240)
+    {
+        PRIM_DISPLAY_H = 400;
+        PRIM_DISPLAY_W = 600;
+        FRAMERATE = 30;
+        std::cout << "Too small display config" << std::endl;
+    }
 
     FRAMERATEMULTIPLIER = FRAMERATE/30.0;
     int diag = std::sqrt(PRIM_DISPLAY_W*PRIM_DISPLAY_W +
-                            PRIM_DISPLAY_H*PRIM_DISPLAY_H);
+                         PRIM_DISPLAY_H*PRIM_DISPLAY_H);
     if (diag > 1.33 * PRIM_DISPLAY_H) //just to limit effective diag
         diag = 1.33 * PRIM_DISPLAY_H;
     //effective diag and effective height to apply speed to objects
@@ -150,7 +139,10 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
         EFFECTIVE_DRAWING_DIMENSION = (w < h)? w : h;
     }
     else
-        EFFECTIVE_DRAWING_DIMENSION = EFFECTIVE_DISPLAY_HEIGHT;
+    {
+        EFFECTIVE_DRAWING_DIMENSION = PRIM_DISPLAY_H;
+        std::cout << "cannot get monitor's resolution" << std::endl;
+    }
 }
 
 bool addConfig(ALLEGRO_CONFIG* config){
@@ -230,12 +222,12 @@ bool addConfig(ALLEGRO_CONFIG* config){
     if (al_save_config_file("ssconfig.ini", config))
     {
         std::cout << "Created a default config file, name \"ssconfig.ini\"" <<
-                                                                    std::endl;
+                     std::endl;
         al_destroy_config(config);
         return true;
     }
     else std::cout << "Cannot create config file" << std::endl;
-        return false;
+    return false;
 }
 
 ALLEGRO_BITMAP* getLifeBmp(ALLEGRO_BITMAP* spritesheet){

@@ -7,7 +7,7 @@ extern int EFFECTIVE_DISPLAY_HEIGHT;
 extern float FRAMERATEMULTIPLIER;
 
 Explosion::Explosion(ALLEGRO_BITMAP** bm_array,int x, int y): explosion_array(bm_array),
-                                                    pos_x(x), pos_y(y){
+    pos_x(x), pos_y(y){
     explosion_array = bm_array;
     pos_x = x;
     pos_y = y;
@@ -48,7 +48,7 @@ Alien* Alien_Factory::createAlien(std::vector<Alien_image>& vec_AlienImage, Obje
 }
 
 ALLEGRO_BITMAP* Alien_Factory::chooseAlien (std::vector<Alien_image>& vec_AlienImage,
-                              Object_type type){
+                                            Object_type type){
     auto iter = vec_AlienImage.begin();
     while (iter != vec_AlienImage.end()){
         if (iter->type == type)
@@ -70,8 +70,8 @@ void Alien::update(){
     if (speedCounter != speed.second)
         ++speedCounter;
     else {
-             pos_y += EFFECTIVE_DISPLAY_DIAG/(1.4*240);
-             speedCounter = 1;
+        pos_y += EFFECTIVE_DISPLAY_DIAG/(1.4*240);
+        speedCounter = 1;
     }
     //update firing state
     if (fireCountdown > 0)

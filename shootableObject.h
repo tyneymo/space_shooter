@@ -14,7 +14,7 @@ public:
         return std::make_pair(width, height);
     }
 
-    //always fire when ask this function.
+    //who call this function will also fire if it return true.
     virtual bool readyToFire(){
         if (fireNow){
             fireNow = false;

@@ -15,7 +15,7 @@ struct Bullet_image {
     Bullet_image(ALLEGRO_BITMAP* bitmap, Object_type t):
         bulletBitmap(bitmap), type(t){};
     ~Bullet_image(){
-//        al_destroy_bitmap(bulletBitmap);
+        //        al_destroy_bitmap(bulletBitmap);
     }
 };
 
@@ -54,7 +54,7 @@ public:
     }
 
     std::pair<int,int> getLocation(){
-            return std::make_pair(pos_x, pos_y);
+        return std::make_pair(pos_x, pos_y);
     }
 
     std::pair<int,int> getDimension(){
@@ -72,11 +72,11 @@ protected:
     //shooter->getLocation().first + shooter->getDimension().first/2) to center
     //the bullet in between shooter object.
     Bullet(ALLEGRO_BITMAP* bitmap, ShootableObject* shooter)
-            : bullet_img(bitmap),
-              pos_x(shooter->getLocation().first + shooter->getDimension().first/2),
-              pos_y(shooter->getLocation().second),
-              width(al_get_bitmap_width(bitmap)),
-              height(al_get_bitmap_height(bitmap)){
+        : bullet_img(bitmap),
+          pos_x(shooter->getLocation().first + shooter->getDimension().first/2),
+          pos_y(shooter->getLocation().second),
+          width(al_get_bitmap_width(bitmap)),
+          height(al_get_bitmap_height(bitmap)){
         must_init(bullet_img, "bulletimage");
     }
 
