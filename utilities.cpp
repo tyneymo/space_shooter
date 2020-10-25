@@ -117,27 +117,27 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
     //for some code calculate speed base on dividend, if the display dimensions
     //and framerate config is not appropriate (too small display, too high frame
     //rate), things might not move. So here the code check for bad config.
-    if (PRIM_DISPLAY_H < 240)
-    {
-        PRIM_DISPLAY_H = 400;
-        PRIM_DISPLAY_W = 600;
-        FRAMERATE = 30;
-        std::cout << "Too small display config" << std::endl;
-    }
+//    if (PRIM_DISPLAY_H < 240)
+//    {
+//        PRIM_DISPLAY_H = 400;
+//        PRIM_DISPLAY_W = 600;
+//        FRAMERATE = 30;
+//        std::cout << "Too small display config" << std::endl;
+//    }
 
     FRAMERATEMULTIPLIER = FRAMERATE/30.0;
     int diag = std::sqrt(PRIM_DISPLAY_W*PRIM_DISPLAY_W +
                             PRIM_DISPLAY_H*PRIM_DISPLAY_H);
     if (diag > 1.33 * PRIM_DISPLAY_H) //just to limit effective diag
         diag = 1.33 * PRIM_DISPLAY_H;
-    //effective diag to apply speed to objects
+    //effective diag and effective height to apply speed to objects
     EFFECTIVE_DISPLAY_DIAG = diag / FRAMERATEMULTIPLIER;
     if (EFFECTIVE_DISPLAY_DIAG < 320){
         FRAMERATE = 30;
         FRAMERATEMULTIPLIER = 1.0;
         EFFECTIVE_DISPLAY_DIAG = diag;
         std::cout << "Too high frame rate and/or too small display config"
-                  << std::endl;
+                  << std::endl << "game will reduce framerate to 30." << std::endl;
     }
     EFFECTIVE_DISPLAY_HEIGHT = PRIM_DISPLAY_H / FRAMERATEMULTIPLIER;
     //effective drawing dimension is a base to draw things independently of
