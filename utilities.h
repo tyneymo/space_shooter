@@ -11,8 +11,6 @@
 
 
 class ShootableObject;
-class AllStars;
-//bool bulletObjCollide(ShootableObject* obj, Bullet* bullet);
 
 enum Bullet_type {SHIP_BULLET1, SHIP_BULLET2, ALIEN_BULLET};
 enum Object_type {SHIP, ALIEN, BUG, ARROW,THICCBOI};
@@ -52,44 +50,6 @@ public:
         return score;
     }
 };
-
-class ShootableObject{
-public:
-    ShootableObject();
-
-    std::pair<int,int> getLocation(){
-        return std::make_pair(pos_x, pos_y);
-    }
-
-    std::pair<int, int> getDimension(){
-        return std::make_pair(width, height);
-    }
-
-    //always fire when ask this function.
-    virtual bool readyToFire(){
-        if (fireNow){
-            fireNow = false;
-            fireCountdown = fireWait;
-            return true;
-        }
-        return false;
-    }
-
-    Object_type getType(){
-        return type;
-    }
-protected:
-    Object_type type;
-    int pos_x,pos_y,width,height;
-    int fireCountdown=0;
-    int fireWait;
-    bool fireNow = false;
-    bool gotHit = false;
-    ALLEGRO_SAMPLE* shot_sample;
-    ALLEGRO_SAMPLE* sample_explode[2];
-};
-
-
 
 //extract sprite from _sheet.
 ALLEGRO_BITMAP* sprite_grab(ALLEGRO_BITMAP* bigmap,int x, int y, int w, int h);
@@ -140,32 +100,6 @@ private:
     ALLEGRO_BITMAP* bmp;
 };
 
-class Star{
-public:
-    friend class AllStars;
-    Star(ALLEGRO_BITMAP*);
-    void draw();
 
-private:
-    void relocate();
-    float ratio;
-    ALLEGRO_BITMAP* starImg;
-    int pos_x, pos_y;
-    int effectCounter;
-    int elementsNumber; //number of drawing elements per side on screen
-};
-
-class AllStars{
-public:
-    AllStars();
-    ~AllStars(){al_destroy_bitmap(starModel);}
-    void update();
-    void draw();
-
-private:
-    ALLEGRO_BITMAP* starModel;
-    std::vector<Star> stars;
-    int elementsNumber = 15;
-};
 
 #endif // UTILITIES_H

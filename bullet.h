@@ -1,6 +1,6 @@
 #ifndef BULLET_H
 #define BULLET_H
-#include "utilities.h"
+#include "shootableObject.h"
 #include <vector>
 class Bullet_factory;
 class Bullet_Maintainer;

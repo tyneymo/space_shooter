@@ -1,5 +1,6 @@
 #include "maintainers.h"
 #include "ship.h"
+#include "shootableObject.h"
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
@@ -67,10 +68,8 @@ void Bullet_Maintainer::maintain(ShootableObject& ship,
         //check bullet not actives because hit alien
         if (!bulletPtr->ifActive()){
             spark_list.push_back(BulletSpark(spark_array,
-                                  bulletPtr->getLocation().first +
-                                  bulletPtr->getDimension().first/2,
-                                  bulletPtr->getLocation().second +
-                                  bulletPtr->getDimension().second/2));
+                                  bulletPtr->getLocation().first,
+                                  bulletPtr->getLocation().second));
             if (!erased)
             {
                 bullet_list.erase(local_iter);

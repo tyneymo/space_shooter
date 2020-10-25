@@ -9,6 +9,8 @@ SOURCES += \
         main.cpp \
         maintainers.cpp \
         ship.cpp \
+        shootableObject.cpp \
+        stars.cpp \
         utilities.cpp
 
 HEADERS += \
@@ -16,6 +18,8 @@ HEADERS += \
     bullet.h \
     maintainers.h \
     ship.h \
+    shootableObject.h \
+    stars.h \
     utilities.h
 
 DISTFILES += \

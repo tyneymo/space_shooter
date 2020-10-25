@@ -17,7 +17,7 @@ void BulletSpark::draw(){
     int w = al_get_bitmap_width(spark_array[numOfSparkFrames-counter]);
     int h = al_get_bitmap_height(spark_array[numOfSparkFrames-counter]);
     al_draw_rotated_bitmap(spark_array[numOfSparkFrames-counter], w/2, h/2,
-                            pos_x, pos_y,0,0);
+                            pos_x+w/2, pos_y+h/2,0,0);
     if (!fixFramerate--){
         --counter;
         fixFramerate = 2*FRAMERATEMULTIPLIER;
