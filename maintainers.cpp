@@ -1,6 +1,7 @@
 #include "maintainers.h"
 #include "ship.h"
 #include "shootableObject.h"
+#include <string>
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;

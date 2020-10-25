@@ -2,7 +2,7 @@
 #include "utilities.h"
 #include "maintainers.h"
 #include "stars.h"
-
+#include <string>
 ALLEGRO_CONFIG* config;
 int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 int EFFECTIVE_DISPLAY_DIAG; //keep things move at reasonable speed at different framerate

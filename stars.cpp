@@ -50,7 +50,7 @@ AllStars::AllStars(){
     must_init(starModel, "create model for stars");
     ALLEGRO_BITMAP* saveDisp = al_get_target_bitmap();
     al_set_target_bitmap(starModel);
-    al_clear_to_color(al_map_rgb(0,0,0));
+    al_clear_to_color(al_map_rgba(0,0,0,0));
     int rectSide = al_get_bitmap_height(starModel);
     ALLEGRO_COLOR colorWhite = al_map_rgb_f(0.5,0.5,0.5);
     al_draw_filled_triangle(rectSide/2, 0, rectSide/3, rectSide/2, rectSide*2/3,

@@ -102,20 +102,7 @@ void draw_scaled_centre(ALLEGRO_BITMAP* bmp, int x, int y, float ratio){
                           y+h/2,ratio*w/2, ratio*h/2,0);
 }
 
-ShootableObject::ShootableObject(){
-    //audio file, hardcode :(
-    shot_sample = al_load_sample(al_get_config_value(config,
-                                    "files_name", "shot"));
-    must_init(shot_sample, "shot sample, please check audio file name for shot!");
-    sample_explode[0] = al_load_sample(al_get_config_value(config,
-                                    "files_name", "explode1"));
-    must_init(sample_explode[0],
-            "sample explode 1, please check audio file name for explode 1!");
-    sample_explode[1] = al_load_sample(al_get_config_value(config,
-                                    "files_name", "explode2"));
-    must_init(sample_explode[1],
-            "sample explode 2, please check audio file name for explode 2!");
-}
+
 
 
 void setDisplayValues(ALLEGRO_CONFIG* config){
@@ -125,6 +112,7 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
                                                    "PRIM_DISPLAY_HEIGHT"));
     FRAMERATE = std::atoi(al_get_config_value(config, "display",
                                               "FRAMERATE"));
+
 
     //for some code calculate speed base on dividend, if the display dimensions
     //and framerate config is not appropriate (too small display, too high frame
@@ -142,6 +130,7 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
                             PRIM_DISPLAY_H*PRIM_DISPLAY_H);
     if (diag > 1.33 * PRIM_DISPLAY_H) //just to limit effective diag
         diag = 1.33 * PRIM_DISPLAY_H;
+    //effective diag to apply speed to objects
     EFFECTIVE_DISPLAY_DIAG = diag / FRAMERATEMULTIPLIER;
     if (EFFECTIVE_DISPLAY_DIAG < 320){
         FRAMERATE = 30;
@@ -151,12 +140,15 @@ void setDisplayValues(ALLEGRO_CONFIG* config){
                   << std::endl;
     }
     EFFECTIVE_DISPLAY_HEIGHT = PRIM_DISPLAY_H / FRAMERATEMULTIPLIER;
-    ALLEGRO_DISPLAY_MODE oldMode;
-    auto displayMode = al_get_display_mode(0, &oldMode);
-    if (displayMode)
-        EFFECTIVE_DRAWING_DIMENSION = (displayMode->height < displayMode->width)?
-                                    displayMode->height : displayMode->width /
-                                    FRAMERATEMULTIPLIER;
+    //effective drawing dimension is a base to draw things independently of
+    //configured dimension.
+    ALLEGRO_MONITOR_INFO mon;
+    if (al_get_monitor_info(0, &mon))
+    {
+        int w = mon.x2 - mon.x1;
+        int h = mon.y2 - mon.y1;
+        EFFECTIVE_DRAWING_DIMENSION = (w < h)? w : h;
+    }
     else
         EFFECTIVE_DRAWING_DIMENSION = EFFECTIVE_DISPLAY_HEIGHT;
 }
