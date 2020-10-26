@@ -1,6 +1,7 @@
 #ifndef SHOOTABLEOBJECT_H
 #define SHOOTABLEOBJECT_H
 #include "utilities.h"
+#include <array>
 
 class ShootableObject{
 public:
@@ -28,6 +29,7 @@ public:
         return type;
     }
 protected:
+    void generateSamples(ALLEGRO_CONFIG*);
     Object_type type;
     int pos_x,pos_y,width,height;
     int fireCountdown=0;
@@ -35,7 +37,7 @@ protected:
     bool fireNow = false;
     bool gotHit = false;
     ALLEGRO_SAMPLE* shot_sample;
-    ALLEGRO_SAMPLE* sample_explode[2];
+    std::array<ALLEGRO_SAMPLE*,2> sample_explode;
 };
 
 #endif

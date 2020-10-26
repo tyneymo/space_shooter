@@ -27,6 +27,6 @@ public:
 private:
     ALLEGRO_BITMAP* starModel;
     std::vector<Star> stars;
-    int elementsNumber = 15;
+    int elementsNumber = 10;
 };
 #endif // STARS_H

@@ -1,4 +1,4 @@
-x#include "maintainers.h"
+#include "maintainers.h"
 #include "ship.h"
 #include "shootableObject.h"
 #include <string>
@@ -215,7 +215,7 @@ void Alien_Maintainer::updateBitmaps(){
                             EFFECTIVE_DRAWING_DIMENSION/22,
                             EFFECTIVE_DRAWING_DIMENSION/14};
     int x,y,w,h;
-    for (int i = 0; i < 3; ++i){ //config file list alien from 1
+    for (int i = 0; i < sizeof (alienDimension) / sizeof(int); ++i){ //config file list alien from 1
         std::string digits = std::to_string(i);
         x = std::atoi(al_get_config_value(config, "components",
                                           (start_chars + digits + "_x").c_str()));
@@ -242,7 +242,7 @@ void Alien_Maintainer::updateBitmaps(){
                               EFFECTIVE_DRAWING_DIMENSION/14,
                               EFFECTIVE_DRAWING_DIMENSION/10};
     start_chars = "explosion";
-    for (int i = 0; i < 4; ++i){
+    for (int i = 0; i < sizeof (explodeDimension) / sizeof(int); ++i){
         std::string digits = std::to_string(i);
         x = std::atoi(al_get_config_value(config, "components",
                                           (start_chars + digits + "_x").c_str()));
@@ -322,7 +322,7 @@ Bullet_Maintainer::Bullet_Maintainer(Bullet_factory* factory, ALLEGRO_BITMAP* sp
                             EFFECTIVE_DRAWING_DIMENSION/20,
                             EFFECTIVE_DRAWING_DIMENSION/20};
     start_key_chars = "spark";
-    for (int i = 0; i < 3; ++i){
+    for (int i = 0; i < sizeof (sparkDimension) / sizeof(int); ++i){
         std::string digits = std::to_string(i);
         x = std::atoi(al_get_config_value(config, "components",
                                           (start_key_chars + digits + "_x").c_str()));
