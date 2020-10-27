@@ -7,7 +7,7 @@ All Image and Sounds kept as original from Allegro tutorial. But you can add you
 - Allegro5
 
 2. Installation: Clone repository, including image and sounds, then do commands:
-- g++ *.cpp -o space_shooter $(pkg-config allegro-5 allegro_font-5 allegro_image-5 allegro_audio-5 allegro_acodec-5 --libs --cflags)
+- g++ *.cpp -o space_shooter $(pkg-config allegro-5 allegro_font-5 allegro_image-5 allegro_primitives-5 allegro_audio-5 allegro_acodec-5 --libs --cflags)
 - ./space_shooter
 
 Or use .pro file to open Qt project and build from there. 
