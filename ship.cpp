@@ -1,10 +1,13 @@
 #include "ship.h"
+#define MINIMUM_MOVEMENT 4
+
 
 extern ALLEGRO_CONFIG* config;
 extern int PRIM_DISPLAY_W, PRIM_DISPLAY_H;
 extern int EFFECTIVE_DISPLAY_DIAG;
 extern int EFFECTIVE_DRAWING_DIMENSION;
 extern float FRAMERATEMULTIPLIER;
+
 
 Ship::Ship (ALLEGRO_BITMAP* bitmap, int x, int y){
     ship_img = bitmap;
@@ -68,14 +71,15 @@ void Ship::set_control(int up, int down, int left, int right, int shoot){
 
 void Ship::update_util(Keyboard& keyboard, int up, int down,
                        int left, int right, int shoot){
+    int movementStep = EFFECTIVE_DISPLAY_DIAG/140;
     if (keyboard.key[up])
-        pos_y -= EFFECTIVE_DISPLAY_DIAG/140;
+        pos_y -= EFFECTIVE_DISPLAY_DIAG/140 < MINIMUM_MOVEMENT? MINIMUM_MOVEMENT :  EFFECTIVE_DISPLAY_DIAG/140;
     if (keyboard.key[down])
-        pos_y += EFFECTIVE_DISPLAY_DIAG/140;
+        pos_y += EFFECTIVE_DISPLAY_DIAG/140 < MINIMUM_MOVEMENT? MINIMUM_MOVEMENT :  EFFECTIVE_DISPLAY_DIAG/140;
     if (keyboard.key[left])
-        pos_x -= EFFECTIVE_DISPLAY_DIAG/140;
+        pos_x -= EFFECTIVE_DISPLAY_DIAG/140 < MINIMUM_MOVEMENT? MINIMUM_MOVEMENT :  EFFECTIVE_DISPLAY_DIAG/140;
     if (keyboard.key[right])
-        pos_x += EFFECTIVE_DISPLAY_DIAG/140;
+        pos_x += EFFECTIVE_DISPLAY_DIAG/140 < MINIMUM_MOVEMENT? MINIMUM_MOVEMENT :  EFFECTIVE_DISPLAY_DIAG/140;
     if (pos_x < 0)
         pos_x = 0;
     if (pos_x > PRIM_DISPLAY_W  - width)
